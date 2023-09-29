@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.command.claw;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.command.ProfiledPIDCommand;
+import com.arcrobotics.ftclib.command.Subsystem;
+import com.arcrobotics.ftclib.command.TrapezoidProfileCommand;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import org.firstinspires.ftc.teamcode.subsystem.ClawSys;
 
 public class SetClaw extends CommandBase {
@@ -19,4 +23,5 @@ public class SetClaw extends CommandBase {
     public boolean isFinished() {
         return sys.getClaw() == position;
     }
+
 }
