@@ -10,7 +10,6 @@ public class IntakeSys extends SubsystemBase {
     MotorEx intakeMotor;
     ServoEx stackServoL;
     ServoEx stackServoR;
-
     public static double currentThreshold = 0.0;
     public enum StackHeight {
         LOW(0.1),
@@ -22,28 +21,44 @@ public class IntakeSys extends SubsystemBase {
         }
     }
 
+    public enum IntakeDirection {
+        IN(1.0),
+        OUT(-1.0),
+        STOP(0.0);
+        public final double power;
+        IntakeDirection(double power) {
+            this.power = power;
+        }
+    }
+    public StackHeight stackHeight;
+    public IntakeDirection intakeDirection;
     public IntakeSys(MotorEx intakeMotor, ServoEx stackServoL, ServoEx stackServoR) {
         this.intakeMotor = intakeMotor;
         this.stackServoL = stackServoL;
         this.stackServoR = stackServoR;
+        stackHeight = StackHeight.LOW;
     }
-
-    public void intake(){
+    public void intake(IntakeDirection direction) {
         if(intakeMotor.motorEx.getCurrent(CurrentUnit.AMPS) > currentThreshold){
-            intakeMotor.set(-1);
+            intakeMotor.set(IntakeDirection.OUT.power);
+            intakeDirection = IntakeDirection.OUT;
         } else {
-            intakeMotor.set(1);
+            intakeMotor.set(direction.power);
+            intakeDirection = direction;
         }
-    }
-
-    public void stop() {
-        intakeMotor.set(0);
-    }
-    public void outtake() {
-        intakeMotor.set(-1);
     }
     public void stackHeight(StackHeight height) {
         stackServoL.setPosition(height.pos);
         stackServoR.setPosition(height.pos);
+        stackHeight = height;
+    }
+    public StackHeight getStackHeight() {
+        return stackHeight;
+    }
+    public double getStackHeightPos() {
+        return stackServoL.getPosition();
+    }
+    public IntakeDirection getIntake() {
+        return intakeDirection;
     }
 }
