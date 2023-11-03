@@ -17,6 +17,6 @@ public class SetIntakeHeight extends CommandBase {
     }
     @Override
     public boolean isFinished() {
-        return sys.getStackHeightPos() == position.pos;
+        return true;
     }
 }

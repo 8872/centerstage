@@ -11,11 +11,10 @@ public class DriveSys extends SubsystemBase {
      * default drive system
      */
     private final MecanumDrive drive;
-    public  final org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive autoDrive;
     public static double slowMode = 0.5;
-    public DriveSys(MotorEx leftBack, MotorEx leftFront, MotorEx rightBack, MotorEx rightFront, HardwareMap hardwareMap) {
-        drive = new MecanumDrive(leftFront, rightFront, leftBack, rightBack);
-        autoDrive = new org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive(hardwareMap, new Pose2d(0,0,0));
+    public DriveSys(MotorEx leftBack, MotorEx leftFront, MotorEx rightBack, MotorEx rightFront) {
+        drive = new MecanumDrive(true,leftFront, rightFront, leftBack, rightBack);
+        //autoDrive = new org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive(hardwareMap, new Pose2d(0,0,0));
     }
     public void driveFieldCentric(double forward, double strafe, double rotation, double heading) {
         drive.driveFieldCentric(forward, strafe, rotation, heading);

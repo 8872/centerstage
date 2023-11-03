@@ -4,13 +4,14 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.ServoImpl;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class IntakeSys extends SubsystemBase {
     MotorEx intakeMotor;
-    ServoEx stackServoL;
-    ServoEx stackServoR;
-    public static double currentThreshold = 0.0;
+    SimpleServo stackServo;
+    public static double currentThreshold = 1000;
     public enum StackHeight {
         LOW(0.1),
         MEDIUM(0.2),
@@ -32,10 +33,9 @@ public class IntakeSys extends SubsystemBase {
     }
     public StackHeight stackHeight;
     public IntakeDirection intakeDirection;
-    public IntakeSys(MotorEx intakeMotor, ServoEx stackServoL, ServoEx stackServoR) {
+    public IntakeSys(MotorEx intakeMotor, SimpleServo stackServoL) {
         this.intakeMotor = intakeMotor;
-        this.stackServoL = stackServoL;
-        this.stackServoR = stackServoR;
+        this.stackServo = stackServoL;
         stackHeight = StackHeight.LOW;
     }
     public void intake(IntakeDirection direction) {
@@ -48,15 +48,14 @@ public class IntakeSys extends SubsystemBase {
         }
     }
     public void stackHeight(StackHeight height) {
-        stackServoL.setPosition(height.pos);
-        stackServoR.setPosition(height.pos);
+        stackServo.setPosition(height.pos);
         stackHeight = height;
     }
     public StackHeight getStackHeight() {
         return stackHeight;
     }
     public double getStackHeightPos() {
-        return stackServoL.getPosition();
+        return stackServo.getPosition();
     }
     public IntakeDirection getIntake() {
         return intakeDirection;
