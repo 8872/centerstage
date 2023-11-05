@@ -6,7 +6,6 @@ import com.arcrobotics.ftclib.command.Subsystem;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 public class DelayedCommand extends SequentialCommandGroup {
-
     // delay is in milliseconds
     public DelayedCommand(Command command, long delay){
         addCommands(
