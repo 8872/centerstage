@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.ProfiledPIDCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
@@ -8,6 +9,7 @@ import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
 
 import java.util.function.DoubleSupplier;
 
+@Config
 public class LiftSys extends SubsystemBase {
     public enum Height {
         NONE(0),
@@ -19,6 +21,11 @@ public class LiftSys extends SubsystemBase {
             this.pos = pos;
         }
     }
+
+    public static int none = 0;
+    public static int low = -223;
+    public static int medium = -446;
+    public static int high = -670;
     private static Height currentGoal = Height.NONE;
     public static double kP = 0.00;
     public static double kI = 0.0;
@@ -45,20 +52,20 @@ public class LiftSys extends SubsystemBase {
         currentGoal = junction;
         switch (junction) {
             case NONE:
-                currentTarget = Height.NONE.pos;
-                controller.setGoal(Height.NONE.pos);
+                currentTarget = none;
+                controller.setGoal(none);
                 break;
             case LOW:
-                currentTarget = Height.LOW.pos;
-                controller.setGoal(Height.LOW.pos);
+                currentTarget = low;
+                controller.setGoal(low);
                 break;
             case MEDIUM:
-                currentTarget = Height.MEDIUM.pos;
-                controller.setGoal(Height.MEDIUM.pos);
+                currentTarget = medium;
+                controller.setGoal(medium);
                 break;
             case HIGH:
-                currentTarget = Height.HIGH.pos;
-                controller.setGoal(Height.HIGH.pos);
+                currentTarget = high;
+                controller.setGoal(high);
                 break;
         }
     }
@@ -79,13 +86,13 @@ public class LiftSys extends SubsystemBase {
     public boolean atTarget(){
         switch(currentGoal){
             case NONE:
-                return lir.getCurrentPosition()< Height.NONE.pos+ threshold && lir.getCurrentPosition()>Height.NONE.pos- threshold;
+                return lir.getCurrentPosition()< none+ threshold && lir.getCurrentPosition()>none- threshold;
             case LOW:
-                return lir.getCurrentPosition()< Height.LOW.pos+ threshold && lir.getCurrentPosition()>Height.LOW.pos- threshold;
+                return lir.getCurrentPosition()< low+ threshold && lir.getCurrentPosition()>low- threshold;
             case MEDIUM:
-                return lir.getCurrentPosition()< Height.MEDIUM.pos+ threshold && lir.getCurrentPosition()>Height.MEDIUM.pos- threshold;
+                return lir.getCurrentPosition()< medium+ threshold && lir.getCurrentPosition()>medium- threshold;
             case HIGH:
-                return lir.getCurrentPosition()< Height.HIGH.pos+ threshold && lir.getCurrentPosition()>Height.HIGH.pos- threshold;
+                return lir.getCurrentPosition()< high+ threshold && lir.getCurrentPosition()>high- threshold;
 
         }
         return false;
