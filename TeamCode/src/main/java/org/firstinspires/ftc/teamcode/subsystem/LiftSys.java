@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.ProfiledPIDCommand;
-import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.command.*;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
@@ -26,6 +25,7 @@ public class LiftSys extends SubsystemBase {
     public static int low = -223;
     public static int medium = -446;
     public static int high = -670;
+    public static int max = -670;
     private static Height currentGoal = Height.NONE;
     public static double kP = 0.00;
     public static double kI = 0.0;

@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import android.media.audiofx.BassBoost;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
@@ -30,17 +32,9 @@ public class ArmSys extends SubsystemBase {
 
     public Command armAway() {return new InstantCommand(()->armServo.setPosition(armAway));}
 
-    public Command away() {return new InstantCommand(this::push);}
+    public ParallelCommandGroup away() {return new ParallelCommandGroup(pitchAway(),armAway());}
 
-    public Command home() {return new InstantCommand(this::pull);}
+    public ParallelCommandGroup home() {return new ParallelCommandGroup(pitchHome(), armHome());}
 
-    public void push() {
-        armServo.setPosition(armAway);
-        pitchServo.setPosition(pitchAway);
-    }
 
-    public void pull() {
-        armServo.setPosition(armHome);
-        pitchServo.setPosition(pitchHome);
-    }
 }

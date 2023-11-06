@@ -17,10 +17,5 @@ public class LauncherSys extends SubsystemBase {
         this.launcherServo = launcherServo;
     }
 
-    public Command release() {return new InstantCommand(this::launch);}
-
-    public void launch() {
-        launcherServo.setPosition(0.5);
-        launcherHeightServo.setPosition(0.5);
-    }
+    public Command release() {return new InstantCommand(()->{launcherServo.setPosition(0.5);launcherHeightServo.setPosition(0.5);});}
 }

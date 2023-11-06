@@ -10,25 +10,40 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 @Config
 public class ClawSys extends SubsystemBase {
-    /**
-     * 1 servo
-     */
-    public SimpleServo servoL, servoR;
 
-    public static double servoLRelease=0.5;
-    public static double servoLHold=1;
+    public static double STOP = 1;
+    public static double RELEASE = 0.5;
 
-    public static double servoRRelease =0.5;
-    public static double servoRHold =1;
+    private final ServoEx first;
+    private final ServoEx second;
 
-    public ClawSys(SimpleServo servoL, SimpleServo servoR) {
-        this.servoL = servoL;
-        this.servoR = servoR;
+    public ClawSys(ServoEx first, ServoEx second) {
+        this.first = first;
+        this.second = second;
     }
-    public Command holdFirst() {return new InstantCommand(()-> servoL.setPosition(servoLHold));}
-    public Command releaseFirst() {return new InstantCommand(() -> servoL.setPosition(servoLRelease));}
 
-    public Command holdSecond() {return new InstantCommand(()-> servoR.setPosition(servoRHold));}
-    public Command releaseSecond() {return new InstantCommand(()->servoR.setPosition(servoRRelease));}
+    public Command stopFirst() {
+        return new InstantCommand(() -> first.setPosition(STOP));
+    }
+
+    public Command releaseFirst() {
+        return new InstantCommand(() -> first.setPosition(RELEASE));
+    }
+
+    public Command stopSecond() {
+        return new InstantCommand(() -> second.setPosition(RELEASE));
+    }
+
+    public Command releaseSecond() {
+        return new InstantCommand(() -> second.setPosition(RELEASE));
+    }
+
+    public double getFirstPosition() {
+        return first.getPosition();
+    }
+
+    public double getSecondPosition() {
+        return second.getPosition();
+    }
 
 }
