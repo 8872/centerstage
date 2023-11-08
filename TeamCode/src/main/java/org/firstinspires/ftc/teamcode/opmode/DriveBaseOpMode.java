@@ -54,10 +54,10 @@ public class DriveBaseOpMode extends CommandOpMode {
         initHardware();
         setUpHardwareDevices();
         drive = new DriveSys(fL, fR, bL, bR, imu);
-        intakeSys = new IntakeSubsystem(intakeMotor, stackServo, colorSensor, rightTriggerReader::isDown, leftTriggerReader::isDown);
+        intakeSys = new IntakeSubsystem(intakeMotor, stackServo, colorSensor, () -> gamepadEx1.gamepad.right_trigger, () -> gamepadEx1.gamepad.left_trigger);
         launcherSys = new LauncherSys(launcherHeightServo, launcherServo);
         armSys = new ArmSys(pitchServo, armServo);
-        liftSys = new LiftSubsystem(lil, lir, () -> gamepad1.touchpad_finger_1_x);
+        liftSys = new LiftSubsystem(lil, lir, () -> gamepadEx1.gamepad.touchpad_finger_1_x);
         clawSys = new ClawSys(clawL,clawR);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Mode", "Done initializing");
@@ -95,8 +95,6 @@ public class DriveBaseOpMode extends CommandOpMode {
         tad("lir pos", lir.getCurrentPosition());
         tad("intakeServoPos", round(stackServo.getPosition()));
         telemetry.update();
-        rightTriggerReader.readValue();
-        leftTriggerReader.readValue();
     }
 
     protected void setUpHardwareDevices() {

@@ -24,13 +24,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double GREEN_THRESH = 0;
     public static double YELLOW_THRESH = 0;
 
-    private BooleanSupplier fpower;
-    private BooleanSupplier rpower;
+    private DoubleSupplier fpower;
+    private DoubleSupplier rpower;
     private final MotorEx intake;
     private final ServoEx stack;
     private final ColorSensor color;
 
-    public IntakeSubsystem(MotorEx intake, ServoEx stack, ColorSensor color, BooleanSupplier fpower, BooleanSupplier rpower) {
+    public IntakeSubsystem(MotorEx intake, ServoEx stack, ColorSensor color, DoubleSupplier fpower, DoubleSupplier rpower) {
         this.intake = intake;
         this.stack = stack;
         this.color = color;
@@ -75,11 +75,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(fpower.getAsBoolean()) {
-            intake.set(IN);
+        if(fpower.getAsDouble()!=0) {
+            intake.set(fpower.getAsDouble());
             stack.setPosition(LOW);
-        } else if (rpower.getAsBoolean()) {
-            intake.set(OUT);
+        } else if (rpower.getAsDouble() !=0) {
+            intake.set(rpower.getAsDouble());
             stack.setPosition(LOW);
         } else {
             stack.setPosition(HIGH);
