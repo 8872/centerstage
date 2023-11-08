@@ -36,7 +36,7 @@ public class DriveBaseOpMode extends CommandOpMode {
     public ColorSensor colorSensor;
     protected SimpleServo stackServo, launcherHeightServo, launcherServo, pitchServo, clawL,clawR, armServo;
     protected DriveSys drive;
-    protected LiftSys liftSys;
+    protected LiftSubsystem liftSys;
     protected IntakeSubsystem intakeSys;
     protected GamepadEx gamepadEx1;
     protected GamepadEx gamepadEx2;
@@ -57,7 +57,7 @@ public class DriveBaseOpMode extends CommandOpMode {
         intakeSys = new IntakeSubsystem(intakeMotor, stackServo, colorSensor, rightTriggerReader::isDown, leftTriggerReader::isDown);
         launcherSys = new LauncherSys(launcherHeightServo, launcherServo);
         armSys = new ArmSys(pitchServo, armServo);
-        liftSys = new LiftSys(lil, lir, gamepadEx1::getRightY);
+        liftSys = new LiftSubsystem(lil, lir, () -> gamepad1.touchpad_finger_1_x);
         clawSys = new ClawSys(clawL,clawR);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Mode", "Done initializing");
@@ -72,9 +72,7 @@ public class DriveBaseOpMode extends CommandOpMode {
         clawR = new SimpleServo(hardwareMap, "clawR", 0,255);
         armServo = new SimpleServo(hardwareMap, "axon", 0,255);
         colorSensor = hardwareMap.get(ColorSensor.class, "color");
-        if (colorSensor instanceof SwitchableLight) {
-            ((SwitchableLight)colorSensor).enableLight(true);
-        }
+        if (colorSensor instanceof SwitchableLight) ((SwitchableLight)colorSensor).enableLight(true);
         fL = new MotorEx(hardwareMap, "fl");
         fR = new MotorEx(hardwareMap, "fr");
         bL = new MotorEx(hardwareMap, "bl");
