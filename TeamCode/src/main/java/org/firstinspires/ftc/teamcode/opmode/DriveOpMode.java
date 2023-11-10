@@ -19,8 +19,10 @@ public class DriveOpMode extends DriveBaseOpMode{
         gb1(GamepadKeys.Button.A).whenPressed(liftSys.goTo(LiftSubsystem.NONE));
 
         gb1(GamepadKeys.Button.DPAD_LEFT).whenPressed(launcherSys.release());
-        gb1(GamepadKeys.Button.RIGHT_BUMPER).toggleWhenPressed(armSys.home(), armSys.away());
-        gb1(GamepadKeys.Button.LEFT_BUMPER).whileHeld(drive.drive(gamepadEx1::getLeftX,gamepadEx1::getLeftY,gamepadEx1::getRightX,0.5));//debugging
+        gb1(GamepadKeys.Button.LEFT_BUMPER).toggleWhenPressed(armSys.home().andThen(clawSys.stopFirst(), clawSys.stopSecond()), armSys.away());
+        gb1(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(clawSys.release());
+
+        //debugging
         gb2(GamepadKeys.Button.A).whenPressed(armSys.pitchHome());
         gb2(GamepadKeys.Button.X).whenPressed(armSys.pitchAway());
         gb2(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(new InstantCommand(()-> armServo.setPosition(axonServoAway)));

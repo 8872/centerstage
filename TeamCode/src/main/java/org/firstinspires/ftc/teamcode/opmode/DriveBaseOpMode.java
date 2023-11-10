@@ -12,11 +12,9 @@ import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.SwitchableLight;
+import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 
 import java.math.BigDecimal;
@@ -49,8 +47,6 @@ public class DriveBaseOpMode extends CommandOpMode {
     public void initialize() {
         gamepadEx1 = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
-        rightTriggerReader = new TriggerReader(gamepadEx1, RIGHT_TRIGGER);
-        leftTriggerReader = new TriggerReader(gamepadEx1, LEFT_TRIGGER);
         initHardware();
         setUpHardwareDevices();
         drive = new DriveSys(fL, fR, bL, bR, imu);
@@ -94,11 +90,12 @@ public class DriveBaseOpMode extends CommandOpMode {
         tad("lil pos", lil.getCurrentPosition());
         tad("lir pos", lir.getCurrentPosition());
         tad("intakeServoPos", round(stackServo.getPosition()));
+        tad("color", intakeSys.getPixelColor());
+        telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
         telemetry.update();
     }
 
     protected void setUpHardwareDevices() {
-        lir.setInverted(true);
         intakeMotor.setInverted(true);
         lil.stopAndResetEncoder();
         lir.stopAndResetEncoder();

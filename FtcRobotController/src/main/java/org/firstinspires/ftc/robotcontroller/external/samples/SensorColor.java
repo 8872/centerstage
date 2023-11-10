@@ -65,7 +65,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: Color", group = "Sensor")
-@Disabled
 public class SensorColor extends LinearOpMode {
 
   /** The colorSensor field will contain a reference to our color sensor hardware object */
@@ -133,7 +132,7 @@ public class SensorColor extends LinearOpMode {
     // Get a reference to our sensor object. It's recommended to use NormalizedColorSensor over
     // ColorSensor, because NormalizedColorSensor consistently gives values between 0 and 1, while
     // the values you get from ColorSensor are dependent on the specific sensor you're using.
-    colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
+    colorSensor = hardwareMap.get(NormalizedColorSensor.class, "color");
 
     // If possible, turn the light on in the beginning (it might already be on anyway,
     // we just make sure it is if we can).
@@ -181,7 +180,7 @@ public class SensorColor extends LinearOpMode {
       xButtonPreviouslyPressed = xButtonCurrentlyPressed;
 
       // Get the normalized colors from the sensor
-      NormalizedRGBA colors = colorSensor.getNormalizedColors();
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
 
       /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
        * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
@@ -190,7 +189,7 @@ public class SensorColor extends LinearOpMode {
 
       // Update the hsvValues array by passing it to Color.colorToHSV()
       Color.colorToHSV(colors.toColor(), hsvValues);
-
+      telemetry.addData("Color name", getColorName(colors));
       telemetry.addLine()
               .addData("Red", "%.3f", colors.red)
               .addData("Green", "%.3f", colors.green)
@@ -216,6 +215,18 @@ public class SensorColor extends LinearOpMode {
           relativeLayout.setBackgroundColor(Color.HSVToColor(hsvValues));
         }
       });
+    }
+  }
+  public static String getColorName(NormalizedRGBA colors) {
+    if (colors.red > colors.green && colors.red > colors.blue) {
+      return "Red";
+    } else if (colors.green > colors.red && colors.green > colors.blue) {
+      return "Green";
+    } else if (colors.blue > colors.red && colors.blue > colors.green) {
+      return "Blue";
+    } else {
+      // If two or more colors have the same highest value
+      return "Mixed Colors";
     }
   }
 }

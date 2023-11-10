@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 import java.util.function.DoubleSupplier;
 
@@ -31,7 +32,7 @@ public class LiftSubsystem extends SubsystemBase {
     private final ProfiledPIDController rightController = new ProfiledPIDController(kp, ki, kd,
             new TrapezoidProfile.Constraints(maxVel, maxAccel));
 
-    public static int threshold = 0;
+    public static int threshold = 5;
 
     private double targetHeight;
 
@@ -43,6 +44,8 @@ public class LiftSubsystem extends SubsystemBase {
     public LiftSubsystem(MotorEx left, MotorEx right, DoubleSupplier doubleSupplier) {
         this.left = left;
         this.right = right;
+        this.left.motorEx.setCurrentAlert(9.2, CurrentUnit.AMPS);
+        this.right.motorEx.setCurrentAlert(9.2, CurrentUnit.AMPS);
         this.doubleSupplier = doubleSupplier;
         setHeight(NONE);
     }
@@ -54,18 +57,18 @@ public class LiftSubsystem extends SubsystemBase {
     }
 
     public Command goTo(double height) {
-        return new InstantCommand(() -> setHeight(height))
-                .andThen(new WaitUntilCommand(this::atTarget));
+        return new InstantCommand(() -> setHeight(height)).andThen(new WaitUntilCommand(this::atTarget));
     }
 
     public boolean atTarget() {
-        return right.getCurrentPosition() < targetHeight + threshold
-                && right.getCurrentPosition() > targetHeight - threshold;
+        return (right.getCurrentPosition() < targetHeight + threshold && right.getCurrentPosition() > targetHeight - threshold) || (left.getCurrentPosition() < targetHeight + threshold && left.getCurrentPosition() > targetHeight - threshold);
     }
 
     public double getTargetHeight() {
         return targetHeight;
     }
+
+    public boolean getOverCurrentL() {return left.motorEx.isOverCurrent() || right.motorEx.isOverCurrent();}
 
     @Override
     public void periodic() {

@@ -17,10 +17,36 @@ public class ClawSys extends SubsystemBase {
     private final ServoEx first;
     private final ServoEx second;
 
+    public enum ClawState {
+        ALL,
+        FIRST,
+        SECOND
+    }
+
+    public ClawState clawState;
+
     public ClawSys(ServoEx first, ServoEx second) {
         this.first = first;
         this.second = second;
+        this.clawState = ClawState.ALL;
     }
+
+    public void cycle() {
+        switch (clawState) {
+            case ALL:
+                first.setPosition(STOP);
+                second.setPosition(STOP);
+                clawState = ClawState.FIRST;
+            case FIRST:
+                first.setPosition(RELEASE);
+                clawState = ClawState.SECOND;
+            case SECOND:
+                second.setPosition(RELEASE);
+                clawState = ClawState.ALL;
+        }
+    }
+
+    public Command release() {return new InstantCommand(this::cycle);}
 
     public Command stopFirst() {
         return new InstantCommand(() -> first.setPosition(STOP));
