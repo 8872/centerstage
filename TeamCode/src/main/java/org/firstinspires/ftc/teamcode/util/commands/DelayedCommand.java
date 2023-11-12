@@ -13,7 +13,6 @@ public class DelayedCommand extends SequentialCommandGroup {
                 new WaitCommand(delay),
                 command
         );
-
         addRequirements(command.getRequirements().toArray(new Subsystem[0]));
     }
 }

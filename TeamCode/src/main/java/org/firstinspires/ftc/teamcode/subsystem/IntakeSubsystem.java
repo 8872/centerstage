@@ -16,8 +16,8 @@ import java.util.function.DoubleSupplier;
 public class IntakeSubsystem extends SubsystemBase {
     public static double currentThreshold = 5000;
     public static double LOW = 0;
-    public static double HIGH = 0.4;
-    public static double IN = 0.8;
+    public static double HIGH = 0.9;
+    public static double IN = 0.7;
     public static double OUT = -1;
     public static double STOP = 0;
     public static double PINK_THRESH = 0;
@@ -83,10 +83,10 @@ public class IntakeSubsystem extends SubsystemBase {
             stack.setPosition(HIGH);
         } else if(fSPower.getAsDouble()!=0) {
             intake.set(IN);
-            stack.setPosition((fSPower.getAsDouble()*-0.4)+0.4);
+            stack.setPosition((fSPower.getAsDouble()*-0.4)+0.9);
         } else if (rSPower.getAsDouble() !=0) {
             intake.set(OUT);
-            stack.setPosition((rSPower.getAsDouble()*-0.4)+0.4);
+            stack.setPosition((rSPower.getAsDouble()*-0.4)+0.9);
         } else {
             stack.setPosition(HIGH);
             intake.set(0);

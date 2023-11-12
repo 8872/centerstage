@@ -10,7 +10,7 @@ import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 @Config
 public class ArmSys extends SubsystemBase {
-    public static double pitchHome = 0.43;
+    public static double pitchHome = 0.5;
     public static double pitchAway = 1;
 
     public static double armHome = 0.8;

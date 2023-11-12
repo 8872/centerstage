@@ -16,17 +16,17 @@ import java.util.function.DoubleSupplier;
 public class LiftSubsystem extends SubsystemBase {
 
     public static double NONE = 0;
-    public static double FIRST = 0;
-    public static double SECOND = 0;
-    public static double THIRD = 0;
-    public static double MAX  = -673;
-    public static double kp = 0.0;
+    public static double FIRST = -180;
+    public static double SECOND = -360;
+    public static double THIRD = -540;
+    public static double MAX  = -719;
+    public static double kg = -0.04;
     public static double ki = 0.0;
-    public static double kd = 0.0;
-    public static double kg = 0.0;
+    public static double kd = 0.0001;
+    public static double kp = 0.01;
 
-    public static double maxVel = 0;
-    public static double maxAccel = 0;
+    public static double maxVel = 8000;
+    public static double maxAccel = 3000;
     private final  ProfiledPIDController leftController = new ProfiledPIDController(kp, ki, kd,
             new TrapezoidProfile.Constraints(maxVel, maxAccel));
     private final ProfiledPIDController rightController = new ProfiledPIDController(kp, ki, kd,
@@ -47,7 +47,7 @@ public class LiftSubsystem extends SubsystemBase {
         this.left.motorEx.setCurrentAlert(9.2, CurrentUnit.AMPS);
         this.right.motorEx.setCurrentAlert(9.2, CurrentUnit.AMPS);
         this.doubleSupplier = doubleSupplier;
-        setHeight(NONE);
+        //setHeight(NONE);
     }
 
     public void setHeight(double height) {
@@ -72,14 +72,17 @@ public class LiftSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (doubleSupplier.getAsDouble() != 0) {
-            setHeight((doubleSupplier.getAsDouble()+1)*(MAX)/2);
-        } else {
-            double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
-            double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
-            left.set(leftOutput);
-            right.set(rightOutput);
-        }
-
+//        if (doubleSupplier.getAsDouble() != 0) {
+//            setHeight((doubleSupplier.getAsDouble()+1)*(MAX)/2);
+//        } else {
+//            double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
+//            double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
+//            left.set(leftOutput);
+//            right.set(rightOutput);
+//        }
+        double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
+        double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
+        left.set(leftOutput);
+        right.set(rightOutput);
     }
 }
