@@ -93,6 +93,7 @@ public class DriveBaseOpMode extends CommandOpMode {
         tad("intakeServoPos", round(stackServo.getPosition()));
         tad("color", intakeSys.getPixelColor());
         tad("Target Position", liftSys.getTargetHeight());
+        tad("Claw State", clawSys.clawState.toString());
         telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
         telemetry.update();
     }

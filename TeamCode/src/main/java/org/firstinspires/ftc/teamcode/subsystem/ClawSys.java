@@ -1,18 +1,17 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.command.*;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 @Config
 public class ClawSys extends SubsystemBase {
-
-    public static double STOP = 1;
-    public static double RELEASE = 0.5;
+    public static double stopFirst = 0.7;
+    public static double stopSecond = 0.55;
+    public static double releaseFirst = 0.5;
+    public static double releaseSecond = 0.7;
 
     private final ServoEx first;
     private final ServoEx second;
@@ -31,39 +30,39 @@ public class ClawSys extends SubsystemBase {
         this.clawState = ClawState.ALL;
     }
 
-    public void cycle() {
-        switch (clawState) {
+    public void cycleCommand() {
+        ClawState state = clawState;
+        switch (state) {
             case ALL:
-                first.setPosition(STOP);
-                second.setPosition(STOP);
                 clawState = ClawState.FIRST;
+                first.setPosition(stopFirst);
+                second.setPosition(stopSecond);
+                break;
             case FIRST:
-                first.setPosition(RELEASE);
                 clawState = ClawState.SECOND;
+                first.setPosition(releaseFirst);
+                break;
             case SECOND:
-                second.setPosition(RELEASE);
                 clawState = ClawState.ALL;
+                second.setPosition(releaseSecond);
+                break;
         }
     }
-
-    public Command release() {return new InstantCommand(this::cycle);}
-
     public Command stopFirst() {
-        return new InstantCommand(() -> first.setPosition(STOP));
+        return new InstantCommand(() -> first.setPosition(stopFirst));
     }
 
     public Command releaseFirst() {
-        return new InstantCommand(() -> first.setPosition(RELEASE));
+        return new InstantCommand(() -> first.setPosition(releaseFirst));
     }
 
     public Command stopSecond() {
-        return new InstantCommand(() -> second.setPosition(RELEASE));
+        return new InstantCommand(() -> second.setPosition(stopSecond));
     }
 
     public Command releaseSecond() {
-        return new InstantCommand(() -> second.setPosition(RELEASE));
+        return new InstantCommand(() -> second.setPosition(releaseSecond));
     }
-
     public double getFirstPosition() {
         return first.getPosition();
     }
