@@ -16,6 +16,8 @@ import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystem.*;
+import org.firstinspires.ftc.teamcode.util.ghost.GhostController;
+import org.firstinspires.ftc.teamcode.util.ghost.GhostRecorder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,7 +29,6 @@ public class DriveBaseOpMode extends CommandOpMode {
     //working
     public static double axonServoHome = 0.8;
     public static double axonServoAway = 0.35;
-
     public static double pitchServoHome = 0.43;
     public static double pitchServoAway = 1;
     protected MotorEx fL, fR, bL, bR, intakeMotor, lil, lir;
@@ -102,6 +103,21 @@ public class DriveBaseOpMode extends CommandOpMode {
         lir.stopAndResetEncoder();
     }
 
+    @Override
+    public void runOpMode() throws InterruptedException {
+        initialize();
+
+        waitForStart();
+
+        // run the scheduler
+        while (!isStopRequested() && opModeIsActive()) {
+
+            run();
+        }
+        reset();
+    }
+
+
 
     private static double round(double value, @SuppressWarnings("SameParameterValue") int places) {
         if (places < 0) throw new IllegalArgumentException();
@@ -121,8 +137,6 @@ public class DriveBaseOpMode extends CommandOpMode {
     protected GamepadButton gb2(GamepadKeys.Button button){
         return gamepadEx2.getGamepadButton(button);
     }
-
-
 
     // telemetry add data = tad
     protected void tad(String caption, Object value){

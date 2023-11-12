@@ -1,27 +1,25 @@
-package org.firstinspires.ftc.teamcode.opmode;
+package org.firstinspires.ftc.teamcode.util.ghost;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.util.ghost.CodeSharer;
 import org.firstinspires.ftc.teamcode.util.ghost.GhostRecorder;
 @TeleOp(name="DriveRecorder", group="Iterative Opmode")
-class GhostOpMode extends OpMode {
+public class GhostOpMode extends OpMode {
 
     GhostRecorder ghostRecorder=new GhostRecorder();
-    CodeSharer codeSharer=new CodeSharer(hardwareMap.appContext);
 
     public void init() {
     }
 
     public void loop() {
 
-        //only record values you are using to control robot
-        ghostRecorder.recordLeftStickY(gamepad1.left_stick_y);
-        ghostRecorder.recordRightStickY(gamepad1.right_stick_y);
-        ghostRecorder.recordLeftStickX(gamepad1.left_stick_x);
-        ghostRecorder.recordRightStickX(gamepad1.right_stick_x);
+        ghostRecorder.recordButtonA(gamepad1.a);
+        ghostRecorder.recordButtonX(gamepad1.b);
+        ghostRecorder.recordButtonY(gamepad1.y);
 
-        ghostRecorder.recordButtonA(gamepad1.x);
+        ghostRecorder.recordLeftTrigger(gamepad1.left_trigger);
+        ghostRecorder.recordRightTrigger(gamepad1.right_trigger);
+
         //and B,X or Y
 
         ghostRecorder.recordDpadDown(gamepad1.dpad_down);
@@ -38,6 +36,7 @@ class GhostOpMode extends OpMode {
     public void stop() {
         telemetry.addData("Stopped", ghostRecorder.getString());
         telemetry.update();
-        codeSharer.save(ghostRecorder.getString());
+        ghostRecorder.save(ghostRecorder.getString());
     }
+
 }
