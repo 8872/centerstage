@@ -127,7 +127,7 @@ public class ConceptSoundsASJava extends LinearOpMode {
 
             // Save last button states
             wasX = isX;
-            WasB = isB;
+            WasB  = isB;
         }
     }
 }

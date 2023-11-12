@@ -44,8 +44,6 @@ public class LiftSubsystem extends SubsystemBase {
     public LiftSubsystem(MotorEx left, MotorEx right, DoubleSupplier doubleSupplier) {
         this.left = left;
         this.right = right;
-        this.left.motorEx.setCurrentAlert(9.2, CurrentUnit.AMPS);
-        this.right.motorEx.setCurrentAlert(9.2, CurrentUnit.AMPS);
         this.doubleSupplier = doubleSupplier;
         //setHeight(NONE);
     }
