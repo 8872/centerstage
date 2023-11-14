@@ -8,7 +8,6 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.TriggerReader;
-import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -16,13 +15,9 @@ import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystem.*;
-import org.firstinspires.ftc.teamcode.util.ghost.GhostController;
-import org.firstinspires.ftc.teamcode.util.ghost.GhostRecorder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Trigger.*;
 
 @Config
 public class DriveBaseOpMode extends CommandOpMode {
@@ -34,14 +29,14 @@ public class DriveBaseOpMode extends CommandOpMode {
     protected MotorEx fL, fR, bL, bR, intakeMotor, lil, lir;
     public ColorSensor colorSensor;
     protected SimpleServo stackServo, launcherHeightServo, launcherServo, pitchServo, clawL,clawR, armServo;
-    protected DriveSys drive;
+    protected DriveSubsystem drive;
     protected LiftSubsystem liftSys;
     protected IntakeSubsystem intakeSys;
     protected GamepadEx gamepadEx1;
     protected GamepadEx gamepadEx2;
-    protected LauncherSys launcherSys;
-    protected ArmSys armSys;
-    protected ClawSys clawSys;
+    protected LauncherSubsystem launcherSubsystem;
+    protected ArmSubsystem armSubsystem;
+    protected BoxSubsystem boxSubsystem;
     protected IMU imu;
     protected TriggerReader rightTriggerReader, leftTriggerReader;
     @Override
@@ -50,12 +45,12 @@ public class DriveBaseOpMode extends CommandOpMode {
         gamepadEx2 = new GamepadEx(gamepad2);
         initHardware();
         setUpHardwareDevices();
-        drive = new DriveSys(fL, fR, bL, bR, imu);
+        drive = new DriveSubsystem(fL, fR, bL, bR, imu);
         intakeSys = new IntakeSubsystem(intakeMotor, stackServo, colorSensor, () -> gamepadEx1.gamepad.right_trigger, () -> gamepadEx1.gamepad.left_trigger);
-        launcherSys = new LauncherSys(launcherHeightServo, launcherServo);
-        armSys = new ArmSys(pitchServo, armServo);
+        launcherSubsystem = new LauncherSubsystem(launcherHeightServo, launcherServo);
+        armSubsystem = new ArmSubsystem(pitchServo, armServo);
         liftSys = new LiftSubsystem(lil, lir, () -> gamepadEx1.gamepad.touchpad_finger_1_x);
-        clawSys = new ClawSys(clawL,clawR);
+        boxSubsystem = new BoxSubsystem(clawL,clawR);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Mode", "Done initializing");
         telemetry.update();
@@ -93,7 +88,6 @@ public class DriveBaseOpMode extends CommandOpMode {
         tad("intakeServoPos", round(stackServo.getPosition()));
         tad("color", intakeSys.getPixelColor());
         tad("Target Position", liftSys.getTargetHeight());
-        tad("Claw State", clawSys.clawState.toString());
         telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
         telemetry.update();
     }
