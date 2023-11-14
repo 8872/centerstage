@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.function.DoubleSupplier;
 
@@ -31,7 +32,7 @@ public class LiftSubsystem extends SubsystemBase {
     private final ProfiledPIDController rightController = new ProfiledPIDController(kp, ki, kd,
             new TrapezoidProfile.Constraints(maxVel, maxAccel));
 
-    public static int threshold = 5;
+    public static int threshold = 1;
 
     private double targetHeight;
 
@@ -40,12 +41,23 @@ public class LiftSubsystem extends SubsystemBase {
 
     private final DoubleSupplier doubleSupplier;
 
-    public LiftSubsystem(MotorEx left, MotorEx right, DoubleSupplier doubleSupplier) {
+    private TouchSensor limitSwitchL, limitSwitchR;
+
+    public LiftSubsystem(MotorEx left, MotorEx right, TouchSensor touchSensorL,TouchSensor touchSensorR,DoubleSupplier doubleSupplier) {
         this.left = left;
         this.right = right;
+        this.limitSwitchL = touchSensorL;
+        this.limitSwitchR = touchSensorR;
         this.doubleSupplier = doubleSupplier;
-        //setHeight(NONE);
     }
+
+    public void checkLimitSwitch() {
+        if (limitSwitchL.isPressed() || limitSwitchR.isPressed()) {
+            left.resetEncoder();
+            right.resetEncoder();
+        }
+    }
+
 
     public void setHeight(double height) {
         targetHeight = height;
@@ -81,6 +93,7 @@ public class LiftSubsystem extends SubsystemBase {
 //            left.set(leftOutput);
 //            right.set(rightOutput);
 //        }
+        checkLimitSwitch();
         double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
         double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
         left.set(leftOutput);

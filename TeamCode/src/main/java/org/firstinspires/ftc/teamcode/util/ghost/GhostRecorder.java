@@ -68,7 +68,10 @@ public class GhostRecorder {
     buttonValues.setValue(ButtonValues.dpadRight, val);
   }
 
-  // Added methods to record trigger values
+  public void recordBumperLeft(boolean val) {buttonValues.setValue(ButtonValues.bumperLeft, val);}
+
+  public void recordBumperRight(boolean val) {buttonValues.setValue(ButtonValues.bumperRight, val);}
+
   public void recordLeftTrigger(double val) {
     triggerValues.setValue(TriggerValues.leftTrigger, val);
   }

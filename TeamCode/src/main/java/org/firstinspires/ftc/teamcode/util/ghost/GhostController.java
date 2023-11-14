@@ -1,5 +1,12 @@
 package org.firstinspires.ftc.teamcode.util.ghost;
 
+import android.annotation.SuppressLint;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class GhostController {
   StickValues stickValues = new StickValues();
   ButtonValues buttonValues = new ButtonValues();
@@ -10,6 +17,23 @@ public class GhostController {
 
   public GhostController(String str) {
     instructions = str;
+  }
+
+  public static GhostController loadFromFile(String fileName) {
+    StringBuilder content = new StringBuilder();
+    try {
+      @SuppressLint("SdCardPath") String directoryPath = "/sdcard/FIRST/Ghost";
+      File file = new File(directoryPath, fileName);
+      BufferedReader br = new BufferedReader(new FileReader(file));
+      String line;
+      while ((line = br.readLine()) != null) {
+        content.append(line).append("\n");
+      }
+      br.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return new GhostController(content.toString());
   }
 
   private String getNextValue() {
@@ -86,6 +110,7 @@ public class GhostController {
     }
   }
 
+
   public double leftStickY() {
     return stickValues.getValue(StickValues.leftStickY);
   }
@@ -133,6 +158,10 @@ public class GhostController {
   public boolean dpadRight() {
     return buttonValues.getValue(ButtonValues.dpadRight);
   }
+
+  public boolean bumperLeft() {return buttonValues.getValue(ButtonValues.bumperLeft);}
+
+  public boolean bumperRight() {return buttonValues.getValue(ButtonValues.bumperRight);}
 
   public double leftTrigger() {
     return triggerValues.getValue(TriggerValues.leftTrigger);

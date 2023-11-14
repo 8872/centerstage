@@ -21,14 +21,10 @@ import java.math.RoundingMode;
 
 @Config
 public class DriveBaseOpMode extends CommandOpMode {
-    //working
-    public static double axonServoHome = 0.8;
-    public static double axonServoAway = 0.35;
-    public static double pitchServoHome = 0.43;
-    public static double pitchServoAway = 1;
     protected MotorEx fL, fR, bL, bR, intakeMotor, lil, lir;
     public ColorSensor colorSensor;
     protected SimpleServo stackServo, launcherHeightServo, launcherServo, pitchServo, clawL,clawR, armServo;
+    protected TouchSensor limitSwitchL, limitSwitchR;
     protected DriveSubsystem drive;
     protected LiftSubsystem liftSys;
     protected IntakeSubsystem intakeSys;
@@ -49,7 +45,7 @@ public class DriveBaseOpMode extends CommandOpMode {
         intakeSys = new IntakeSubsystem(intakeMotor, stackServo, colorSensor, () -> gamepadEx1.gamepad.right_trigger, () -> gamepadEx1.gamepad.left_trigger);
         launcherSubsystem = new LauncherSubsystem(launcherHeightServo, launcherServo);
         armSubsystem = new ArmSubsystem(pitchServo, armServo);
-        liftSys = new LiftSubsystem(lil, lir, () -> gamepadEx1.gamepad.touchpad_finger_1_x);
+        liftSys = new LiftSubsystem(lil, lir, limitSwitchL, limitSwitchR,() -> gamepadEx1.gamepad.touchpad_finger_1_x);
         boxSubsystem = new BoxSubsystem(clawL,clawR);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Mode", "Done initializing");
@@ -63,6 +59,8 @@ public class DriveBaseOpMode extends CommandOpMode {
         clawL = new SimpleServo(hardwareMap, "clawL", 0,255);
         clawR = new SimpleServo(hardwareMap, "clawR", 0,255);
         armServo = new SimpleServo(hardwareMap, "axon", 0,255);
+        limitSwitchL = hardwareMap.get(TouchSensor.class, "limitL");
+        limitSwitchR = hardwareMap.get(TouchSensor.class, "limitR");
         colorSensor = hardwareMap.get(ColorSensor.class, "color");
         if (colorSensor instanceof SwitchableLight) ((SwitchableLight)colorSensor).enableLight(true);
         fL = new MotorEx(hardwareMap, "fl");
@@ -93,6 +91,7 @@ public class DriveBaseOpMode extends CommandOpMode {
     }
 
     protected void setUpHardwareDevices() {
+        lir.setInverted(true);
         intakeMotor.setInverted(true);
         lil.stopAndResetEncoder();
         lir.stopAndResetEncoder();
