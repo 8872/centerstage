@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.util.ghost
 
-import android.annotation.SuppressLint
+
+import com.qualcomm.robotcore.hardware.Gamepad
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
@@ -17,7 +18,7 @@ class GhostController(private val instructions: String) {
         fun loadFromFile(fileName: String): GhostController {
             val content = StringBuilder()
             try {
-                @SuppressLint("SdCardPath") val directoryPath = "/sdcard/FIRST/Ghost"
+                val directoryPath = "/sdcard/FIRST/Ghost"
                 val file = File(directoryPath, fileName)
                 BufferedReader(FileReader(file)).use { br ->
                     var line: String?
@@ -100,6 +101,27 @@ class GhostController(private val instructions: String) {
                 triggerValues.reset()  // Reset trigger values
             }
         }
+    }
+
+    fun fakeGamepad(): Gamepad {
+        val gamepad = Gamepad()
+        gamepad.left_stick_y = leftStickY().toFloat()
+        gamepad.left_stick_x = leftStickX().toFloat()
+        gamepad.right_stick_y = rightStickY().toFloat()
+        gamepad.right_stick_x = rightStickX().toFloat()
+        gamepad.a = buttonA()
+        gamepad.b = buttonB()
+        gamepad.x = buttonX()
+        gamepad.y = buttonY()
+        gamepad.dpad_up = dpadUp()
+        gamepad.dpad_down = dpadDown()
+        gamepad.dpad_left = dpadLeft()
+        gamepad.dpad_right = dpadRight()
+        gamepad.left_bumper = bumperLeft()
+        gamepad.right_bumper = bumperRight()
+        gamepad.left_trigger = leftTrigger().toFloat()
+        gamepad.right_trigger = rightTrigger().toFloat()
+        return gamepad
     }
 
     fun leftStickY(): Double {

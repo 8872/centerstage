@@ -1,42 +1,56 @@
 package org.firstinspires.ftc.teamcode.util.ghost;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+@Disabled
 @TeleOp(name="DriveRecorder", group="Iterative Opmode")
 public class GhostOpMode extends OpMode {
+    /**
+     * First Controller Recorder
+     */
+    GhostRecorder ghostRecorderC1 =new GhostRecorder();
+    /**
+     * Second Controller Recorder
+     */
+    GhostRecorder ghostRecorderC2 =new GhostRecorder();
+    /**
+     * First Controller Replayer
+     */
+    GhostController ghostController = GhostController.Companion.loadFromFile("firstController.mello");
+    /**
+     * Second Controller Replayer
+     */
+    GhostController ghostController2 = GhostController.Companion.loadFromFile("secondController.mello");
+    /**
+     * Multiple Controller Replays
+     */
+    GhostControllers ghostControllers = new GhostControllers(ghostController, ghostController2);
 
-    GhostRecorder ghostRecorder=new GhostRecorder();
-    GhostController ghostController = GhostController.Companion.loadFromFile("fileName.mello");
     public void init() {
     }
 
     public void loop() {
+        ghostController.update();
+        ghostController2.update();
+        gamepad1 = ghostController.fakeGamepad();
+        gamepad2 = ghostController2.fakeGamepad();
 
-        ghostRecorder.recordButtonA(gamepad1.a);
-        ghostRecorder.recordButtonX(gamepad1.b);
-        ghostRecorder.recordButtonY(gamepad1.y);
+        ghostControllers.update();
+        gamepad1 = ghostControllers.get(0).fakeGamepad();
+        gamepad2 = ghostControllers.get(1).fakeGamepad();
 
-        ghostRecorder.recordLeftTrigger(gamepad1.left_trigger);
-        ghostRecorder.recordRightTrigger(gamepad1.right_trigger);
 
-        //and B,X or Y
+        ghostRecorderC1.update(gamepad1); //have to to this to actually record all of the values
+        ghostRecorderC2.update(gamepad2);
 
-        ghostRecorder.recordDpadDown(gamepad1.dpad_down);
-        //and Up,Left or Right
-
-        //code to drive robot
-        //...
-
-        ghostRecorder.update(); //have to to this to actually record all of the values
-        telemetry.addData("Recording", ghostRecorder.getString());
-        telemetry.update();
     }
 
     public void stop() {
-        telemetry.addData("Stopped", ghostRecorder.getString());
+        telemetry.addData("Stopped", ghostRecorderC1.getString());
         telemetry.update();
-        ghostRecorder.save(ghostRecorder.getString(), "fileName");
+        ghostRecorderC1.save(ghostRecorderC1.getString(), "firstController.mello");
+        ghostRecorderC2.save(ghostRecorderC2.getString(), "secondController.mello");
     }
 
 }
