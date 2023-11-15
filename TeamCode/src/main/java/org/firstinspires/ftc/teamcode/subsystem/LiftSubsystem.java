@@ -25,12 +25,17 @@ public class LiftSubsystem extends SubsystemBase {
     public static double ki = 0.0;
     public static double kd = 0.0001;
 
-    public static double maxVel = 8000;
-    public static double maxAccel = 3000;
+    public static double maxVelUp = 16000;
+    public static double maxAccelUp = 16000;
+
+    public static double maxVelDown = 8000;
+    public static double maxAccelDown = 3000;
+
+    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxVelUp, maxAccelUp);
     private final ProfiledPIDController leftController = new ProfiledPIDController(kp, ki, kd,
-            new TrapezoidProfile.Constraints(maxVel, maxAccel));
+            constraints);
     private final ProfiledPIDController rightController = new ProfiledPIDController(kp, ki, kd,
-            new TrapezoidProfile.Constraints(maxVel, maxAccel));
+            constraints);
 
     public static int threshold = 1;
 
@@ -41,7 +46,8 @@ public class LiftSubsystem extends SubsystemBase {
 
     private final DoubleSupplier doubleSupplier;
 
-    private TouchSensor limitSwitchL, limitSwitchR;
+    private final TouchSensor limitSwitchL;
+    private final TouchSensor limitSwitchR;
 
     public LiftSubsystem(MotorEx left, MotorEx right, TouchSensor touchSensorL,TouchSensor touchSensorR,DoubleSupplier doubleSupplier) {
         this.left = left;
@@ -51,16 +57,16 @@ public class LiftSubsystem extends SubsystemBase {
         this.doubleSupplier = doubleSupplier;
     }
 
-    public void checkLimitSwitch() {
-        if (limitSwitchL.isPressed() || limitSwitchR.isPressed()) {
-            left.resetEncoder();
-            right.resetEncoder();
-        }
-    }
-
-
     public void setHeight(double height) {
+        if (height < targetHeight) {
+            constraints = new TrapezoidProfile.Constraints(maxVelDown, maxAccelDown);
+        } else {
+            constraints = new TrapezoidProfile.Constraints(maxVelUp, maxAccelUp);
+        }
+        leftController.setConstraints(constraints);
+        rightController.setConstraints(constraints);
         targetHeight = height;
+
         leftController.setGoal(height);
         rightController.setGoal(height);
     }
@@ -93,7 +99,10 @@ public class LiftSubsystem extends SubsystemBase {
 //            left.set(leftOutput);
 //            right.set(rightOutput);
 //        }
-        checkLimitSwitch();
+        if (limitSwitchL.isPressed() || limitSwitchR.isPressed()) {
+            left.resetEncoder();
+            right.resetEncoder();
+        }
         double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
         double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
         left.set(leftOutput);
