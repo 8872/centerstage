@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode.util.ghost;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.util.ghost.GhostRecorder;
-import org.firstinspires.ftc.teamcode.util.ghost.GhostController;
+
 @TeleOp(name="DriveRecorder", group="Iterative Opmode")
 public class GhostOpMode extends OpMode {
 
     GhostRecorder ghostRecorder=new GhostRecorder();
-    GhostController ghostController= GhostController.loadFromFile("fileName.mello");
+    GhostController ghostController = GhostController.Companion.loadFromFile("fileName.mello");
     public void init() {
     }
 

@@ -9,14 +9,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="added a touch sensor made some small change to GHOST library and mainly fixed ej's dumb mistake 😡😡">
-      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/util/sensors/MB1242Ex.kt" afterDir="false" />
+    <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="added kotlin to the project for a couple switches. Added a jank motion profile constraint switcher for faster accelerate upwards slower downwards">
+      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/util/ghost/kotlin/ButtonValues.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/util/ghost/kotlin/ControllerValues.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/util/ghost/kotlin/GhostController.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/util/ghost/kotlin/GhostRecorder.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/util/ghost/kotlin/StickValues.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/util/ghost/kotlin/TriggerValues.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/LiftSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/LiftSubsystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/res/xml/main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/res/xml/main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/util/ghost/GhostRecorder.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/util/ghost/GhostRecorder.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,8 +55,8 @@
       <list>
         <option value="AnnotationType" />
         <option value="Enum" />
-        <option value="Kotlin Class" />
         <option value="Class" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -392,7 +393,7 @@
       <workItem from="1695489234370" duration="2973000" />
       <workItem from="1695503721617" duration="3396000" />
       <workItem from="1695520865664" duration="50000" />
-      <workItem from="1700015168305" duration="4959000" />
+      <workItem from="1700015168305" duration="6582000" />
     </task>
     <task id="LOCAL-00001" summary="Changed Button class to include a Debouncer.java. Moved some classes to packages that makes sense. Added a Debouncer and LowPassFilter to the filters package. IMPL folder is just some testing... they are in progress and will be edited and deleted as such.">
       <option name="closed" value="true" />
@@ -473,7 +474,15 @@
       <option name="project" value="LOCAL" />
       <updated>1699774047205</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="added kotlin to the project for a couple switches. Added a jank motion profile constraint switcher for faster accelerate upwards slower downwards">
+      <option name="closed" value="true" />
+      <created>1700022666758</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1700022666758</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -501,6 +510,7 @@
     <MESSAGE value="added roadrunner and ftclib. Clean repo no code." />
     <MESSAGE value="rewrote lift sys to implement yotam's version" />
     <MESSAGE value="finished Ghost and wrote a system to save files. Will add a file where you can load a file isntead of a string for easier access." />
-    <option name="LAST_COMMIT_MESSAGE" value="finished Ghost and wrote a system to save files. Will add a file where you can load a file isntead of a string for easier access." />
+    <MESSAGE value="added kotlin to the project for a couple switches. Added a jank motion profile constraint switcher for faster accelerate upwards slower downwards" />
+    <option name="LAST_COMMIT_MESSAGE" value="added kotlin to the project for a couple switches. Added a jank motion profile constraint switcher for faster accelerate upwards slower downwards" />
   </component>
 </project>
