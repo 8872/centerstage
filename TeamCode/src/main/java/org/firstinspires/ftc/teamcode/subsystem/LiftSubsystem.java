@@ -8,31 +8,36 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.function.DoubleSupplier;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
-
     public static double NONE = 0;
     public static double FIRST = -180;
     public static double SECOND = -360;
     public static double THIRD = -540;
-    public static double MAX  = -719;
+    public static double MAX = -719;
+
     public static double kg = -0.04;
+    public static double kp = 0.01;
     public static double ki = 0.0;
     public static double kd = 0.0001;
-    public static double kp = 0.01;
 
-    public static double maxVel = 8000;
-    public static double maxAccel = 3000;
-    private final  ProfiledPIDController leftController = new ProfiledPIDController(kp, ki, kd,
-            new TrapezoidProfile.Constraints(maxVel, maxAccel));
+    public static double maxVelUp = 16000;
+    public static double maxAccelUp = 16000;
+
+    public static double maxVelDown = 8000;
+    public static double maxAccelDown = 3000;
+
+    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxVelUp, maxAccelUp);
+    private final ProfiledPIDController leftController = new ProfiledPIDController(kp, ki, kd,
+            constraints);
     private final ProfiledPIDController rightController = new ProfiledPIDController(kp, ki, kd,
-            new TrapezoidProfile.Constraints(maxVel, maxAccel));
+            constraints);
 
-    public static int threshold = 5;
+    public static int threshold = 1;
 
     private double targetHeight;
 
@@ -41,32 +46,48 @@ public class LiftSubsystem extends SubsystemBase {
 
     private final DoubleSupplier doubleSupplier;
 
-    public LiftSubsystem(MotorEx left, MotorEx right, DoubleSupplier doubleSupplier) {
+    private final TouchSensor limitSwitchL;
+    private final TouchSensor limitSwitchR;
+
+    public LiftSubsystem(MotorEx left, MotorEx right, TouchSensor touchSensorL,TouchSensor touchSensorR,DoubleSupplier doubleSupplier) {
         this.left = left;
         this.right = right;
+        this.limitSwitchL = touchSensorL;
+        this.limitSwitchR = touchSensorR;
         this.doubleSupplier = doubleSupplier;
-        //setHeight(NONE);
     }
 
     public void setHeight(double height) {
+        if (height < targetHeight) {
+            constraints = new TrapezoidProfile.Constraints(maxVelDown, maxAccelDown);
+        } else {
+            constraints = new TrapezoidProfile.Constraints(maxVelUp, maxAccelUp);
+        }
+        leftController.setConstraints(constraints);
+        rightController.setConstraints(constraints);
         targetHeight = height;
+
         leftController.setGoal(height);
         rightController.setGoal(height);
     }
 
     public Command goTo(double height) {
-        return new InstantCommand(() -> setHeight(height)).andThen(new WaitUntilCommand(this::atTarget));
+        return new InstantCommand(() -> setHeight(height))
+                .andThen(new WaitUntilCommand(this::atTarget));
     }
 
     public boolean atTarget() {
-        return (right.getCurrentPosition() < targetHeight + threshold && right.getCurrentPosition() > targetHeight - threshold) || (left.getCurrentPosition() < targetHeight + threshold && left.getCurrentPosition() > targetHeight - threshold);
+        return right.getCurrentPosition() < targetHeight + threshold && right.getCurrentPosition() > targetHeight - threshold
+                || left.getCurrentPosition() < targetHeight + threshold && left.getCurrentPosition() > targetHeight - threshold;
     }
 
     public double getTargetHeight() {
         return targetHeight;
     }
 
-    public boolean getOverCurrentL() {return left.motorEx.isOverCurrent() || right.motorEx.isOverCurrent();}
+    public boolean getOverCurrentL() {
+        return left.motorEx.isOverCurrent() || right.motorEx.isOverCurrent();
+    }
 
     @Override
     public void periodic() {
@@ -78,6 +99,10 @@ public class LiftSubsystem extends SubsystemBase {
 //            left.set(leftOutput);
 //            right.set(rightOutput);
 //        }
+        if (limitSwitchL.isPressed() || limitSwitchR.isPressed()) {
+            left.resetEncoder();
+            right.resetEncoder();
+        }
         double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
         double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
         left.set(leftOutput);
