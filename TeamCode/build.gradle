@@ -29,7 +29,6 @@ android {
 
 repositories {
     maven {
-
         url = 'https://jitpack.io'
     }
     maven { url = 'https://maven.brott.dev' }
@@ -37,12 +36,13 @@ repositories {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation 'androidx.core:core-ktx:+'
-    implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.core:core-ktx:1.4.0'
+    implementation  'androidx.core:core-ktx:1.4.0'
     testImplementation 'junit:junit:4.13.1'
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
     implementation 'org.ftclib.ftclib:core:2.1.1'
     implementation "com.acmerobotics.roadrunner:ftc:0.1.6"
     implementation "com.acmerobotics.dashboard:dashboard:0.4.12"
-
 }
+
+

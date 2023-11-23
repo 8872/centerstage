@@ -24,8 +24,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Command drive(DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn, double slowFactor) {
         return new RunCommand(
-                () -> drive.driveRobotCentric(strafe.getAsDouble() / slowFactor, forward.getAsDouble(),
-                        turn.getAsDouble()),
+                () -> drive.driveRobotCentric(strafe.getAsDouble() / slowFactor, forward.getAsDouble()/ slowFactor,
+                        turn.getAsDouble()/ slowFactor),
                 this
         );
     }

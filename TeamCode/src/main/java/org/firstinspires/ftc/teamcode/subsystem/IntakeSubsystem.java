@@ -14,40 +14,24 @@ import java.util.function.DoubleSupplier;
 
 @Config
 public class IntakeSubsystem extends SubsystemBase {
-    public static double currentThreshold = 5000;
-    public static double LOW = 0;
-    public static double HIGH = 0.9;
+    public static double LOW = 0.9;
+    public static double HIGH = 0.4;
     public static double IN = 0.7;
     public static double OUT = -1;
     public static double STOP = 0;
-    public static double PINK_THRESH = 0;
-    public static double GREEN_THRESH = 0;
-    public static double YELLOW_THRESH = 0;
+
 
     private final DoubleSupplier fSPower;
     private final DoubleSupplier rSPower;
     private final MotorEx intake;
     private final ServoEx stack;
-    private final ColorSensor color;
 
-    public IntakeSubsystem(MotorEx intake, ServoEx stack, ColorSensor color, DoubleSupplier fSPower, DoubleSupplier rSPower) {
+    public IntakeSubsystem(MotorEx intake, ServoEx stack, DoubleSupplier fSPower, DoubleSupplier rSPower) {
         this.intake = intake;
         intake.motorEx.setCurrentAlert(9.2, CurrentUnit.AMPS);
         this.stack = stack;
-        this.color = color;
         this.fSPower = fSPower;
         this.rSPower = rSPower;
-    }
-
-    public PixelColor getPixelColor() {
-        if (color.red() > PINK_THRESH) {
-            return PixelColor.PINK;
-        } else if (color.green() > GREEN_THRESH) {
-            return PixelColor.GREEN;
-        } else if (color.red() > YELLOW_THRESH) {
-            return PixelColor.YELLOW;
-        }
-        return PixelColor.WHITE;
     }
 
     public Command in() {
@@ -66,14 +50,6 @@ public class IntakeSubsystem extends SubsystemBase {
         return new InstantCommand(() -> stack.setPosition(height));
     }
 
-    public double getCurrentHeight() {
-        return stack.getPosition();
-    }
-
-    public double getPower() {
-        return intake.get();
-    }
-
     public boolean getCurrent() {return intake.motorEx.isOverCurrent();}
 
     @Override
@@ -83,10 +59,10 @@ public class IntakeSubsystem extends SubsystemBase {
             stack.setPosition(HIGH);
         } else if(fSPower.getAsDouble()!=0) {
             intake.set(IN);
-            stack.setPosition((fSPower.getAsDouble()*-0.4)+0.9);
+            stack.setPosition((fSPower.getAsDouble()*0.5)+0.4);
         } else if (rSPower.getAsDouble() !=0) {
             intake.set(OUT);
-            stack.setPosition((rSPower.getAsDouble()*-0.4)+0.9);
+            stack.setPosition((rSPower.getAsDouble()*0.5)+0.4);
         } else {
             stack.setPosition(HIGH);
             intake.set(0);

@@ -10,26 +10,27 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
     public static double NONE = 0;
-    public static double FIRST = -180;
-    public static double SECOND = -360;
-    public static double THIRD = -540;
+    public static double FIRST = -300;
+    public static double SECOND = -400;
+    public static double THIRD = -570;
     public static double MAX = -719;
 
     public static double kg = -0.04;
-    public static double kp = 0.01;
+    public static double kp = 0.013;
     public static double ki = 0.0;
-    public static double kd = 0.0001;
+    public static double kd = 0.0000;
 
     public static double maxVelUp = 16000;
     public static double maxAccelUp = 16000;
 
-    public static double maxVelDown = 8000;
-    public static double maxAccelDown = 3000;
+    public static double maxVelDown = 1000;
+    public static double maxAccelDown = 1000;
 
     private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxVelUp, maxAccelUp);
     private final ProfiledPIDController leftController = new ProfiledPIDController(kp, ki, kd,
@@ -45,20 +46,21 @@ public class LiftSubsystem extends SubsystemBase {
     private final MotorEx right;
 
     private final DoubleSupplier doubleSupplier;
-
+    private final BooleanSupplier booleanSupplier;
     private final TouchSensor limitSwitchL;
     private final TouchSensor limitSwitchR;
 
-    public LiftSubsystem(MotorEx left, MotorEx right, TouchSensor touchSensorL,TouchSensor touchSensorR,DoubleSupplier doubleSupplier) {
+    public LiftSubsystem(MotorEx left, MotorEx right, TouchSensor touchSensorL, TouchSensor touchSensorR, DoubleSupplier doubleSupplier, BooleanSupplier booleanSupplier) {
         this.left = left;
         this.right = right;
         this.limitSwitchL = touchSensorL;
         this.limitSwitchR = touchSensorR;
         this.doubleSupplier = doubleSupplier;
+        this.booleanSupplier = booleanSupplier;
     }
 
     public void setHeight(double height) {
-        if (height < targetHeight) {
+        if (height > targetHeight) {
             constraints = new TrapezoidProfile.Constraints(maxVelDown, maxAccelDown);
         } else {
             constraints = new TrapezoidProfile.Constraints(maxVelUp, maxAccelUp);
@@ -85,26 +87,19 @@ public class LiftSubsystem extends SubsystemBase {
         return targetHeight;
     }
 
-    public boolean getOverCurrentL() {
+    public boolean getOverCurrent() {
         return left.motorEx.isOverCurrent() || right.motorEx.isOverCurrent();
     }
 
     @Override
     public void periodic() {
-//        if (doubleSupplier.getAsDouble() != 0) {
-//            setHeight((doubleSupplier.getAsDouble()+1)*(MAX)/2);
-//        } else {
-//            double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
-//            double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
-//            left.set(leftOutput);
-//            right.set(rightOutput);
-//        }
-        if (limitSwitchL.isPressed() || limitSwitchR.isPressed()) {
+
+        if (limitSwitchL.isPressed() || limitSwitchR.isPressed() ) {
             left.resetEncoder();
             right.resetEncoder();
         }
-        double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
-        double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
+        double leftOutput = leftController.calculate(left.getCurrentPosition()) + Math.cos(Math.toRadians(targetHeight / 145.6)) * kg;
+        double rightOutput = rightController.calculate(right.getCurrentPosition()) + Math.cos(Math.toRadians(targetHeight / 145.6)) * kg;
         left.set(leftOutput);
         right.set(rightOutput);
     }

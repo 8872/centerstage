@@ -8,10 +8,10 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 
 @Config
 public class ArmSubsystem extends SubsystemBase {
-    public static double PITCH_INTAKE = 0.5;
+    public static double PITCH_INTAKE = 0.37;
     public static double PITCH_DEPOSIT = 1;
 
-    public static double ARM_INTAKE = 0.8;
+    public static double ARM_INTAKE = 0.78;
     public static double ARM_DEPOSIT = 0.35;
 
     private final SimpleServo pitch;

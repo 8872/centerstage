@@ -13,16 +13,27 @@ public class LauncherSubsystem extends SubsystemBase {
 
     public static double launcherPos = 0.5;
     public static double launcherHeightPos = 0.5;
+    public static double IDLE = 0.7;
 
+    private boolean launchStage = false;
     public LauncherSubsystem(SimpleServo launcherHeightServo, SimpleServo launcherServo) {
         this.launcherHeightServo = launcherHeightServo;
         this.launcherServo = launcherServo;
+
     }
 
     public Command release() {
-        return new InstantCommand(() -> {
-            launcherServo.setPosition(launcherPos);
-            launcherHeightServo.setPosition(launcherHeightPos);
-        });
+        if (!launchStage) {
+            launchStage = true;
+            return new InstantCommand(() -> launcherHeightServo.setPosition(launcherHeightPos));
+        } else {
+            launcherHeightServo.disable();
+            return new InstantCommand(() -> launcherServo.setPosition(launcherPos));
+        }
+    }
+
+    public Command reset() {
+        launchStage = false;
+        return new InstantCommand(()->launcherHeightServo.setPosition(IDLE));
     }
 }

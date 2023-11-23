@@ -1,25 +1,27 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <Robot type="FirstInspires-FTC">
     <LynxUsbDevice name="Control Hub Portal" serialNumber="(embedded)" parentModuleAddress="173">
-        <LynxModule name="Expansion Hub 2" port="2">
-            <goBILDA5202SeriesMotor name="lil" port="1" />
-            <goBILDA5202SeriesMotor name="bl" port="2" />
-            <goBILDA5202SeriesMotor name="fl" port="3" />
-            <Servo name="launcherServo" port="0" />
-            <Servo name="axon" port="1" />
-            <Servo name="pitch" port="2" />
-            <Servo name="launch" port="3" />
-            <RevColorSensorV3 name="color" port="0" bus="0" />
-        </LynxModule>
-        <LynxModule name="Control Hub" port="173">
+        <LynxModule name="Expansion Hub 5" port="5">
             <goBILDA5202SeriesMotor name="intakeMotor" port="0" />
             <goBILDA5202SeriesMotor name="lir" port="1" />
             <goBILDA5202SeriesMotor name="br" port="2" />
             <goBILDA5202SeriesMotor name="fr" port="3" />
             <Servo name="stackServo" port="0" />
-            <Servo name="clawL" port="1" />
-            <Servo name="clawR" port="2" />
+            <RevTouchSensor name="limitL" port="1" />
+        </LynxModule>
+        <LynxModule name="Control Hub" port="173">
+            <goBILDA5202SeriesMotor name="lil" port="1" />
+            <goBILDA5202SeriesMotor name="fl" port="2" />
+            <goBILDA5202SeriesMotor name="bl" port="3" />
+            <Servo name="launcherServo" port="0" />
+            <Servo name="axon" port="1" />
+            <Servo name="pitch" port="2" />
+            <Servo name="launch" port="3" />
+            <Servo name="clawL" port="4" />
+            <Servo name="clawR" port="5" />
+            <RevTouchSensor name="limitR" port="1" />
             <ControlHubImuBHI260AP name="imu" port="0" bus="0" />
         </LynxModule>
     </LynxUsbDevice>
+    <Webcam name="webcam" serialNumber="6274B55F" />
 </Robot>
