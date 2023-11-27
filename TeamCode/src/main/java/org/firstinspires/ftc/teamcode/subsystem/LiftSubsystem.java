@@ -21,10 +21,10 @@ public class LiftSubsystem extends SubsystemBase {
     public static double THIRD = -570;
     public static double MAX = -719;
 
-    public static double kg = -0.04;
-    public static double kp = 0.013;
-    public static double ki = 0.0;
-    public static double kd = 0.0000;
+    public static double kg = -0.11;//-0.04;
+    public static double kp = 0;//0.013;
+    public static double ki = 0;//0.0;
+    public static double kd = 0;//0.0000;
 
     public static double maxVelUp = 16000;
     public static double maxAccelUp = 16000;
@@ -98,8 +98,8 @@ public class LiftSubsystem extends SubsystemBase {
             left.resetEncoder();
             right.resetEncoder();
         }
-        double leftOutput = leftController.calculate(left.getCurrentPosition()) + Math.cos(Math.toRadians(targetHeight / 145.6)) * kg;
-        double rightOutput = rightController.calculate(right.getCurrentPosition()) + Math.cos(Math.toRadians(targetHeight / 145.6)) * kg;
+        double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
+        double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
         left.set(leftOutput);
         right.set(rightOutput);
     }
