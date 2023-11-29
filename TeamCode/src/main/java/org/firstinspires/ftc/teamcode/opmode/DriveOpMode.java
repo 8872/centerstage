@@ -16,8 +16,8 @@ public class DriveOpMode extends DriveBaseOpMode{
         super.initialize();
 
         gb1(GamepadKeys.Button.Y).whenPressed(new SequentialCommandGroup(new ParallelCommandGroup(boxSubsystem.stopFirst(),boxSubsystem.stopSecond()), new ParallelCommandGroup(armSubsystem.deposit(), liftSys.goTo(LiftSubsystem.THIRD))));
-        gb1(GamepadKeys.Button.B).whenPressed(new SequentialCommandGroup(new ParallelCommandGroup(boxSubsystem.stopFirst(),boxSubsystem.stopSecond()), new ParallelCommandGroup(armSubsystem.deposit(), liftSys.goTo(LiftSubsystem.SECOND))));
-        gb1(GamepadKeys.Button.X).whenPressed(new SequentialCommandGroup(new ParallelCommandGroup(boxSubsystem.stopFirst(),boxSubsystem.stopSecond()), new ParallelCommandGroup(armSubsystem.deposit(), liftSys.goTo(LiftSubsystem.FIRST))));
+        gb1(GamepadKeys.Button.X).whenPressed(new SequentialCommandGroup(new ParallelCommandGroup(boxSubsystem.stopFirst(),boxSubsystem.stopSecond()), new ParallelCommandGroup(armSubsystem.deposit(), liftSys.goTo(LiftSubsystem.SECOND))));
+        gb1(GamepadKeys.Button.B).whenPressed(new SequentialCommandGroup(new ParallelCommandGroup(boxSubsystem.stopFirst(),boxSubsystem.stopSecond()), new ParallelCommandGroup(armSubsystem.deposit(), liftSys.goTo(LiftSubsystem.FIRST))));
         gb1(GamepadKeys.Button.A).whenPressed(new SequentialCommandGroup(armSubsystem.intake(), liftSys.goTo(LiftSubsystem.NONE)));
         gb1(GamepadKeys.Button.DPAD_LEFT).whenPressed(launcherSubsystem.release());
         gb1(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(new InstantCommand(()-> boxSubsystem.cycleCommand()));

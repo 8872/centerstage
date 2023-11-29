@@ -95,7 +95,7 @@ public class DriveBaseOpMode extends CommandOpMode {
         initHardware();
         setUpHardwareDevices();
         drive = new DriveSubsystem(fL, fR, bL, bR, imu);
-        intakeSys = new IntakeSubsystem(intakeMotor, stackServo, () -> gamepadEx1.gamepad.right_trigger, () -> gamepadEx1.gamepad.left_trigger);
+        intakeSys = new IntakeSubsystem(intakeMotor, stackServo, () -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger);
         launcherSubsystem = new LauncherSubsystem(launcherHeightServo, launcherServo);
         armSubsystem = new ArmSubsystem(pitchServo, armServo);
         liftSys = new LiftSubsystem(lil, lir, limitSwitchL, limitSwitchR,() -> gamepadEx1.gamepad.touchpad_finger_1_x, ()-> gamepadEx1.gamepad.touchpad_finger_1);

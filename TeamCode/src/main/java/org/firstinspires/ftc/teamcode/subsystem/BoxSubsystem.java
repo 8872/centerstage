@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.util.commands.CycleCommand;
 @Config
 public class BoxSubsystem extends SubsystemBase {
-    public static double STOP_FIST = 0.5;
+    public static double STOP_FIRST = 0.5;
     public static double STOP_SECOND = 0.7;
     public static double RELEASE_FIRST = 0.7;
     public static double RELEASE_SECOND = 0.55;
@@ -33,7 +33,7 @@ public class BoxSubsystem extends SubsystemBase {
     public Command cycle() {
         return new CycleCommand(
                 new InstantCommand(() -> {
-                    first.setPosition(STOP_FIST);
+                    first.setPosition(STOP_FIRST);
                     second.setPosition(STOP_SECOND);
                 }),
                 new InstantCommand(() -> first.setPosition(RELEASE_FIRST)),
@@ -50,7 +50,7 @@ public class BoxSubsystem extends SubsystemBase {
                 break;
             case FIRST:
                 clawState = ClawState.SECOND;
-                first.setPosition(STOP_FIST);
+                first.setPosition(STOP_FIRST);
                 break;
             case SECOND:
                 clawState = ClawState.ALL;
@@ -59,7 +59,7 @@ public class BoxSubsystem extends SubsystemBase {
         }
     }
     public Command stopFirst() {
-        return new InstantCommand(() -> first.setPosition(STOP_FIST));
+        return new InstantCommand(() -> first.setPosition(STOP_FIRST));
     }
 
     public Command releaseFirst() {

@@ -38,7 +38,7 @@ public class LiftSubsystem extends SubsystemBase {
     private final ProfiledPIDController rightController = new ProfiledPIDController(kp, ki, kd,
             constraints);
 
-    public static int threshold = 1;
+    public static int threshold = 10;
 
     private double targetHeight;
 
