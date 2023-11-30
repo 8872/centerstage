@@ -38,7 +38,7 @@ public class LiftSubsystem extends SubsystemBase {
     private final ProfiledPIDController rightController = new ProfiledPIDController(kp, ki, kd,
             constraints);
 
-    public static int threshold = 1;
+    public static int threshold = 30;
 
     private double targetHeight;
 
@@ -86,6 +86,8 @@ public class LiftSubsystem extends SubsystemBase {
     public double getTargetHeight() {
         return targetHeight;
     }
+    public double getMPPos(){return leftController.getSetpoint().position;}
+    public double getMPVel(){return leftController.getSetpoint().velocity;}
 
     public boolean getOverCurrent() {
         return left.motorEx.isOverCurrent() || right.motorEx.isOverCurrent();

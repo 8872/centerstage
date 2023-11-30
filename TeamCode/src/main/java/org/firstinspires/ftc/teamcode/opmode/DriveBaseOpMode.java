@@ -136,13 +136,15 @@ public class DriveBaseOpMode extends CommandOpMode {
     @Override
     public void run() {
         super.run();
-        tad("intakeMotor power", round(intakeMotor.motorEx.getCurrent(CurrentUnit.AMPS)));
         tad("lil pos", lil.getCurrentPosition());
+        tad("Target Position", liftSys.getTargetHeight());
+        tad("MPPos", liftSys.getMPPos());
+        tad("MPVel", liftSys.getMPVel());
+        tad("intakeMotor power", round(intakeMotor.motorEx.getCurrent(CurrentUnit.AMPS)));
         tad("lir pos", lir.getCurrentPosition());
         tad("lil vel", lil.getVelocity());
         tad("lir vel", lir.getVelocity());
         tad("intakeServoPos", round(stackServo.getPosition()));
-        tad("Target Position", liftSys.getTargetHeight());
         tad("Limit Switch L", limitSwitchL.isPressed());
         tad("limit switch R", limitSwitchR.isPressed());
         tad("state", boxSubsystem.clawState);
