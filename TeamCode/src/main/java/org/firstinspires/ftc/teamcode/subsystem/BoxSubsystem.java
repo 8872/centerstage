@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
@@ -18,7 +19,6 @@ public class BoxSubsystem extends SubsystemBase {
     private final ServoEx first;
     private final ServoEx second;
     public enum ClawState {
-        ALL,
         FIRST,
         SECOND
     }
@@ -27,7 +27,6 @@ public class BoxSubsystem extends SubsystemBase {
     public BoxSubsystem(ServoEx first, ServoEx second, Gamepad gamepad) {
         this.first = first;
         this.second = second;
-        this.clawState = ClawState.ALL;
     }
 
     public Command cycle() {
@@ -43,21 +42,29 @@ public class BoxSubsystem extends SubsystemBase {
 
     public void cycleCommand() {
         switch (clawState) {
-            case ALL:
-                clawState = ClawState.FIRST;
+            case FIRST:
+                clawState = ClawState.SECOND;
                 first.setPosition(RELEASE_FIRST);
                 second.setPosition(RELEASE_SECOND);
                 break;
-            case FIRST:
-                clawState = ClawState.SECOND;
-                first.setPosition(STOP_FIRST);
-                break;
             case SECOND:
-                clawState = ClawState.ALL;
-                second.setPosition(STOP_SECOND);
+                first.setPosition(RELEASE_FIRST);
+                second.setPosition(RELEASE_SECOND);
                 break;
         }
     }
+
+    public Command depositNext(){
+        return new InstantCommand(() -> {
+            if(secondClosed()) second.setPosition(RELEASE_SECOND);
+            else first.setPosition(RELEASE_FIRST);
+        });
+    }
+
+    public boolean secondClosed(){
+        return getSecondPosition() > (STOP_SECOND-0.01);
+    }
+
     public Command stopFirst() {
         return new InstantCommand(() -> first.setPosition(STOP_FIRST));
     }
@@ -80,5 +87,9 @@ public class BoxSubsystem extends SubsystemBase {
 
     public double getSecondPosition() {
         return second.getPosition();
+    }
+
+    public void resetBoxState(){
+        clawState = ClawState.FIRST;
     }
 }

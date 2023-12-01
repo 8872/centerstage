@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.arcrobotics.ftclib.command.*;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
@@ -16,12 +13,12 @@ import java.util.function.DoubleSupplier;
 @Config
 public class LiftSubsystem extends SubsystemBase {
     public static double NONE = 0;
-    public static double FIRST = -300;
-    public static double SECOND = -400;
-    public static double THIRD = -570;
+    public static double FIRST = -325;
+    public static double SECOND = -525;
+    public static double THIRD = -725;
     public static double MAX = -719;
 
-    public static double kg = -0.04;
+    public static double kg = -0.11;
     public static double kp = 0.013;
     public static double ki = 0.0;
     public static double kd = 0.0000;
@@ -44,6 +41,9 @@ public class LiftSubsystem extends SubsystemBase {
 
     private final MotorEx left;
     private final MotorEx right;
+
+    public static double manualUpPower = 80;
+    public static double manualDownPower = 80;
 
     private final DoubleSupplier doubleSupplier;
     private final BooleanSupplier booleanSupplier;
@@ -83,6 +83,20 @@ public class LiftSubsystem extends SubsystemBase {
                 || left.getCurrentPosition() < targetHeight + threshold && left.getCurrentPosition() > targetHeight - threshold;
     }
 
+    public Command manualSetHeight(DoubleSupplier power){
+        return new RunCommand(() -> {
+            if(Math.abs(power.getAsDouble()) > 0.01) {
+                if(power.getAsDouble() < 0){
+                    leftController.setGoal((left.getCurrentPosition()+(power.getAsDouble()*manualUpPower)));
+                    rightController.setGoal(right.getCurrentPosition()+(power.getAsDouble()*manualUpPower));
+                }else{
+                    leftController.setGoal((left.getCurrentPosition()+(power.getAsDouble()*manualDownPower)));
+                    rightController.setGoal(right.getCurrentPosition()+(power.getAsDouble()*manualDownPower));
+                }
+            }
+        }, this);
+    }
+
     public double getTargetHeight() {
         return targetHeight;
     }
@@ -98,8 +112,8 @@ public class LiftSubsystem extends SubsystemBase {
             left.resetEncoder();
             right.resetEncoder();
         }
-        double leftOutput = leftController.calculate(left.getCurrentPosition()) + Math.cos(Math.toRadians(targetHeight / 145.6)) * kg;
-        double rightOutput = rightController.calculate(right.getCurrentPosition()) + Math.cos(Math.toRadians(targetHeight / 145.6)) * kg;
+        double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
+        double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
         left.set(leftOutput);
         right.set(rightOutput);
     }

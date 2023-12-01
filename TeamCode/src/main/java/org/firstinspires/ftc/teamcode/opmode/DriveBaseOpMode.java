@@ -136,6 +136,8 @@ public class DriveBaseOpMode extends CommandOpMode {
     @Override
     public void run() {
         super.run();
+        tad("firstClosed", boxSubsystem.secondClosed());
+        tad("gb2 bumperRight", gamepadEx2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).get());
         tad("intakeMotor power", round(intakeMotor.motorEx.getCurrent(CurrentUnit.AMPS)));
         tad("lil pos", lil.getCurrentPosition());
         tad("lir pos", lir.getCurrentPosition());
