@@ -12,11 +12,10 @@ import java.util.function.DoubleSupplier;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
-    public static double NONE = 0;
+    public static double NONE = 10;
     public static double FIRST = -325;
     public static double SECOND = -525;
     public static double THIRD = -725;
-    public static double MAX = -719;
 
     public static double kg = -0.11;
     public static double kp = 0.013;
