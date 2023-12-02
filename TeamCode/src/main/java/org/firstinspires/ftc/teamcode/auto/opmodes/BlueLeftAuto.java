@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto.opmodes;
 
 public class BlueLeftAuto {
+
     //set pos to (0,0,Math.toRadian(90))
     //init
     //lower intake

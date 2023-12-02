@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import java.util.concurrent.atomic.AtomicReference;
+
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
@@ -29,6 +30,7 @@ import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibra
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -65,8 +67,8 @@ public class DriveBaseOpMode extends CommandOpMode {
         }
     }
 
-    protected MotorEx fL, fR, bL, bR, intakeMotor, lil, lir;
-    protected SimpleServo stackServo, launcherHeightServo, launcherServo, pitchServo, clawL,clawR, armServo;
+    protected MotorEx frontLeft, frontRight, backLeft, backRight, intakeMotor, liftLeft, liftRight;
+    protected SimpleServo stackServo, launcherHeightServo, launcherReleaseServo, pitchServo, clawLeft, clawRight, armServo;
     protected TouchSensor limitSwitchL, limitSwitchR;
     protected DriveSubsystem drive;
     protected LiftSubsystem liftSys;
@@ -78,63 +80,89 @@ public class DriveBaseOpMode extends CommandOpMode {
     protected BoxSubsystem boxSubsystem;
     protected IMU imu;
     protected Gamepad.LedEffect rgbLedEffect;
+
     @Override
     public void initialize() {
         gamepadEx1 = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
+
         initHardware();
         setUpHardwareDevices();
-        drive = new DriveSubsystem(fL, fR, bL, bR, imu);
+
+        drive = new DriveSubsystem(frontLeft, frontRight, backLeft, backRight, imu);
         intakeSys = new IntakeSubsystem(intakeMotor, stackServo, () -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger);
-        launcherSubsystem = new LauncherSubsystem(launcherHeightServo, launcherServo);
+        launcherSubsystem = new LauncherSubsystem(launcherHeightServo, launcherReleaseServo);
         armSubsystem = new ArmSubsystem(pitchServo, armServo);
-        liftSys = new LiftSubsystem(lil, lir, limitSwitchL, limitSwitchR,() -> gamepadEx1.gamepad.touchpad_finger_1_x, ()-> gamepadEx1.gamepad.touchpad_finger_1);
-        boxSubsystem = new BoxSubsystem(clawL,clawR, gamepad1);
+        liftSys = new LiftSubsystem(liftLeft, liftRight, limitSwitchL, limitSwitchR, () -> gamepadEx1.gamepad.touchpad_finger_1_x, () -> gamepadEx1.gamepad.touchpad_finger_1);
+        boxSubsystem = new BoxSubsystem(clawLeft, clawRight, gamepad1);
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
         final CameraStreamProcessor processor = new CameraStreamProcessor();
         new VisionPortal.Builder()
                 .addProcessor(processor)
                 .setCamera(hardwareMap.get(WebcamName.class, "webcam"))
                 .build();
+
         FtcDashboard.getInstance().startCameraStream(processor, 0);
         telemetry.addData("Mode", "Done initializing");
         telemetry.update();
     }
+
     protected void initHardware() {
-        stackServo = new SimpleServo(hardwareMap, "stackServo", 0 ,255);
-        launcherHeightServo = new SimpleServo(hardwareMap, "launcherServo", 0,255);
-        launcherServo = new SimpleServo(hardwareMap, "launch", 0,255);
-        launcherHeightServo.setPosition(LauncherSubsystem.IDLE);
-        pitchServo = new SimpleServo(hardwareMap, "pitch",0,270);
-        clawL = new SimpleServo(hardwareMap, "clawL", 0,255);
-        clawR = new SimpleServo(hardwareMap, "clawR", 0,255);
-        armServo = new SimpleServo(hardwareMap, "axon", 0,255);
+        stackServo = new SimpleServo(hardwareMap, "stackServo", 0, 255);
+        intakeMotor = new MotorEx(hardwareMap, "intakeMotor");
+
+        launcherHeightServo = new SimpleServo(hardwareMap, "launcherServo", 0, 255);
+        launcherReleaseServo = new SimpleServo(hardwareMap, "launch", 0, 255);
+
+        clawLeft = new SimpleServo(hardwareMap, "clawL", 0, 255);
+        clawRight = new SimpleServo(hardwareMap, "clawR", 0, 255);
+
+        armServo = new SimpleServo(hardwareMap, "axon", 0, 255);
+        pitchServo = new SimpleServo(hardwareMap, "pitch", 0, 270);
+
         limitSwitchL = hardwareMap.get(TouchSensor.class, "limitL");
         limitSwitchR = hardwareMap.get(TouchSensor.class, "limitR");
 
-        fL = new MotorEx(hardwareMap, "fl");
-        fR = new MotorEx(hardwareMap, "fr");
-        bL = new MotorEx(hardwareMap, "bl");
-        bR = new MotorEx(hardwareMap, "br");
-        intakeMotor = new MotorEx(hardwareMap, "intakeMotor");
-        lil = new MotorEx(hardwareMap, "lil");
-        lir = new MotorEx(hardwareMap, "lir");
+        frontLeft = new MotorEx(hardwareMap, "fl");
+        frontRight = new MotorEx(hardwareMap, "fr");
+        backLeft = new MotorEx(hardwareMap, "bl");
+        backRight = new MotorEx(hardwareMap, "br");
+
+        liftLeft = new MotorEx(hardwareMap, "lil");
+        liftRight = new MotorEx(hardwareMap, "lir");
+
         imu = hardwareMap.get(IMU.class, "imu");
-        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.DOWN)));
+        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.DOWN))
+        );
     }
 
     @Override
     public void run() {
         super.run();
+
+        tad("frontLeft Power", frontLeft.get());
+        tad("frontRight Power", frontRight.get());
+        tad("backLeft Power", backLeft.get());
+        tad("backRight Power", backRight.get());
+
+        tad("Lift Target Position", liftSys.getTargetHeight());
+        tad("liftLeft Position", liftLeft.getCurrentPosition());
+        tad("liftRight Position", liftRight.getCurrentPosition());
+
+        tad("launcherHeight Position", launcherHeightServo.getPosition());
+        tad("launcherRelease Position", launcherReleaseServo.getPosition());
+
+        tad("Limit Switch L", limitSwitchL.isPressed());
+        tad("Limit Switch R", limitSwitchR.isPressed());
+
         tad("firstClosed", boxSubsystem.secondClosed());
         tad("gb2 bumperRight", gamepadEx2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).get());
         tad("intakeMotor power", round(intakeMotor.motorEx.getCurrent(CurrentUnit.AMPS)));
-        tad("lil pos", lil.getCurrentPosition());
-        tad("lir pos", lir.getCurrentPosition());
         tad("intakeServoPos", round(stackServo.getPosition()));
-        tad("Target Position", liftSys.getTargetHeight());
-        tad("Limit Switch L", limitSwitchL.isPressed());
-        tad("limit switch R", limitSwitchR.isPressed());
+
         tad("state", boxSubsystem.clawState);
         tad("touchpad x", gamepad1.touchpad_finger_1_x);
         tad("touchpad y", gamepad1.touchpad_finger_1_y);
@@ -142,14 +170,14 @@ public class DriveBaseOpMode extends CommandOpMode {
     }
 
     protected void setUpHardwareDevices() {
-        fR.setInverted(true);
-        bR.setInverted(true);
+        frontRight.setInverted(true);
+        backRight.setInverted(true);
         intakeMotor.setInverted(true);
-        lir.setInverted(true);
-        lil.motorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lir.motorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lil.resetEncoder();
-        lir.resetEncoder();
+        liftRight.setInverted(true);
+        liftLeft.motorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftRight.motorEx.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftLeft.resetEncoder();
+        liftRight.resetEncoder();
     }
 
     @Override
@@ -172,16 +200,16 @@ public class DriveBaseOpMode extends CommandOpMode {
     }
 
     // gamepad button 1 = gb1
-    protected GamepadButton gb1(GamepadKeys.Button button){
+    protected GamepadButton gb1(GamepadKeys.Button button) {
         return gamepadEx1.getGamepadButton(button);
     }
 
-    protected GamepadButton gb2(GamepadKeys.Button button){
+    protected GamepadButton gb2(GamepadKeys.Button button) {
         return gamepadEx2.getGamepadButton(button);
     }
 
     // telemetry add data = tad
-    protected void tad(String caption, Object value){
+    protected void tad(String caption, Object value) {
         telemetry.addData(caption, value);
     }
 }
