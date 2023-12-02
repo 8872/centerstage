@@ -14,13 +14,14 @@ import org.firstinspires.ftc.teamcode.auto.commands.PushPreloadTrajec;
 import org.firstinspires.ftc.teamcode.auto.pipelines.BlueZoneDetectionProcessor;
 import org.firstinspires.ftc.teamcode.opmode.DriveBaseOpMode;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous
-public class BlueLeftAuto extends TestBaseOpMode {
+public class BlueParkAuto extends TestBaseOpMode {
 
     SampleMecanumDrive rrDrive;
     private int classZone;
@@ -49,27 +50,15 @@ public class BlueLeftAuto extends TestBaseOpMode {
 
     @Override
     public void run(){
-        if(counter == 0){
-            counter++;
-            schedule(
-                    new SequentialCommandGroup(
-                            intakeSys.stackDown(),
-                            new DelayedCommand(
-                                    new SequentialCommandGroup(
-                                            new InstantCommand(() -> classZone = zone),
-                                            new ParallelCommandGroup(
-                                                    intakeSys.stackUp(),
-                                                    new PushPreloadTrajec(rrDrive, classZone)
-                                            )
-                                    ), 2000
-                            )
-                    )
-            );
-        }
-        super.run();
-        tad("zone", zone);
+        sleep(5000);
+        TrajectorySequence ts = rrDrive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
+                .forward(4)
+                .turn(Math.toRadians(90)) // Turns 45 degrees counter-clockwise
+                .forward(48)
+                .build();
 
-        //telemetry.update();
+        rrDrive.followTrajectorySequence(ts);
+
     }
 
 }

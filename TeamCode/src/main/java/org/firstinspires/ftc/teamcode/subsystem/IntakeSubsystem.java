@@ -40,6 +40,14 @@ public class IntakeSubsystem extends SubsystemBase {
         return new InstantCommand(() -> intake.set(OUT));
     }
 
+    public Command stackDown(){
+        return new InstantCommand(() -> stack.setPosition(0.9));
+    }
+
+    public Command stackUp(){
+        return new InstantCommand(() -> stack.setPosition(0.42));
+    }
+
     public Command stop() {
         return new InstantCommand(() -> intake.set(STOP));
     }

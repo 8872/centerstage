@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.opmode;
+package org.firstinspires.ftc.teamcode.auto.opmodes;
 
+import android.util.Log;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -13,7 +14,6 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.teamcode.auto.opmodes.TestBaseOpMode;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
@@ -30,13 +30,19 @@ import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Config
-public class DriveBaseOpMode extends TestBaseOpMode {
+public class TestBaseOpMode extends CommandOpMode {
+
+    public static int zone = 0;
 
     public static class CameraStreamProcessor implements VisionProcessor, CameraStreamSource {
         private final AtomicReference<Bitmap> lastFrame =
@@ -49,6 +55,57 @@ public class DriveBaseOpMode extends TestBaseOpMode {
 
         @Override
         public Object processFrame(Mat frame, long captureTimeNanos) {
+
+            Mat input = new Mat();
+
+            Log.d("asd", "entered");
+
+            Imgproc.cvtColor(frame, input, Imgproc.COLOR_RGB2YCrCb);
+
+            Scalar lowThresh = new Scalar(0, 0, 158.7);
+            Scalar highThresh = new Scalar(255, 255, 255);
+
+            Core.inRange(input, lowThresh, highThresh, input);
+
+            // Split the image into three vertical quadrants
+            int height = input.rows();
+            int width = input.cols();
+            int quadrantWidth = width / 3;
+            Rect left = new Rect(0, 0, quadrantWidth, height);
+            Rect center = new Rect(quadrantWidth, 0, quadrantWidth, height);
+            Rect right = new Rect(2 * quadrantWidth, 0, width - 2 * quadrantWidth, height);
+
+            // Extract the quadrants
+            Mat quadrant1 = new Mat(input, left);
+            Mat quadrant2 = new Mat(input, center);
+            Mat quadrant3 = new Mat(input, right);
+
+            // Calculate the average blue value for each quadrant
+            Scalar blue1 = Core.mean(quadrant1);
+            Scalar blue2 = Core.mean(quadrant2);
+            Scalar blue3 = Core.mean(quadrant3);
+
+            // Find which quadrant has the most blue
+            int blueQuadrant = 1;
+            double maxBlueValue = blue1.val[0];
+
+            if (blue2.val[0] > maxBlueValue) {
+                blueQuadrant = 2;
+                maxBlueValue = blue2.val[0];
+            }
+
+            if (blue3.val[0] > maxBlueValue) {
+                blueQuadrant = 3;
+            }
+
+            zone = blueQuadrant;
+
+            // Release the Mat objects created for quadrants
+            quadrant1.release();
+            quadrant2.release();
+            quadrant3.release();
+            input.release();
+
             Bitmap b = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.RGB_565);
             Utils.matToBitmap(frame, b);
             lastFrame.set(b);
@@ -144,29 +201,29 @@ public class DriveBaseOpMode extends TestBaseOpMode {
     public void run() {
         super.run();
 
-        tad("frontLeft Power", frontLeft.get());
-        tad("frontRight Power", frontRight.get());
-        tad("backLeft Power", backLeft.get());
-        tad("backRight Power", backRight.get());
-
-        tad("Lift Target Position", liftSys.getTargetHeight());
-        tad("liftLeft Position", liftLeft.getCurrentPosition());
-        tad("liftRight Position", liftRight.getCurrentPosition());
-
-        tad("launcherHeight Position", launcherHeightServo.getPosition());
-        tad("launcherRelease Position", launcherReleaseServo.getPosition());
-
-        tad("Limit Switch L", limitSwitchL.isPressed());
-        tad("Limit Switch R", limitSwitchR.isPressed());
-
-        tad("firstClosed", boxSubsystem.secondClosed());
-        tad("gb2 bumperRight", gamepadEx2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).get());
-        tad("intakeMotor power", round(intakeMotor.motorEx.getCurrent(CurrentUnit.AMPS)));
-        tad("intakeServoPos", round(stackServo.getPosition()));
-
-        tad("state", boxSubsystem.clawState);
-        tad("touchpad x", gamepad1.touchpad_finger_1_x);
-        tad("touchpad y", gamepad1.touchpad_finger_1_y);
+//        tad("frontLeft Power", frontLeft.get());
+//        tad("frontRight Power", frontRight.get());
+//        tad("backLeft Power", backLeft.get());
+//        tad("backRight Power", backRight.get());
+//
+//        tad("Lift Target Position", liftSys.getTargetHeight());
+//        tad("liftLeft Position", liftLeft.getCurrentPosition());
+//        tad("liftRight Position", liftRight.getCurrentPosition());
+//
+//        tad("launcherHeight Position", launcherHeightServo.getPosition());
+//        tad("launcherRelease Position", launcherReleaseServo.getPosition());
+//
+//        tad("Limit Switch L", limitSwitchL.isPressed());
+//        tad("Limit Switch R", limitSwitchR.isPressed());
+//
+//        tad("firstClosed", boxSubsystem.secondClosed());
+//        tad("gb2 bumperRight", gamepadEx2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).get());
+//        tad("intakeMotor power", round(intakeMotor.motorEx.getCurrent(CurrentUnit.AMPS)));
+//        tad("intakeServoPos", round(stackServo.getPosition()));
+//
+//        tad("state", boxSubsystem.clawState);
+//        tad("touchpad x", gamepad1.touchpad_finger_1_x);
+//        tad("touchpad y", gamepad1.touchpad_finger_1_y);
         telemetry.update();
     }
 

@@ -20,7 +20,7 @@ public class LauncherSubsystem extends SubsystemBase {
     public static int incrementFactor = 175;
 
     // TODO needs to be tuned!
-    public static double releaseInitial = 0.65;
+    public static double releaseInitial = 0;
     public static double releaseFinal = 0.4;
 
     public LauncherSubsystem(SimpleServo height, SimpleServo release) {
@@ -32,7 +32,7 @@ public class LauncherSubsystem extends SubsystemBase {
 
     public Command move(DoubleSupplier increment) {
         return new RunCommand(() -> height.setPosition(MathUtils.clamp(
-                height.getPosition() + increment.getAsDouble() / incrementFactor, heightFinal, heightInitial
+                height.getPosition() - increment.getAsDouble() / incrementFactor, heightFinal, heightInitial
         )), this);
     }
 

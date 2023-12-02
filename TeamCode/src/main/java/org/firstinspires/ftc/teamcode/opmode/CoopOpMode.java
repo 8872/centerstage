@@ -36,7 +36,7 @@ public class CoopOpMode extends DriveBaseOpMode {
                         liftSys.goTo(LiftSubsystem.NONE)
                 )
         );
-//        gb2(GamepadKeys.Button.DPAD_RIGHT).whenPressed(launcherSubsystem.release());
+        gb2(GamepadKeys.Button.DPAD_RIGHT).whenPressed(launcherSubsystem.release());
         schedule(launcherSubsystem.move(gamepadEx2::getLeftY));
 
         gb2(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(boxSubsystem.depositNext());

@@ -107,10 +107,10 @@ public class LiftSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if (limitSwitchL.isPressed() || limitSwitchR.isPressed() ) {
-            left.resetEncoder();
-            right.resetEncoder();
-        }
+//        if (limitSwitchL.isPressed() || limitSwitchR.isPressed() ) {
+//            left.resetEncoder();
+//            right.resetEncoder();
+//        }
         double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
         double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
         left.set(leftOutput);
