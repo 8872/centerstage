@@ -148,11 +148,11 @@ public class TestBaseOpMode extends CommandOpMode {
         setUpHardwareDevices();
 
         drive = new DriveSubsystem(frontLeft, frontRight, backLeft, backRight, imu);
-        intakeSys = new IntakeSubsystem(intakeMotor, stackServo, () -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger);
+        intakeSys = new IntakeSubsystem(intakeMotor, stackServo);
         launcherSubsystem = new LauncherSubsystem(launcherHeightServo, launcherReleaseServo);
         armSubsystem = new ArmSubsystem(pitchServo, armServo);
-        liftSys = new LiftSubsystem(liftLeft, liftRight, limitSwitchL, limitSwitchR, () -> gamepadEx1.gamepad.touchpad_finger_1_x, () -> gamepadEx1.gamepad.touchpad_finger_1);
-        boxSubsystem = new BoxSubsystem(clawLeft, clawRight, gamepad1);
+        liftSys = new LiftSubsystem(liftLeft, liftRight, limitSwitchL, limitSwitchR);
+        boxSubsystem = new BoxSubsystem(clawLeft, clawRight);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 

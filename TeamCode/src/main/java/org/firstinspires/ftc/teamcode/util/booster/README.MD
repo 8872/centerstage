@@ -1,1 +1,0 @@
-the following code in this package was copied off of PhotonFTC's old verion. This code might not be properly up to date as version 2.0.0 has been deleted from github and cannot be installed using packages. It has been recovered from an old project.

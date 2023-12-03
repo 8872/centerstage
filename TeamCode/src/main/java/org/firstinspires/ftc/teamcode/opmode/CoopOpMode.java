@@ -37,8 +37,6 @@ public class CoopOpMode extends DriveBaseOpMode {
                 )
         );
         gb2(GamepadKeys.Button.DPAD_RIGHT).whenPressed(launcherSubsystem.release());
-        schedule(launcherSubsystem.move(gamepadEx2::getLeftY));
-
         gb2(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(boxSubsystem.depositNext());
         gb2(GamepadKeys.Button.DPAD_DOWN).whenPressed(new ParallelCommandGroup(boxSubsystem.stopFirst(), boxSubsystem.stopSecond()));
         gb2(GamepadKeys.Button.DPAD_UP).whenPressed(new ParallelCommandGroup(boxSubsystem.releaseFirst(), boxSubsystem.releaseSecond()));
@@ -47,12 +45,13 @@ public class CoopOpMode extends DriveBaseOpMode {
                 armSubsystem.deposit().andThen(boxSubsystem.stopSecond(), boxSubsystem.stopFirst())
         );
 
-        gb1(GamepadKeys.Button.LEFT_BUMPER).whenHeld(drive.startSlow()).whenReleased(drive.stopSlow());
-        gb1(GamepadKeys.Button.RIGHT_BUMPER).whenHeld(drive.startSlow()).whenReleased(drive.stopSlow());
+        gb1(GamepadKeys.Button.LEFT_BUMPER).whenHeld(drive.drive(gamepadEx1::getLeftX, gamepadEx1::getLeftY, gamepadEx1::getRightX, 0.5));
+
 
         register(drive, intakeSys, armSubsystem, boxSubsystem, liftSys, launcherSubsystem);
-
+        launcherSubsystem.setDefaultCommand(launcherSubsystem.move(gamepadEx2::getLeftY));
         liftSys.setDefaultCommand(liftSys.manualSetHeight(gamepadEx2::getRightY));
+        intakeSys.setDefaultCommand(intakeSys.intake(gamepadEx2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER), gamepadEx2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)));
         drive.setDefaultCommand(drive.drive(gamepadEx1::getLeftX, gamepadEx1::getLeftY, gamepadEx1::getRightX));
     }
 

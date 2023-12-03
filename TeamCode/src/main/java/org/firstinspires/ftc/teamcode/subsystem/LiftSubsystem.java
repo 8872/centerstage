@@ -44,18 +44,15 @@ public class LiftSubsystem extends SubsystemBase {
     public static double manualUpPower = 80;
     public static double manualDownPower = 80;
 
-    private final DoubleSupplier doubleSupplier;
-    private final BooleanSupplier booleanSupplier;
+
     private final TouchSensor limitSwitchL;
     private final TouchSensor limitSwitchR;
 
-    public LiftSubsystem(MotorEx left, MotorEx right, TouchSensor touchSensorL, TouchSensor touchSensorR, DoubleSupplier doubleSupplier, BooleanSupplier booleanSupplier) {
+    public LiftSubsystem(MotorEx left, MotorEx right, TouchSensor touchSensorL, TouchSensor touchSensorR) {
         this.left = left;
         this.right = right;
         this.limitSwitchL = touchSensorL;
         this.limitSwitchR = touchSensorR;
-        this.doubleSupplier = doubleSupplier;
-        this.booleanSupplier = booleanSupplier;
     }
 
     public void setHeight(double height) {
@@ -107,10 +104,10 @@ public class LiftSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-//        if (limitSwitchL.isPressed() || limitSwitchR.isPressed() ) {
-//            left.resetEncoder();
-//            right.resetEncoder();
-//        }
+        if (limitSwitchL.isPressed() || limitSwitchR.isPressed() ) {
+            left.resetEncoder();
+            right.resetEncoder();
+        }
         double leftOutput = leftController.calculate(left.getCurrentPosition()) + kg;
         double rightOutput = rightController.calculate(right.getCurrentPosition()) + kg;
         left.set(leftOutput);

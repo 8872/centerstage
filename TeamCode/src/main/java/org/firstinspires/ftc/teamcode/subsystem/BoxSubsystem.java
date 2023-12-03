@@ -23,35 +23,11 @@ public class BoxSubsystem extends SubsystemBase {
     }
 
     public ClawState clawState;
-    public BoxSubsystem(ServoEx first, ServoEx second, Gamepad gamepad) {
+    public BoxSubsystem(ServoEx first, ServoEx second) {
         this.first = first;
         this.second = second;
     }
 
-    public Command cycle() {
-        return new CycleCommand(
-                new InstantCommand(() -> {
-                    first.setPosition(STOP_FIRST);
-                    second.setPosition(STOP_SECOND);
-                }),
-                new InstantCommand(() -> first.setPosition(RELEASE_FIRST)),
-                new InstantCommand(() -> second.setPosition(RELEASE_SECOND))
-        );
-    }
-
-    public void cycleCommand() {
-        switch (clawState) {
-            case FIRST:
-                clawState = ClawState.SECOND;
-                first.setPosition(RELEASE_FIRST);
-                second.setPosition(RELEASE_SECOND);
-                break;
-            case SECOND:
-                first.setPosition(RELEASE_FIRST);
-                second.setPosition(RELEASE_SECOND);
-                break;
-        }
-    }
 
     public Command depositNext(){
         return new InstantCommand(() -> {
@@ -88,7 +64,4 @@ public class BoxSubsystem extends SubsystemBase {
         return second.getPosition();
     }
 
-    public void resetBoxState(){
-        clawState = ClawState.FIRST;
-    }
 }
