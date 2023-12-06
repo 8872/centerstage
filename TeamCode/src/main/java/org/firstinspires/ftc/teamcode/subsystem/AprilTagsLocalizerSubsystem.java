@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AprilTagsLocalizerSubsystem extends SubsystemBase implements Localizer {
-    private AprilTagProcessor aprilTag;
-    private VisionPortal visionPortal;
+    private final AprilTagProcessor aprilTag;
     private Pose2d poseEstimate;
     public AprilTagsLocalizerSubsystem(CameraName camera) {
         aprilTag = new AprilTagProcessor.Builder()
@@ -32,7 +31,7 @@ public class AprilTagsLocalizerSubsystem extends SubsystemBase implements Locali
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(camera);
         builder.addProcessor(aprilTag);
-        visionPortal = builder.build();
+        VisionPortal visionPortal = builder.build();
         visionPortal.setProcessorEnabled(aprilTag, true);
     }
 
