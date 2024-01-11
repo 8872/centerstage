@@ -8,10 +8,10 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.auto.commands.PushPreloadTrajec;
-import org.firstinspires.ftc.teamcode.auto.pipelines.BlueZoneDetectionProcessor;
 import org.firstinspires.ftc.teamcode.opmode.DriveBaseOpMode;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
@@ -20,6 +20,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+@Disabled
 @Autonomous
 public class BlueParkAuto extends TestBaseOpMode {
 

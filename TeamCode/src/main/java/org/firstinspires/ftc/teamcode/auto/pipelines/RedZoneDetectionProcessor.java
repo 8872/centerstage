@@ -10,16 +10,13 @@ import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 @Config
-public class BlueZoneDetectionProcessor implements VisionProcessor, CameraStreamSource {
+public class RedZoneDetectionProcessor implements VisionProcessor, CameraStreamSource {
 
     public static double cvLowThresh = 170;
     private int zone = 0;
@@ -39,7 +36,7 @@ public class BlueZoneDetectionProcessor implements VisionProcessor, CameraStream
 
         Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YCrCb);
 
-        Scalar lowThresh = new Scalar(0, 0, 159);
+        Scalar lowThresh = new Scalar(0, cvLowThresh, 0);
         Scalar highThresh = new Scalar(255, 255, 255);
 
         Core.inRange(input, lowThresh, highThresh, input);

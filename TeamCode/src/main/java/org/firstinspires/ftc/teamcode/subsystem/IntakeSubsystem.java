@@ -17,6 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double IN = 0.7;
     public static double OUT = -1;
     public static double STOP = 0;
+    public static double stackUp = 0.9;
 
 
     private final DoubleSupplier fSPower;
@@ -41,11 +42,11 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command stackDown(){
-        return new InstantCommand(() -> stack.setPosition(0.9));
+        return new InstantCommand(() -> stack.setPosition(0.4));
     }
 
     public Command stackUp(){
-        return new InstantCommand(() -> stack.setPosition(0.42));
+        return new InstantCommand(() -> stack.setPosition(stackUp));
     }
 
     public Command stop() {
