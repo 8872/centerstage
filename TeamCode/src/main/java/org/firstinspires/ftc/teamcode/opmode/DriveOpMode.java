@@ -20,7 +20,7 @@ public class DriveOpMode extends DriveBaseOpMode{
         gb1(GamepadKeys.Button.B).whenPressed(new SequentialCommandGroup(new ParallelCommandGroup(boxSubsystem.stopFirst(),boxSubsystem.stopSecond()), new ParallelCommandGroup(armSubsystem.deposit(), liftSys.goTo(LiftSubsystem.FIRST))));
         gb1(GamepadKeys.Button.A).whenPressed(new SequentialCommandGroup(armSubsystem.intake(), liftSys.goTo(LiftSubsystem.NONE)));
 //        gb1(GamepadKeys.Button.DPAD_LEFT).whenPressed(launcherSubsystem.release());
-        gb1(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(new InstantCommand(()-> boxSubsystem.cycleCommand()));
+        gb1(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(new InstantCommand(()-> boxSubsystem.depositNext()));
         gb1(GamepadKeys.Button.DPAD_DOWN).toggleWhenPressed(armSubsystem.intake().andThen(boxSubsystem.stopFirst(), boxSubsystem.stopSecond()), armSubsystem.deposit());
         gb1(GamepadKeys.Button.LEFT_BUMPER).whileHeld(drive.drive(gamepadEx1::getLeftX,gamepadEx1::getLeftY,gamepadEx1::getRightX));
         gb1(GamepadKeys.Button.DPAD_UP).whenPressed(new ParallelCommandGroup(armSubsystem.deposit(), liftSys.goTo(-700)));

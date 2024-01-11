@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystem;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
@@ -20,25 +21,42 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double stackUp = 0.9;
 
 
-    private final DoubleSupplier fSPower;
-    private final DoubleSupplier rSPower;
     private final MotorEx intake;
     private final ServoEx stack;
 
-    public IntakeSubsystem(MotorEx intake, ServoEx stack, DoubleSupplier fSPower, DoubleSupplier rSPower) {
+    public IntakeSubsystem(MotorEx intake, ServoEx stack) {
         this.intake = intake;
         intake.motorEx.setCurrentAlert(9.2, CurrentUnit.AMPS);
         this.stack = stack;
-        this.fSPower = fSPower;
-        this.rSPower = rSPower;
     }
 
-    public Command in() {
-        return new InstantCommand(() -> intake.set(IN));
+    public Command in(DoubleSupplier power) {
+        return new RunCommand(() -> {
+            intake.set(IN);
+            stack.setPosition((power.getAsDouble()*0.5)+0.4);
+        });
     }
 
-    public Command out() {
-        return new InstantCommand(() -> intake.set(OUT));
+    public Command out(DoubleSupplier power) {
+        return new RunCommand(() -> {
+            intake.set(OUT);
+            stack.setPosition((power.getAsDouble()*0.5)+0.4);
+        });
+    }
+
+    public Command intake(double fpower, double rpower) {
+        return new RunCommand(() -> {
+            if (fpower != 0) {
+                intake.set(IN);
+                stack.setPosition((fpower*0.5)+0.4);
+            } else if (rpower != 0) {
+                intake.set(OUT);
+                stack.setPosition((rpower*0.5)+0.4);
+            } else {
+                intake.set(0);
+                stack.setPosition(HIGH);
+            }
+        });
     }
 
     public Command stackDown(){
@@ -57,6 +75,7 @@ public class IntakeSubsystem extends SubsystemBase {
         return new InstantCommand(() -> stack.setPosition(height));
     }
 
+
     public boolean getCurrent() {return intake.motorEx.isOverCurrent();}
 
     @Override
@@ -64,15 +83,6 @@ public class IntakeSubsystem extends SubsystemBase {
         if (getCurrent()) {
             intake.set(0);
             stack.setPosition(HIGH);
-        } else if(fSPower.getAsDouble()!=0) {
-            intake.set(IN);
-            stack.setPosition((fSPower.getAsDouble()*0.5)+0.4);
-        } else if (rSPower.getAsDouble() !=0) {
-            intake.set(OUT);
-            stack.setPosition((rSPower.getAsDouble()*0.5)+0.4);
-        } else {
-            stack.setPosition(HIGH);
-            intake.set(0);
         }
     }
 }
