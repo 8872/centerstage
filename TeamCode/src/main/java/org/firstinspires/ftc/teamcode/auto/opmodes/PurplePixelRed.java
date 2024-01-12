@@ -58,7 +58,7 @@ public class PurplePixelRed extends LinearOpMode {
         SimpleServo stackServo = new SimpleServo(hardwareMap, "stackServo", 0, 255);
         GamepadEx gamepadEx2 = new GamepadEx(gamepad2);
 
-        IntakeSubsystem intakeSys = new IntakeSubsystem(intakeMotor, stackServo, () -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger);
+        IntakeSubsystem intakeSys = new IntakeSubsystem(intakeMotor, stackServo);
 
         processor = new RedZoneDetectionProcessor();
         new VisionPortal.Builder()

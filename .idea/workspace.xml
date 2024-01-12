@@ -13,19 +13,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="teleop done, auto is broken">
+    <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="added purple pixel auto &quot;purplepixelblue&quot; and &quot;purplepixelred&quot;">
       <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/DetectionTest.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/Park.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/PurplePixelBlue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/PurplePixelRed.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/Purple_Yellow_Red.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/pipelines/RedZoneDetectionProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/BlueLeftAuto.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/BlueLeftAuto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/BlueParkAuto.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/BlueParkAuto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/SecondAutoTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/pipelines/BlueZoneDetectionProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/pipelines/BlueZoneDetectionProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/IntakeSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/IntakeSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/PurplePixelBlue.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/PurplePixelBlue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/PurplePixelRed.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/opmodes/PurplePixelRed.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +77,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -480,7 +476,14 @@
       <option name="project" value="LOCAL" />
       <updated>1701548818526</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="added purple pixel auto &quot;purplepixelblue&quot; and &quot;purplepixelred&quot;">
+      <created>1705015680639</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1705015680639</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -512,6 +515,7 @@
     <MESSAGE value="edited teleop to work 60% of the time" />
     <MESSAGE value="auto 50% done commit" />
     <MESSAGE value="teleop done, auto is broken" />
-    <option name="LAST_COMMIT_MESSAGE" value="teleop done, auto is broken" />
+    <MESSAGE value="added purple pixel auto &quot;purplepixelblue&quot; and &quot;purplepixelred&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="added purple pixel auto &quot;purplepixelblue&quot; and &quot;purplepixelred&quot;" />
   </component>
 </project>
