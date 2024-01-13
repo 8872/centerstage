@@ -51,7 +51,7 @@ public class CoopOpMode extends DriveBaseOpMode {
         register(drive, intakeSys, armSubsystem, boxSubsystem, liftSys, launcherSubsystem);
         launcherSubsystem.setDefaultCommand(launcherSubsystem.move(gamepadEx2::getLeftY));
         liftSys.setDefaultCommand(liftSys.manualSetHeight(gamepadEx2::getRightY));
-        intakeSys.setDefaultCommand(intakeSys.intake(gamepadEx2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER), gamepadEx2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)));
+        //intakeSys.setDefaultCommand(intakeSys.intake(gamepadEx2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER), gamepadEx2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)));
         drive.setDefaultCommand(drive.drive(gamepadEx1::getLeftX, gamepadEx1::getLeftY, gamepadEx1::getRightX));
     }
 

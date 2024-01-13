@@ -33,6 +33,6 @@ public class DriveOpMode extends DriveBaseOpMode{
         gb2(GamepadKeys.Button.DPAD_DOWN).whenPressed(intakeSys.setHeight(IntakeSubsystem.LOW));
         register(drive, intakeSys, armSubsystem, boxSubsystem, liftSys, launcherSubsystem);
         drive.setDefaultCommand(drive.drive(gamepadEx1::getLeftX,gamepadEx1::getLeftY,gamepadEx1::getRightX));
+        //intakeSys.setDefaultCommand(intakeSys.intake(gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER), gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)));
     }
-
 }

@@ -15,19 +15,27 @@ import java.util.function.DoubleSupplier;
 public class IntakeSubsystem extends SubsystemBase {
     public static double LOW = 0.9;
     public static double HIGH = 0.4;
-    public static double IN = 0.7;
+    public static double IN = 0.9;
     public static double OUT = -1;
     public static double STOP = 0;
     public static double stackUp = 0.9;
 
+    private final DoubleSupplier fSPower;
+    private final DoubleSupplier rSPower;
 
     private final MotorEx intake;
     private final ServoEx stack;
 
     public IntakeSubsystem(MotorEx intake, ServoEx stack) {
+        this(intake,stack,()-> 0,()->0);
+    }
+
+    public IntakeSubsystem(MotorEx intake, ServoEx stack, DoubleSupplier fSPower, DoubleSupplier rSPower) {
         this.intake = intake;
         intake.motorEx.setCurrentAlert(9.2, CurrentUnit.AMPS);
         this.stack = stack;
+        this.fSPower = fSPower;
+        this.rSPower = rSPower;
     }
 
     public Command in(DoubleSupplier power) {
@@ -48,15 +56,15 @@ public class IntakeSubsystem extends SubsystemBase {
         return new RunCommand(() -> {
             if (fpower != 0) {
                 intake.set(IN);
-                stack.setPosition((fpower*0.5)+0.4);
+                stack.setPosition((fpower*0.58)+0.4);
             } else if (rpower != 0) {
                 intake.set(OUT);
-                stack.setPosition((rpower*0.5)+0.4);
+                stack.setPosition((rpower*0.58)+0.4);
             } else {
                 intake.set(0);
                 stack.setPosition(HIGH);
             }
-        });
+        }, this);
     }
 
     public Command stackDown(){
@@ -80,9 +88,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (getCurrent()) {
-            intake.set(0);
+        if(fSPower.getAsDouble()!=0) {
+            intake.set(IN);
+            stack.setPosition((fSPower.getAsDouble()*0.5)+0.4);
+        } else if (rSPower.getAsDouble() !=0) {
+            intake.set(OUT);
+            stack.setPosition((rSPower.getAsDouble()*0.5)+0.4);
+        } else {
             stack.setPosition(HIGH);
+            intake.set(0);
         }
     }
 }

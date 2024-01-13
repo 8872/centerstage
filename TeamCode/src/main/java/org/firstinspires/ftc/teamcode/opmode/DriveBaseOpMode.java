@@ -126,7 +126,7 @@ public class DriveBaseOpMode extends TestBaseOpMode {
         setUpHardwareDevices();
 
         drive = new DriveSubsystem(frontLeft, frontRight, backLeft, backRight, imu);
-        intakeSys = new IntakeSubsystem(intakeMotor, stackServo);
+        intakeSys = new IntakeSubsystem(intakeMotor, stackServo, () -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger);
         launcherSubsystem = new LauncherSubsystem(launcherHeightServo, launcherReleaseServo);
         armSubsystem = new ArmSubsystem(pitchServo, armServo);
         liftSys = new LiftSubsystem(liftLeft, liftRight, limitSwitchL, limitSwitchR);
