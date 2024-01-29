@@ -1,42 +1,41 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
-import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.hardware.ServoEx;
-@Config
+import com.arcrobotics.ftclib.hardware.SimpleServo;
+
 public class ArmSys extends SubsystemBase {
-    public enum ArmPosition {
-        HOME(0.0),
-        AWAY(1.0);
-        public final double pos;
-        ArmPosition(double pos) {
-            this.pos = pos;
-        }
+    public static double armIntake = 0.95;
+    public static double armOuttake = 0.23;
+    public static double pitchIntake = 0.4;
+    public static double pitchOuttake = 0.78;
+    public SimpleServo armServo;
+    public SimpleServo pitchServo;
+    public enum ArmState {
+        INTAKE,
+        DEPOSIT
     }
-    public ArmPosition armPos;
-    private final ServoEx armL;
-    private final ServoEx armR;
-    public ArmSys(ServoEx armL, ServoEx armR) {
-        this.armL = armL;
-        this.armR = armR;
-        armPos = ArmPosition.HOME;
-    }
-
-    public void arm(ArmPosition position) {
-        armL.setPosition(position.pos);
-        armR.setPosition(position.pos);
-        armPos = position;
+    public static ArmState armState = ArmState.INTAKE;
+    public ArmSys(SimpleServo armServo, SimpleServo pitchServo) {
+        this.armServo = armServo;
+        this.pitchServo = pitchServo;
     }
 
-    public void arm(double position) {
-        armL.setPosition(position);
-        armR.setPosition(position);
-    }
-    public double getArmPos() {
-        return armL.getPosition();
-    }
-    public ArmPosition getPos() {
-        return armPos;
+    public Command intake() {
+        return new InstantCommand(() -> {
+            armState = ArmState.INTAKE;
+            armServo.setPosition(armIntake);
+            pitchServo.setPosition(pitchIntake);
+        }, this);
     }
 
+    public Command deposit() {
+        return new InstantCommand(() -> {
+            armState = ArmState.DEPOSIT;
+            armServo.setPosition(armOuttake);
+            pitchServo.setPosition(pitchOuttake);
+        }, this);
+    }
 }
+
