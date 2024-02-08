@@ -32,7 +32,9 @@ repositories {
 dependencies {
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
+    testImplementation 'junit:junit:4.13.1'
     implementation 'org.ftclib.ftclib:core:2.1.1'
+    implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation "com.acmerobotics.roadrunner:ftc:0.1.6"
     implementation "com.acmerobotics.dashboard:dashboard:0.4.12"
 }

@@ -21,7 +21,6 @@ public class ArmSys extends SubsystemBase {
         this.armServo = armServo;
         this.pitchServo = pitchServo;
     }
-
     public Command intake() {
         return new InstantCommand(() -> {
             armState = ArmState.INTAKE;

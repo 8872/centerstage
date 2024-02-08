@@ -12,5 +12,7 @@ public class MainOpMode extends BaseOpMode {
 
         gb1(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(boxSys.release());
         gb1(GamepadKeys.Button.LEFT_BUMPER).toggleWhenPressed(new ParallelCommandGroup(armSys.deposit(), boxSys.close()), new ParallelCommandGroup(armSys.intake(), boxSys.intake()));
+        register(boxSys, armSys, driveSys);
+        driveSys.setDefaultCommand(driveSys.drive(gamepadEx1::getRightX,gamepadEx1::getLeftY,gamepadEx1::getLeftX, 0.5));
     }
 }

@@ -9,28 +9,33 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.lynx.LynxModule;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.teamcode.subsystem.ArmSys;
-import org.firstinspires.ftc.teamcode.subsystem.BoxSys;
+import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class BaseOpMode extends CommandOpMode {
-
     protected GamepadEx gamepadEx1, gamepadEx2;
-    protected SimpleServo armServo, pitchServo, innerServo, outerServo;
-    protected MotorEx leftFront, leftRear, rightRear, rightFront;
+    protected SimpleServo armServo, pitchServo, innerServo, outerServo, stack;
+    protected MotorEx leftFront, leftRear, rightRear, rightFront, liftLeft, liftRight, hang, intake;
     protected ArmSys armSys;
     protected BoxSys boxSys;
+    protected DriveSys driveSys;
+    protected HangSys hangSys;
+    protected IntakeSys intakeSys;
+    List<LynxModule> hubs;
     @Override
     public void initialize() {
         gamepadEx1 = new GamepadEx(gamepad1);
@@ -64,27 +69,36 @@ public class BaseOpMode extends CommandOpMode {
         pitchServo = new SimpleServo(hardwareMap, "pitchServo", 0, 355);
         innerServo = new SimpleServo(hardwareMap, "innerServo", 0, 255);
         outerServo = new SimpleServo(hardwareMap, "outerServo", 0, 255);
-        leftFront = new MotorEx(hardwareMap, "leftFront");
-        leftRear = new MotorEx(hardwareMap, "leftRear");
-        rightRear = new MotorEx(hardwareMap, "rightRear");
-        rightFront = new MotorEx(hardwareMap, "rightFront");
+        stack = new SimpleServo(hardwareMap, "stack", 0, 255);
+        leftFront = new MotorEx(hardwareMap, "leftFront", Motor.GoBILDA.RPM_435);
+        leftRear = new MotorEx(hardwareMap, "leftRear", Motor.GoBILDA.RPM_435);
+        rightRear = new MotorEx(hardwareMap, "rightRear", Motor.GoBILDA.RPM_435);
+        rightFront = new MotorEx(hardwareMap, "rightFront", Motor.GoBILDA.RPM_435);
+        intake = new MotorEx(hardwareMap, "intake", Motor.GoBILDA.RPM_1150);
+        liftLeft = new MotorEx(hardwareMap, "lil", Motor.GoBILDA.RPM_1150);
+        liftRight = new MotorEx(hardwareMap, "lir", Motor.GoBILDA.RPM_1150);
+        hang = new MotorEx(hardwareMap, "hang", Motor.GoBILDA.RPM_30);
+
     }
     public void setupHardware() {
-        rightFront.setInverted(true);
+        leftRear.setInverted(true);
         rightRear.setInverted(true);
     }
     public void initSubystems() {
         armSys = new ArmSys(armServo, pitchServo);
         boxSys = new BoxSys(innerServo, outerServo);
+        driveSys = new DriveSys(leftFront, rightFront, leftRear, rightRear);
+        hangSys = new HangSys(hang);
+        intakeSys = new IntakeSys(stack, intake);
     }
     public void setupMisc() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         final CameraStreamProcessor processor = new CameraStreamProcessor();
-        new VisionPortal.Builder()
-                .addProcessor(processor)
-                .setCamera(hardwareMap.get(WebcamName.class, "webcam"))
-                .build();
+//        new VisionPortal.Builder()
+//                .addProcessor(processor)
+//                .setCamera(hardwareMap.get(WebcamName.class, "webcam"))
+//                .build();
 
         FtcDashboard.getInstance().startCameraStream(processor, 0);
     }
