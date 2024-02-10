@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
@@ -10,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.util.Precision;
 
 import java.util.function.DoubleSupplier;
-
+@Config
 public class IntakeSys extends SubsystemBase {
     public static boolean algorithm = true;
     public static int spikeCount = 0;
@@ -37,7 +38,6 @@ public class IntakeSys extends SubsystemBase {
     }
     public Command intake(DoubleSupplier fpower, DoubleSupplier rpower) {
         return new RunCommand(() -> {
-            int initialSpikeCount = spikeCount;
             if (fpower.getAsDouble() != 0) {
                 intake.set(intakeInPower);
                 stack.setPosition((fpower.getAsDouble()* coefficients[0])+ coefficients[1]);
@@ -48,9 +48,7 @@ public class IntakeSys extends SubsystemBase {
                 intake.set(0);
                 stack.setPosition(intakeServoHighPosition);
             }
-            if (spikeCount - initialSpikeCount >= 2 && algorithm) {
-                intake.set(0);
-            }
+
         }, this);
     }
     public Command runIntake(double power) {
@@ -65,30 +63,30 @@ public class IntakeSys extends SubsystemBase {
     }
     @Override
     public void periodic() {
-        if (algorithm) {
-            double current = getCurrent();
-            double forwardPower = intake.get();
-            if (current > 3000 && forwardPower > 0) {
-                if (!spikeActive) {
-                    spikeActive = true;
-                    spikeStartTime = System.currentTimeMillis();
-                }
-            } else {
-                if (spikeActive) {
-                    long spikeDuration = System.currentTimeMillis() - spikeStartTime;
-                    if (spikeDuration >= 100) {
-                        spikeCount++;
-                    }
-                    if (spikeDuration >= 700) {
-                        intake.set(-1);
-                        long reverseStartTime = System.currentTimeMillis();
-                        while (System.currentTimeMillis() - reverseStartTime < 2000) {
-                        }
-                        intake.set(0);
-                    }
-                    spikeActive = false;
-                }
-            }
-        }
+//        if (algorithm) {
+//            double current = getCurrent();
+//            double forwardPower = intake.get();
+//            if (current > 3000 && forwardPower > 0) {
+//                if (!spikeActive) {
+//                    spikeActive = true;
+//                    spikeStartTime = System.currentTimeMillis();
+//                }
+//            } else {
+//                if (spikeActive) {
+//                    long spikeDuration = System.currentTimeMillis() - spikeStartTime;
+//                    if (spikeDuration >= 100) {
+//                        spikeCount++;
+//                    }
+//                    if (spikeDuration >= 700) {
+//                        intake.set(-1);
+//                        long reverseStartTime = System.currentTimeMillis();
+//                        while (System.currentTimeMillis() - reverseStartTime < 2000) {
+//                        }
+//                        intake.set(0);
+//                    }
+//                    spikeActive = false;
+//                }
+//            }
+//        }
     }
 }

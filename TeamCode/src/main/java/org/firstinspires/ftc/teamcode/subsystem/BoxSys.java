@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
-
+@Config
 public class BoxSys extends SubsystemBase {
     public static final double INNER_SERVO_LOCKED = 0.0;
     public static final double INNER_SERVO_UNLOCKED = 0.5;
