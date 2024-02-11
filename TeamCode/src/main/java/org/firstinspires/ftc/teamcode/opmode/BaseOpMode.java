@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.text.method.Touch;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
@@ -12,12 +13,15 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.subsystem.*;
+import org.firstinspires.ftc.teamcode.util.MB1242;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
@@ -27,14 +31,19 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class BaseOpMode extends CommandOpMode {
+    protected TouchSensor limitSwitch;
+    protected MB1242 flSensor,frSensor,blSensor;
     protected GamepadEx gamepadEx1, gamepadEx2;
-    protected SimpleServo armServo, pitchServo, innerServo, outerServo, stack;
+    protected SimpleServo armServo, pitchServo, innerServo, outerServo, stack, plane;
     protected MotorEx leftFront, leftRear, rightRear, rightFront, liftLeft, liftRight, hang, intake;
     protected ArmSys armSys;
     protected BoxSys boxSys;
     protected DriveSys driveSys;
     protected HangSys hangSys;
     protected IntakeSys intakeSys;
+    protected LocalizerSys localizerSys;
+    protected PlaneSys planeSys;
+    protected LiftSys liftSys;
     List<LynxModule> hubs;
     @Override
     public void initialize() {
@@ -51,8 +60,12 @@ public class BaseOpMode extends CommandOpMode {
     @Override
     public void run() {
         super.run();
+        tad("localize",localizerSys.getPose());
         tad("armState", ArmSys.armState);
         tad("boxState", BoxSys.boxState);
+        tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
+        tad("lift right", liftRight.getCurrentPosition());
+        tad("lift left", liftLeft.getCurrentPosition());
         tad("armServo", armServo.getPosition());
         tad("pitchServo", pitchServo.getPosition());
         tad("innerServo", innerServo.getPosition());
@@ -65,6 +78,11 @@ public class BaseOpMode extends CommandOpMode {
     }
 
     public void initHardware() {
+        limitSwitch = hardwareMap.get(TouchSensor.class, "limit");
+        flSensor = hardwareMap.get(MB1242.class, "flSensor");
+        frSensor = hardwareMap.get(MB1242.class, "frSensor");
+        blSensor = hardwareMap.get(MB1242.class, "blSensor");
+        plane = new SimpleServo(hardwareMap, "airplane",0,255);
         armServo = new SimpleServo(hardwareMap, "armServo", 0, 355);
         pitchServo = new SimpleServo(hardwareMap, "pitchServo", 0, 355);
         innerServo = new SimpleServo(hardwareMap, "innerServo", 0, 255);
@@ -78,22 +96,24 @@ public class BaseOpMode extends CommandOpMode {
         liftLeft = new MotorEx(hardwareMap, "lil", Motor.GoBILDA.RPM_1150);
         liftRight = new MotorEx(hardwareMap, "lir", Motor.GoBILDA.RPM_1150);
         hang = new MotorEx(hardwareMap, "hang", Motor.GoBILDA.RPM_30);
-
     }
     public void setupHardware() {
+        liftRight.setInverted(true);
         leftRear.setInverted(true);
         rightRear.setInverted(true);
     }
     public void initSubystems() {
+        //liftSys = new LiftSys(liftLeft,liftRight, limitSwitch, hardwareMap.voltageSensor);
+        localizerSys = new LocalizerSys(flSensor, frSensor, blSensor);
         armSys = new ArmSys(armServo, pitchServo);
         boxSys = new BoxSys(innerServo, outerServo);
         driveSys = new DriveSys(leftFront, rightFront, leftRear, rightRear);
         hangSys = new HangSys(hang);
         intakeSys = new IntakeSys(stack, intake);
+        planeSys = new PlaneSys(plane);
     }
     public void setupMisc() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
         final CameraStreamProcessor processor = new CameraStreamProcessor();
 //        new VisionPortal.Builder()
 //                .addProcessor(processor)

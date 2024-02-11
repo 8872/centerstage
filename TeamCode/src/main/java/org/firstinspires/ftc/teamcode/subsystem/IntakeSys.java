@@ -15,14 +15,14 @@ import java.util.function.DoubleSupplier;
 public class IntakeSys extends SubsystemBase {
     public static boolean algorithm = true;
     public static int spikeCount = 0;
-    private boolean spikeActive = false;
+    private boolean lastActive = false;
     private long spikeStartTime = 0;
     private MotorEx intake;
     private SimpleServo stack;
 
-    public static double intakeInPower = 0.5;
+    public static double intakeInPower = 0.6;
 
-    public static double intakeOutPower = 0;
+    public static double intakeOutPower = 0.7;
 
     public static double intakeServoLowPosition = 0;
 
@@ -39,8 +39,14 @@ public class IntakeSys extends SubsystemBase {
     public Command intake(DoubleSupplier fpower, DoubleSupplier rpower) {
         return new RunCommand(() -> {
             if (fpower.getAsDouble() != 0) {
-                intake.set(intakeInPower);
-                stack.setPosition((fpower.getAsDouble()* coefficients[0])+ coefficients[1]);
+                if(intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS) > 3700) {
+                    intake.set(-intakeOutPower);
+
+                } else {
+                    intake.set(intakeInPower);
+                    stack.setPosition((fpower.getAsDouble()* coefficients[0])+ coefficients[1]);
+                }
+
             } else if (rpower.getAsDouble() != 0) {
                 intake.set(intakeOutPower);
                 stack.setPosition((rpower.getAsDouble()* coefficients[0])+ coefficients[1]);
@@ -63,6 +69,7 @@ public class IntakeSys extends SubsystemBase {
     }
     @Override
     public void periodic() {
+
 //        if (algorithm) {
 //            double current = getCurrent();
 //            double forwardPower = intake.get();
