@@ -7,10 +7,10 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 @Config
 public class BoxSys extends SubsystemBase {
-    public static final double INNER_SERVO_LOCKED = 0.0;
+    public static final double INNER_SERVO_LOCKED = 0.8;
     public static final double INNER_SERVO_UNLOCKED = 0.5;
-    public static final double OUTER_SERVO_LOCKED = 0.0;
-    public static final double OUTER_SERVO_UNLOCKED = 0.5;
+    public static final double OUTER_SERVO_LOCKED = 0.5;
+    public static final double OUTER_SERVO_UNLOCKED = 0.8;
     private SimpleServo innerServo;
     private SimpleServo outerServo;
     public enum BoxState {
