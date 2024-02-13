@@ -13,6 +13,8 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
@@ -32,6 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class BaseOpMode extends CommandOpMode {
     protected TouchSensor limitSwitch;
+    protected Rev2mDistanceSensor distanceSensor, breakBeamSensor;
     protected MB1242 flSensor,frSensor,blSensor;
     protected GamepadEx gamepadEx1, gamepadEx2;
     protected SimpleServo armServo, pitchServo, innerServo, outerServo, stack, plane;
@@ -60,7 +63,6 @@ public class BaseOpMode extends CommandOpMode {
     @Override
     public void run() {
         super.run();
-        tad("localize",localizerSys.getPose());
         tad("armState", ArmSys.armState);
         tad("boxState", BoxSys.boxState);
         tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
@@ -79,6 +81,8 @@ public class BaseOpMode extends CommandOpMode {
 
     public void initHardware() {
         limitSwitch = hardwareMap.get(TouchSensor.class, "limit");
+        distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "pixels");
+        breakBeamSensor = hardwareMap.get(Rev2mDistanceSensor.class, "beam");
         flSensor = hardwareMap.get(MB1242.class, "flSensor");
         frSensor = hardwareMap.get(MB1242.class, "frSensor");
         blSensor = hardwareMap.get(MB1242.class, "blSensor");
@@ -96,6 +100,7 @@ public class BaseOpMode extends CommandOpMode {
         liftLeft = new MotorEx(hardwareMap, "lil", Motor.GoBILDA.RPM_1150);
         liftRight = new MotorEx(hardwareMap, "lir", Motor.GoBILDA.RPM_1150);
         hang = new MotorEx(hardwareMap, "hang", Motor.GoBILDA.RPM_30);
+
     }
     public void setupHardware() {
         liftRight.setInverted(true);
@@ -109,8 +114,7 @@ public class BaseOpMode extends CommandOpMode {
         boxSys = new BoxSys(innerServo, outerServo);
         driveSys = new DriveSys(leftFront, rightFront, leftRear, rightRear);
         hangSys = new HangSys(hang);
-        intakeSys = new IntakeSys(stack, intake);
-        planeSys = new PlaneSys(plane);
+        intakeSys = new IntakeSys(stack, intake, distanceSensor, breakBeamSensor);
     }
     public void setupMisc() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());

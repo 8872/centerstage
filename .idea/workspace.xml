@@ -9,12 +9,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="added some basic top subsystem built of what I tuned.">
-      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/DriveSys.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/IntakeSys.java" afterDir="false" />
+    <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="added roadrunner and ftclib. Clean repo no code.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/BaseOpMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/BaseOpMode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/MainOpMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/MainOpMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/IntakeSys.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/IntakeSys.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,9 +31,42 @@
         <task path="$PROJECT_DIR$">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/TeamCode">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="centerstage8872" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="centerstage8872" type="f1a62948:ProjectNode" />
+                <item name="TeamCode" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="centerstage8872" type="f1a62948:ProjectNode" />
+                <item name="TeamCode" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="centerstage8872" type="f1a62948:ProjectNode" />
+                <item name="TeamCode" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="other" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="centerstage8872" type="f1a62948:ProjectNode" />
+                <item name="TeamCode" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -79,8 +110,10 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ResourceManagerPrefKey.ModuleName&quot;: &quot;centerstage8872.TeamCode.main&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;liberica-11&quot;,
@@ -105,6 +138,9 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\py969\IdeaProjects\centerstage\TeamCode\src\main\java\org\firstinspires\ftc\teamcode\tinycmd\vision\apriltags" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.firstinspires.ftc.teamcode.util" />
     </key>
   </component>
   <component name="RunManager" selected="Android App.TeamCode">
@@ -208,6 +244,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Math" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Math" />
+      <module name="centerstage8872.TeamCode.unitTest" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestAnnotation" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -290,6 +333,28 @@
         <option name="taskNames">
           <list>
             <option value="dependencies" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="centerstage8872:TeamCode [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/TeamCode" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="test" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -302,6 +367,8 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.centerstage8872:TeamCode [test]" />
+        <item itemvalue="Application.Math" />
         <item itemvalue="Gradle.centerstage [dependencies]" />
         <item itemvalue="Gradle.TestAnnotation" />
         <item itemvalue="Application.Main" />
@@ -343,10 +410,7 @@
       <workItem from="1695489234370" duration="2973000" />
       <workItem from="1695503721617" duration="3396000" />
       <workItem from="1695520865664" duration="50000" />
-      <workItem from="1706506613948" duration="1884000" />
-      <workItem from="1706757169314" duration="4000" />
-      <workItem from="1706844245217" duration="296000" />
-      <workItem from="1707284334760" duration="3536000" />
+      <workItem from="1706506613948" duration="343000" />
     </task>
     <task id="LOCAL-00001" summary="Changed Button class to include a Debouncer.java. Moved some classes to packages that makes sense. Added a Debouncer and LowPassFilter to the filters package. IMPL folder is just some testing... they are in progress and will be edited and deleted as such.">
       <option name="closed" value="true" />
@@ -412,15 +476,7 @@
       <option name="project" value="LOCAL" />
       <updated>1695360037214</updated>
     </task>
-    <task id="LOCAL-00009" summary="added some basic top subsystem built of what I tuned.">
-      <option name="closed" value="true" />
-      <created>1706507232782</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1706507232782</updated>
-    </task>
-    <option name="localTasksCounter" value="10" />
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -446,7 +502,7 @@
     <MESSAGE value="not sure what i changed but fuck it we ball" />
     <MESSAGE value="just changed some locations and added an AprilTagPositions and AprilTagLocalizer as well as a reference image. This is good for localization and when season starts you can assign each Enumerator variable a matching AprilTag Tag. There is also a Family of april tags living at AprilTagFamily which contains all the FTC usable april tags. Use the .setTag to set a position of the field to 1 of the 4 possible AprilTagFamily variables." />
     <MESSAGE value="added roadrunner and ftclib. Clean repo no code." />
-    <MESSAGE value="added some basic top subsystem built of what I tuned." />
-    <option name="LAST_COMMIT_MESSAGE" value="added some basic top subsystem built of what I tuned." />
+    <MESSAGE value="jk" />
+    <option name="LAST_COMMIT_MESSAGE" value="jk" />
   </component>
 </project>
