@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
+import org.firstinspires.ftc.teamcode.roadrunner.util.Encoder;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.teamcode.util.MB1242;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -60,20 +61,24 @@ public class BaseOpMode extends CommandOpMode {
     @Override
     public void run() {
         super.run();
-        tad("localize",localizerSys.getPose());
-        tad("armState", ArmSys.armState);
-        tad("boxState", BoxSys.boxState);
-        tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
+//        tad("localize",localizerSys.getPose());
+//        tad("armState", ArmSys.armState);
+//        tad("boxState", BoxSys.boxState);
+//        tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
         tad("lift right", liftRight.getCurrentPosition());
-        tad("lift left", liftLeft.getCurrentPosition());
-        tad("armServo", armServo.getPosition());
-        tad("pitchServo", pitchServo.getPosition());
-        tad("innerServo", innerServo.getPosition());
-        tad("outerServo", outerServo.getPosition());
-        tad("leftFront", leftFront.get());
-        tad("leftRear", leftRear.get());
-        tad("rightRear", rightRear.get());
-        tad("rightFront", rightFront.get());
+        tad("lift left encoder", liftLeft.getCurrentPosition());
+        tad("left pos error", liftSys.getPosErrorL());
+        tad("left lift profile power", liftSys.getPowerL());
+        tad("left lift power", liftSys.getPowerL());
+//        tad("armServo", armServo.getPosition());
+//        tad("pitchServo", pitchServo.getPosition());
+//        tad("innerServo", innerServo.getPosition());
+//        tad("outerServo", outerServo.getPosition());
+//        tad("leftFront", leftFront.get());
+//        tad("leftRear", leftRear.get());
+//        tad("rightRear", rightRear.get());
+//        tad("rightFront", rightFront.get());
+        tad("voltage", liftSys.getVoltage());
         telemetry.update();
     }
 
@@ -86,7 +91,7 @@ public class BaseOpMode extends CommandOpMode {
         armServo = new SimpleServo(hardwareMap, "armServo", 0, 355);
         pitchServo = new SimpleServo(hardwareMap, "pitchServo", 0, 355);
         innerServo = new SimpleServo(hardwareMap, "innerServo", 0, 255);
-        outerServo = new SimpleServo(hardwareMap, "outerServo", 0, 255);
+        outerServo = new SimpleServo(hardwareMap, "outerServo", 0,  255);
         stack = new SimpleServo(hardwareMap, "stack", 0, 255);
         leftFront = new MotorEx(hardwareMap, "leftFront", Motor.GoBILDA.RPM_435);
         leftRear = new MotorEx(hardwareMap, "leftRear", Motor.GoBILDA.RPM_435);
@@ -98,12 +103,12 @@ public class BaseOpMode extends CommandOpMode {
         hang = new MotorEx(hardwareMap, "hang", Motor.GoBILDA.RPM_30);
     }
     public void setupHardware() {
-        liftRight.setInverted(true);
+        liftLeft.setInverted(true);
         leftRear.setInverted(true);
         rightRear.setInverted(true);
     }
     public void initSubystems() {
-        //liftSys = new LiftSys(liftLeft,liftRight, limitSwitch, hardwareMap.voltageSensor);
+        liftSys = new LiftSys(liftLeft,liftRight, limitSwitch, hardwareMap.voltageSensor);
         localizerSys = new LocalizerSys(flSensor, frSensor, blSensor);
         armSys = new ArmSys(armServo, pitchServo);
         boxSys = new BoxSys(innerServo, outerServo);
