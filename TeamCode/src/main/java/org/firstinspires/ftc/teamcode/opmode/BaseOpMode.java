@@ -68,7 +68,7 @@ public class BaseOpMode extends CommandOpMode {
         tad("lift right", liftRight.getCurrentPosition());
         tad("lift left encoder", liftLeft.getCurrentPosition());
         tad("left pos error", liftSys.getPosErrorL());
-        tad("left lift profile power", liftSys.getPowerL());
+        tad("left lift profile power", liftSys.getProfilePowerL());
         tad("left lift power", liftSys.getPowerL());
 //        tad("armServo", armServo.getPosition());
 //        tad("pitchServo", pitchServo.getPosition());

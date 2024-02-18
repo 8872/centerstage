@@ -36,7 +36,6 @@ public class LiftSys extends SubsystemBase {
     private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxVel, maxAccel);
     private final ProfiledPIDController Rcontroller = new ProfiledPIDController(kp,ki,kd,constraints);
     private final ProfiledPIDController Lcontroller = new ProfiledPIDController(kp,ki,kd,constraints);
-
     private final TouchSensor limitSwitch;
 
     private ElapsedTime voltageTimer;
