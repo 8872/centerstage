@@ -30,6 +30,7 @@ public class MainOpMode extends BaseOpMode {
         gb2(GamepadKeys.Button.X).whenPressed(new InstantCommand(() -> liftSys.setHeight(LiftSys.MID)));
         gb2(GamepadKeys.Button.B).whenPressed(new InstantCommand(() -> liftSys.setHeight(LiftSys.LOW)));
         gb2(GamepadKeys.Button.A).whenPressed(new InstantCommand(() -> liftSys.setHeight(LiftSys.NONE)));
+        gb2(GamepadKeys.Button.DPAD_LEFT).toggleWhenPressed(armSys.intake(), armSys.deposit());
 
     }
 }

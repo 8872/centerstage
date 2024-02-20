@@ -79,6 +79,7 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("rightRear", rightRear.get());
 //        tad("rightFront", rightFront.get());
         tad("voltage", liftSys.getVoltage());
+        tad("target position", liftSys.getTargetHeight());
         telemetry.update();
     }
 

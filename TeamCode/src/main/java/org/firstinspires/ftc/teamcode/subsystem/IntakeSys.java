@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.util.Precision;
 
 import java.util.function.DoubleSupplier;
+
 @Config
 public class IntakeSys extends SubsystemBase {
     public static boolean algorithm = true;
@@ -20,53 +21,56 @@ public class IntakeSys extends SubsystemBase {
     private MotorEx intake;
     private SimpleServo stack;
 
-    public static double intakeInPower = 0.6;
+    public static double intakeInPower = 0.75;
 
     public static double intakeOutPower = 0.7;
 
-    public static double intakeServoLowPosition = 0;
+    public static double intakeServoLowPosition = 0.31;
 
-    public static double intakeServoHighPosition = 0.5;
+    public static double intakeServoHighPosition = 0.55;
     private final double[] coefficients;
+
     public IntakeSys(SimpleServo stack, MotorEx intake) {
-         this.stack = stack;
-         this.intake = intake;
-         coefficients = Precision.calculateSlopeAndIntercept(0,intakeServoHighPosition,1,intakeServoLowPosition);
+        this.stack = stack;
+        this.intake = intake;
+        coefficients = Precision.calculateSlopeAndIntercept(0, intakeServoHighPosition, 1, intakeServoLowPosition);
     }
+
     public double getCurrent() {
         return intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS);
     }
+
     public Command intake(DoubleSupplier fpower, DoubleSupplier rpower) {
         return new RunCommand(() -> {
             if (fpower.getAsDouble() != 0) {
-                if(intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS) > 3700) {
-                    intake.set(-intakeOutPower);
-
-                } else {
+//                if (intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS) > 3700) {
+//                    intake.set(-intakeOutPower);
+//                } else {
                     intake.set(intakeInPower);
-                    stack.setPosition((fpower.getAsDouble()* coefficients[0])+ coefficients[1]);
-                }
-
+                    stack.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
+//                }
             } else if (rpower.getAsDouble() != 0) {
-                intake.set(intakeOutPower);
-                stack.setPosition((rpower.getAsDouble()* coefficients[0])+ coefficients[1]);
+                intake.set(-intakeOutPower);
+                stack.setPosition((rpower.getAsDouble() * coefficients[0]) + coefficients[1]);
             } else {
                 intake.set(0);
                 stack.setPosition(intakeServoHighPosition);
             }
-
         }, this);
     }
+
     public Command runIntake(double power) {
         return new RunCommand(() -> {
             intake.set(intakeInPower);
         }, this);
     }
+
     public Command setStack(double position) {
         return new InstantCommand(() -> {
             stack.setPosition(position);
         }, this);
     }
+
     @Override
     public void periodic() {
 
