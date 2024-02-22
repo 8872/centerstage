@@ -89,7 +89,7 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("rightRear", rightRear.get());
 //        tad("rightFront", rightFront.get());
         tad("voltage", liftSys.getVoltage());
-        tad("target position", liftSys.getTargetHeight());
+//        tad("target position", liftSys.gettar());
 
         tad("distance2 mm", beam2.getDistance(DistanceUnit.MM));
         tad("distance2 cm", beam2.getDistance(DistanceUnit.CM));
