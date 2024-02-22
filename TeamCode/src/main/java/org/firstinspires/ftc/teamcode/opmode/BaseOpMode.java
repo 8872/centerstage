@@ -92,7 +92,6 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("target position", liftSys.gettar());
 
         tad("distance2 mm", beam2.getDistance(DistanceUnit.MM));
-        tad("distance2 cm", beam2.getDistance(DistanceUnit.CM));
 
         telemetry.update();
     }
@@ -135,6 +134,8 @@ public class BaseOpMode extends CommandOpMode {
         liftSys = new LiftSys(liftLeft,liftRight, limitSwitch, hardwareMap.voltageSensor);
         localizerSys = new LocalizerSys(flSensor, frSensor, blSensor);
         armSys = new ArmSys(armServo, pitchServo);
+        armSys.intake();
+
         boxSys = new BoxSys(innerServo, outerServo);
         driveSys = new DriveSys(leftFront, rightFront, leftRear, rightRear);
         hangSys = new HangSys(hang);
