@@ -20,6 +20,7 @@ public class IntakeSys extends SubsystemBase {
     private long spikeStartTime = 0;
     private MotorEx intake;
     private SimpleServo stack;
+    private SimpleServo stack2;
 
     public static double intakeInPower = 0.75;
 
@@ -28,11 +29,17 @@ public class IntakeSys extends SubsystemBase {
     public static double intakeServoLowPosition = 0.31;
 
     public static double intakeServoHighPosition = 0.55;
-    private final double[] coefficients;
 
-    public IntakeSys(SimpleServo stack, MotorEx intake) {
+    public static double intakeServo2LowPosition = 0;
+    public static double intakeServo2HighPosition = 0;
+    private final double[] coefficients;
+    private final double[] coefficients2;
+
+    public IntakeSys(SimpleServo stack, SimpleServo stack2, MotorEx intake) {
         this.stack = stack;
+        this.stack2 = stack2;
         this.intake = intake;
+        coefficients2 = Precision.calculateSlopeAndIntercept(0,intakeServo2HighPosition, 1, intakeServo2LowPosition);
         coefficients = Precision.calculateSlopeAndIntercept(0, intakeServoHighPosition, 1, intakeServoLowPosition);
     }
 
@@ -43,18 +50,17 @@ public class IntakeSys extends SubsystemBase {
     public Command intake(DoubleSupplier fpower, DoubleSupplier rpower) {
         return new RunCommand(() -> {
             if (fpower.getAsDouble() != 0) {
-//                if (intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS) > 3700) {
-//                    intake.set(-intakeOutPower);
-//                } else {
-                    intake.set(intakeInPower);
-                    stack.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
-//                }
+                intake.set(intakeInPower);
+                stack.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
+                //stack2.setPosition((fpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else if (rpower.getAsDouble() != 0) {
                 intake.set(-intakeOutPower);
                 stack.setPosition((rpower.getAsDouble() * coefficients[0]) + coefficients[1]);
+                //stack2.setPosition((rpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else {
                 intake.set(0);
                 stack.setPosition(intakeServoHighPosition);
+                stack2.setPosition(intakeServoHighPosition);
             }
         }, this);
     }

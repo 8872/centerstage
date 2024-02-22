@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="Arm Servo Tuner", group = "Tuner")
-@Disabled
+
 public class ArmServoTuner extends LinearOpMode {
 
     public static double armHome;

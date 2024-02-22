@@ -8,20 +8,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.apache.commons.math3.util.Precision;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
 
 @TeleOp(name="Intake Servo Tuner", group = "Tuner")
-@Disabled
 public class IntakeServoTuner extends LinearOpMode {
-    public static double intakeServoHigh = 0;
-    public static double intakeServoLow = 0;
     @Override
     public void runOpMode() throws InterruptedException {
-        SimpleServo intakeServo = new SimpleServo(hardwareMap, "intakeServo", 0, 255);
+        SimpleServo intakeServo = new SimpleServo(hardwareMap, "stack2", 0, 255);
         GamepadEx gamepadEx = new GamepadEx(gamepad1);
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
-            gamepadEx.getGamepadButton(GamepadKeys.Button.A).whenPressed(new InstantCommand(()->intakeServo.setPosition(intakeServoHigh)));
-            gamepadEx.getGamepadButton(GamepadKeys.Button.B).whenPressed(new InstantCommand(()-> intakeServo.setPosition(intakeServoLow)));
+            gamepadEx.getGamepadButton(GamepadKeys.Button.A).whenPressed(new InstantCommand(()->intakeServo.setPosition(IntakeSys.intakeServo2HighPosition)));
+            gamepadEx.getGamepadButton(GamepadKeys.Button.B).whenPressed(new InstantCommand(()-> intakeServo.setPosition(IntakeSys.intakeServo2LowPosition)));
         }
     }
 }

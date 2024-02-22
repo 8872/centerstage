@@ -13,11 +13,14 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.roadrunner.util.Encoder;
@@ -35,8 +38,11 @@ public class BaseOpMode extends CommandOpMode {
     protected TouchSensor limitSwitch;
     protected MB1242 flSensor,frSensor,blSensor;
     protected GamepadEx gamepadEx1, gamepadEx2;
-    protected SimpleServo armServo, pitchServo, innerServo, outerServo, stack, plane;
+    protected SimpleServo armServo, pitchServo, innerServo, outerServo, stack, stack2, plane;
     protected MotorEx leftFront, leftRear, rightRear, rightFront, liftLeft, liftRight, hang, intake;
+
+    protected DistanceSensor beam, beam2;
+
     protected ArmSys armSys;
     protected BoxSys boxSys;
     protected DriveSys driveSys;
@@ -64,11 +70,15 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("localize",localizerSys.getPose());
 //        tad("armState", ArmSys.armState);
 //        tad("boxState", BoxSys.boxState);
+//        tad("box inner pos", boxSys.getInnerServo());
+//        tad("box outter pos", boxSys.getOuterServo());
 //        tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
         tad("lift right", liftRight.getCurrentPosition());
         tad("lift left encoder", liftLeft.getCurrentPosition());
         tad("left pos error", liftSys.getPosErrorL());
         tad("left lift profile power", liftSys.getProfilePowerL());
+        tad("profile location output", liftSys.getSetPointL());
+        tad("normal pid output", liftSys.getNormalPIDOutput());
         tad("left lift power", liftSys.getPowerL());
 //        tad("armServo", armServo.getPosition());
 //        tad("pitchServo", pitchServo.getPosition());
@@ -80,6 +90,10 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("rightFront", rightFront.get());
         tad("voltage", liftSys.getVoltage());
         tad("target position", liftSys.getTargetHeight());
+
+        tad("distance2 mm", beam2.getDistance(DistanceUnit.MM));
+        tad("distance2 cm", beam2.getDistance(DistanceUnit.CM));
+
         telemetry.update();
     }
 
@@ -88,12 +102,19 @@ public class BaseOpMode extends CommandOpMode {
         flSensor = hardwareMap.get(MB1242.class, "flSensor");
         frSensor = hardwareMap.get(MB1242.class, "frSensor");
         blSensor = hardwareMap.get(MB1242.class, "blSensor");
+
+        beam = hardwareMap.get(DistanceSensor.class, "beam");
+        beam2 = hardwareMap.get(DistanceSensor.class, "beam2");
+
         plane = new SimpleServo(hardwareMap, "airplane",0,255);
         armServo = new SimpleServo(hardwareMap, "armServo", 0, 355);
         pitchServo = new SimpleServo(hardwareMap, "pitchServo", 0, 355);
         innerServo = new SimpleServo(hardwareMap, "innerServo", 0, 255);
         outerServo = new SimpleServo(hardwareMap, "outerServo", 0,  255);
         stack = new SimpleServo(hardwareMap, "stack", 0, 255);
+        stack2 = new SimpleServo(hardwareMap, "stack2", 0, 255);
+        stack2.setInverted(true);
+
         leftFront = new MotorEx(hardwareMap, "leftFront", Motor.GoBILDA.RPM_435);
         leftRear = new MotorEx(hardwareMap, "leftRear", Motor.GoBILDA.RPM_435);
         rightRear = new MotorEx(hardwareMap, "rightRear", Motor.GoBILDA.RPM_435);
@@ -104,7 +125,9 @@ public class BaseOpMode extends CommandOpMode {
         hang = new MotorEx(hardwareMap, "hang", Motor.GoBILDA.RPM_30);
     }
     public void setupHardware() {
-        liftLeft.setInverted(true);
+//        liftLeft.setInverted(true);
+//        liftRight.setInverted(true);
+        liftRight.setInverted(true);
         leftRear.setInverted(true);
         rightRear.setInverted(true);
     }
@@ -115,7 +138,7 @@ public class BaseOpMode extends CommandOpMode {
         boxSys = new BoxSys(innerServo, outerServo);
         driveSys = new DriveSys(leftFront, rightFront, leftRear, rightRear);
         hangSys = new HangSys(hang);
-        intakeSys = new IntakeSys(stack, intake);
+        intakeSys = new IntakeSys(stack, stack2, intake);
         planeSys = new PlaneSys(plane);
     }
     public void setupMisc() {

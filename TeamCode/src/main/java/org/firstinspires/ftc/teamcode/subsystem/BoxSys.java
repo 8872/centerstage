@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 @Config
 public class BoxSys extends SubsystemBase {
+    public static boolean nah = false;
     public static final double INNER_SERVO_LOCKED = 0.8;
     public static final double INNER_SERVO_UNLOCKED = 0.5;
     public static final double OUTER_SERVO_LOCKED = 0.5;
@@ -32,18 +33,15 @@ public class BoxSys extends SubsystemBase {
         }, this);
     }
 
-    public Command release() {
-        if(Math.round(outerServo.getPosition()) == OUTER_SERVO_UNLOCKED) {
-            return new InstantCommand(() -> {
-                boxState = BoxState.INTAKE;
-                innerServo.setPosition(INNER_SERVO_UNLOCKED);
-            }, this);
+    public void release() {
+        if(outerServo.getPosition() == OUTER_SERVO_UNLOCKED) {
+            boxState = BoxState.INTAKE;
+            innerServo.setPosition(INNER_SERVO_UNLOCKED);
         } else {
-            return new InstantCommand(() -> {
-                boxState = BoxState.INNER;
-                outerServo.setPosition(OUTER_SERVO_UNLOCKED);
-                innerServo.setPosition(INNER_SERVO_LOCKED);
-            }, this);
+            boxState = BoxState.INNER;
+            outerServo.setPosition(OUTER_SERVO_UNLOCKED);
+            innerServo.setPosition(INNER_SERVO_LOCKED);
+            nah = true;
         }
     }
 
@@ -55,4 +53,11 @@ public class BoxSys extends SubsystemBase {
         }, this);
     }
 
+    public double getInnerServo() {
+        return innerServo.getPosition();
+    }
+
+    public double getOuterServo() {
+        return outerServo.getPosition();
+    }
 }
