@@ -14,7 +14,7 @@ public class LocalizerSys extends SubsystemBase {
     }
 
     public String getPose() {
-        return "fl: " + fl.getDistance(DistanceUnit.INCH) + "fr: " + fr.getDistance(DistanceUnit.INCH) + "bl: " + bl.getDistance(DistanceUnit.INCH);
+        return "fl: " + fl.getDistance(DistanceUnit.INCH) + "\nfr: " + fr.getDistance(DistanceUnit.INCH) + "\nbl: " + bl.getDistance(DistanceUnit.INCH);
     }
 
 }

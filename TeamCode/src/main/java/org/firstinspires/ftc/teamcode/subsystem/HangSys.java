@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+
 @Config
 public class HangSys extends SubsystemBase {
     private MotorEx hang;
@@ -13,22 +14,24 @@ public class HangSys extends SubsystemBase {
     public static double releaseHeight = 200;
     public static double holdHeight = 150;
     public final int STAGE_CONSTANT;
+
     public HangSys(MotorEx hang) {
         this.hang = hang;
         STAGE_CONSTANT = (int) (hang.getCPR());
-
     }
+
     public Command setRelease() {
         if (!hasHung) {
             hasHung = true;
-            return new InstantCommand(() -> moveToPosition(3*STAGE_CONSTANT + 8));
+            return new InstantCommand(() -> moveToPosition(3 * STAGE_CONSTANT + 8));
         } else {
             return new InstantCommand();
         }
     }
+
     public Command setHang() {
         if (hasHung) {
-            return new InstantCommand(()-> moveToPosition(2*STAGE_CONSTANT + 4));
+            return new InstantCommand(() -> moveToPosition(2 * STAGE_CONSTANT + 4));
         }
         return new InstantCommand();
     }

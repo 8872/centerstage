@@ -1,36 +1,80 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.message.redux.ReceiveGamepadState;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
+import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
+
+import java.util.concurrent.Delayed;
+
+import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Button.*;
 
 @Config
-@TeleOp(name = "Main Op Mode")
+@TeleOp
 public class MainOpMode extends BaseOpMode {
+
+    public static int delay = 250;
+
     @Override
     public void initialize() {
         super.initialize();
-        new GamepadButton(gamepadEx2, GamepadKeys.Button.LEFT_STICK_BUTTON)
-                .and(new GamepadButton(gamepadEx2, GamepadKeys.Button.RIGHT_STICK_BUTTON))
-                .and(new GamepadButton(gamepadEx2, GamepadKeys.Button.A))
-                .whenActive(planeSys.launch());
-        //gb1(GamepadKeys.Button.A).whenPressed(liftSys.goTo(400));
-        //gb1(GamepadKeys.Button.LEFT_BUMPER).whileHeld(driveSys.drive(gamepadEx1::getRightX,gamepadEx1::getLeftY,gamepadEx1::getLeftX, 0.5));
-        gb2(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(new InstantCommand(() -> boxSys.release()));
-        gb1(GamepadKeys.Button.LEFT_BUMPER).toggleWhenPressed(new ParallelCommandGroup(armSys.intake(), boxSys.intake()), new ParallelCommandGroup(armSys.deposit(), boxSys.close()));
-        register(boxSys, armSys, driveSys, intakeSys, localizerSys);
-        intakeSys.setDefaultCommand(intakeSys.intake(() -> gamepadEx1.gamepad.right_trigger, () -> gamepadEx1.gamepad.left_trigger));
-        driveSys.setDefaultCommand(driveSys.drive(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX, 1));
-//        gb2(GamepadKeys.Button.Y).whenPressed(new InstantCommand(() -> liftSys.setHeight(LiftSys.HIGH)));
-//        gb2(GamepadKeys.Button.X).whenPressed(new InstantCommand(() -> liftSys.setHeight(LiftSys.MID)));
-//        gb2(GamepadKeys.Button.B).whenPressed(new InstantCommand(() -> liftSys.setHeight(LiftSys.LOW)));
-//        gb2(GamepadKeys.Button.A).whenPressed(new InstantCommand(() -> liftSys.setHeight(LiftSys.NONE)));
-        gb2(GamepadKeys.Button.DPAD_LEFT).toggleWhenPressed(new ParallelCommandGroup(armSys.intake(), boxSys.intake()), new ParallelCommandGroup(armSys.deposit(), boxSys.close()));
 
+        register(boxSys, armSys, driveSys, intakeSys, localizerSys, liftSys);
+
+        // plane
+//        new GamepadButton(gamepadEx2, LEFT_STICK_BUTTON)
+//                .and(new GamepadButton(gamepadEx2, RIGHT_STICK_BUTTON))
+//                .and(new GamepadButton(gamepadEx2, A)).whenActive(planeSys.launch());
+        gb2(DPAD_RIGHT).whenPressed(planeSys.launch());
+
+        // arm + box
+        gb2(RIGHT_BUMPER).whenPressed(new InstantCommand(() -> boxSys.release()));
+        gb2(LEFT_BUMPER).toggleWhenPressed(
+                new ParallelCommandGroup(armSys.intake(), boxSys.intake()),
+                new ParallelCommandGroup(armSys.deposit(), boxSys.close())
+        );
+
+        // slide + box
+        gb2(A).whenPressed(new ParallelCommandGroup(
+                liftSys.goTo(LiftSys.NONE), new ParallelCommandGroup(armSys.intake(), boxSys.intake())
+        ));
+        slideUp(B, LiftSys.LOW);
+        slideUp(X, LiftSys.MID);
+        slideUp(Y, LiftSys.HIGH);
+
+
+//        gb2(DPAD_LEFT).toggleWhenPressed(
+//                new ParallelCommandGroup(armSys.intake(), boxSys.intake()),
+//                new ParallelCommandGroup(armSys.deposit(), boxSys.close())
+//        );
+
+        gb1(LEFT_BUMPER).whileHeld(
+                driveSys.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
+
+
+
+//        liftSys.setDefaultCommand(liftSys.manualSetHeight(gamepadEx2::getRightY));
+        intakeSys.setDefaultCommand(intakeSys.intake(() -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger));
+        driveSys.setDefaultCommand(driveSys.drive(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
+
+
+
+    }
+
+    private void slideUp(GamepadKeys.Button button, double height) {
+        gb2(button).whenPressed(new ParallelCommandGroup(
+                liftSys.goTo(height), new ParallelCommandGroup(armSys.deposit(), boxSys.close())
+        ));
+    }
+
+
+    private void slideUpDelayed(GamepadKeys.Button button, double height) {
+        gb2(button).whenPressed(new ParallelCommandGroup(
+                liftSys.goTo(height), new DelayedCommand(new ParallelCommandGroup(armSys.deposit(), boxSys.close()), delay)
+        ));
     }
 }

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.text.method.Touch;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
@@ -13,20 +12,15 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.teamcode.roadrunner.util.Encoder;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.teamcode.util.MB1242;
-import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
@@ -36,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class BaseOpMode extends CommandOpMode {
     protected TouchSensor limitSwitch;
-    protected MB1242 flSensor,frSensor,blSensor;
+    protected MB1242 flSensor, frSensor, blSensor;
     protected GamepadEx gamepadEx1, gamepadEx2;
     protected SimpleServo armServo, pitchServo, innerServo, outerServo, stack, stack2, plane;
     protected MotorEx leftFront, leftRear, rightRear, rightFront, liftLeft, liftRight, hang, intake;
@@ -52,6 +46,7 @@ public class BaseOpMode extends CommandOpMode {
     protected PlaneSys planeSys;
     protected LiftSys liftSys;
     List<LynxModule> hubs;
+
     @Override
     public void initialize() {
         gamepadEx1 = new GamepadEx(gamepad1);
@@ -93,6 +88,8 @@ public class BaseOpMode extends CommandOpMode {
 
         tad("distance2 mm", beam2.getDistance(DistanceUnit.MM));
 
+        tad("mb1242", localizerSys.getPose());
+
         telemetry.update();
     }
 
@@ -105,11 +102,11 @@ public class BaseOpMode extends CommandOpMode {
         beam = hardwareMap.get(DistanceSensor.class, "beam");
         beam2 = hardwareMap.get(DistanceSensor.class, "beam2");
 
-        plane = new SimpleServo(hardwareMap, "airplane",0,255);
+        plane = new SimpleServo(hardwareMap, "airplane", 0, 255);
         armServo = new SimpleServo(hardwareMap, "armServo", 0, 355);
         pitchServo = new SimpleServo(hardwareMap, "pitchServo", 0, 355);
         innerServo = new SimpleServo(hardwareMap, "innerServo", 0, 255);
-        outerServo = new SimpleServo(hardwareMap, "outerServo", 0,  255);
+        outerServo = new SimpleServo(hardwareMap, "outerServo", 0, 255);
         stack = new SimpleServo(hardwareMap, "stack", 0, 255);
         stack2 = new SimpleServo(hardwareMap, "stack2", 0, 255);
         stack2.setInverted(true);
@@ -123,6 +120,7 @@ public class BaseOpMode extends CommandOpMode {
         liftRight = new MotorEx(hardwareMap, "lir", Motor.GoBILDA.RPM_1150);
         hang = new MotorEx(hardwareMap, "hang", Motor.GoBILDA.RPM_30);
     }
+
     public void setupHardware() {
 //        liftLeft.setInverted(true);
 //        liftRight.setInverted(true);
@@ -130,8 +128,9 @@ public class BaseOpMode extends CommandOpMode {
         leftRear.setInverted(true);
         rightRear.setInverted(true);
     }
+
     public void initSubystems() {
-        liftSys = new LiftSys(liftLeft,liftRight, limitSwitch, hardwareMap.voltageSensor);
+        liftSys = new LiftSys(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, gamepadEx2::getRightY);
         localizerSys = new LocalizerSys(flSensor, frSensor, blSensor);
         armSys = new ArmSys(armServo, pitchServo);
         armSys.intake();
@@ -142,6 +141,7 @@ public class BaseOpMode extends CommandOpMode {
         intakeSys = new IntakeSys(stack, stack2, intake);
         planeSys = new PlaneSys(plane);
     }
+
     public void setupMisc() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         final CameraStreamProcessor processor = new CameraStreamProcessor();
@@ -156,9 +156,11 @@ public class BaseOpMode extends CommandOpMode {
     protected GamepadButton gb1(GamepadKeys.Button button) {
         return gamepadEx1.getGamepadButton(button);
     }
+
     protected GamepadButton gb2(GamepadKeys.Button button) {
         return gamepadEx2.getGamepadButton(button);
     }
+
     protected void tad(String caption, Object value) {
         telemetry.addData(caption, value);
     }

@@ -23,17 +23,18 @@ public class AprilTagOpMode extends BaseOpMode {
     private AprilTagProcessor aprilTag;
     private VisionPortal visionPortal;
 
-    public static int resWidth = 640;
-    public static int resHeight = 480;
+    public static int resWidth = 1080;
+    public static int resHeight = 920;
 
     // TODO use ConceptAprilTagOptimizeExposure to determine
     public static int exposure = 6;
     public static int gain = 250;
+    public static boolean manualExposure = false;
 
     @Override
     public void initialize() {
         initAprilTag();
-        setManualExposure(exposure, gain);
+        if (manualExposure) setManualExposure(exposure, gain);
 
         gb2(GamepadKeys.Button.A).toggleWhenPressed(
                 new InstantCommand(() -> visionPortal.stopStreaming()),

@@ -15,14 +15,14 @@ import org.firstinspires.ftc.teamcode.subsystem.wpilib.MedianFilter;
 @TeleOp
 @Config
 public class BeamBreak extends BaseOpMode {
-    public static int sampleSize = 5;
+    public static int sampleSize = 20;
     private final MedianFilter filter = new MedianFilter(sampleSize);
 
     private int pixelCount = 0;
 
-    public static double FIRST = 100;
-    public static double SECOND = 120;
-    public static double tolerance = 5;
+    public static double FIRST = 123;
+    public static double SECOND = 105;
+    public static double tolerance = 4;
 
     @Override
     public void initialize() {
