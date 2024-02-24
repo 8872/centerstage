@@ -33,6 +33,7 @@ public class AprilTagOpMode extends BaseOpMode {
 
     @Override
     public void initialize() {
+        super.initialize();
         initAprilTag();
         if (manualExposure) setManualExposure(exposure, gain);
 

@@ -70,6 +70,7 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
         tad("lift right", liftRight.getCurrentPosition());
         tad("lift left", liftLeft.getCurrentPosition());
+
         tad("left pos error", liftSys.getPosErrorL());
         tad("left lift profile power", liftSys.getProfilePowerL());
         tad("profile location output", liftSys.getSetPointL());
@@ -136,7 +137,7 @@ public class BaseOpMode extends CommandOpMode {
         boxSys = new BoxSys(innerServo, outerServo);
         driveSys = new DriveSys(leftFront, rightFront, leftRear, rightRear);
         hangSys = new HangSys(hang);
-        intakeSys = new IntakeSys(stack, stack2, intake);
+        intakeSys = new IntakeSys(stack, stack2, intake, hardwareMap.voltageSensor);
         planeSys = new PlaneSys(plane);
     }
 

@@ -22,17 +22,14 @@ public class LiftSys extends SubsystemBase {
     private double highestVoltage = 13.3;
 
     public static double NONE = -5;
-    public static double LOW = 350;
-    public static double MID = 500;
-    public static double HIGH = 650;
+    public static double LOW = 925;
+    public static double MID = 1300;
+    public static double HIGH = 1800;
 
-    public static double kp = -0.01;
-    public static double kd = 0;
-    public static double ki = 0;
+    public static double kp = -0.009;
+    public static double kd = -0.0001;
+    public static double ki = -0.0003;
     public static double kg = 0;
-    public static double kgMax = 0;
-    public static double kgMin = 0;
-    public static double classKg = kg;
 
     public static double voltageProportion = 0;
 
@@ -63,10 +60,10 @@ public class LiftSys extends SubsystemBase {
 
     private final DoubleSupplier manualPower;
     private boolean manual = false;
+    public static boolean profile = false;
 
     public LiftSys(MotorEx left, MotorEx right, TouchSensor sensor, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor
             , DoubleSupplier manualPower) {
-        classKg = kg;
         this.left = left;
         this.right = right;
         this.left.resetEncoder();
@@ -115,12 +112,13 @@ public class LiftSys extends SubsystemBase {
     }
 
     public double getProfilePowerL() {
-        return (leftProfiledController.calculate(right.getCurrentPosition(), targetHeight)) + classKg;
+        return (leftProfiledController.calculate(right.getCurrentPosition(), targetHeight)) + kg;
     }
 
     public double getNormalPIDOutput() {
-        return leftProfiledController.calculate(right.getCurrentPosition(), targetHeight) + classKg;
+        return leftProfiledController.calculate(right.getCurrentPosition(), targetHeight) + kg;
     }
+
 
     public double getPowerL() {
         return left.get();
@@ -173,17 +171,20 @@ public class LiftSys extends SubsystemBase {
             manual = true;
         } else if (manual) {
             Log.d("asd", "doing kg");
-            right.set(classKg);
-            left.set(classKg);
+            right.set(kg);
+            left.set(kg);
         } else {
-            double kgStored = classKg;
-            if (left.getCurrentPosition() > 520)
-                classKg = kgStored + ((kgMax - kgStored) / (730 - 520)) * (left.getCurrentPosition() - 520);
-            if (left.getCurrentPosition() < 100)
-                classKg = kgStored - ((kgStored - kgMin) / (100)) * (100 - left.getCurrentPosition());
+//            if (profile) {
+//                right.set((rightProfiledController.calculate((right.getCurrentPosition()), targetHeight) + kg) * (13.3 / voltage));
+//                left.set((leftProfiledController.calculate(left.getCurrentPosition(), targetHeight) + kg) * (13.3 / voltage));
+//            } else {
+            // using right.getposition for both fixed the problem
+            right.set((rightController.calculate((right.getCurrentPosition()), targetHeight) + kg) * (13.3 / voltage));
+            left.set((leftController.calculate(right.getCurrentPosition(), targetHeight) + kg) * (13.3 / voltage));
+//            }
 
-            right.set((rightProfiledController.calculate(right.getCurrentPosition(), targetHeight) + classKg) * (13.3 / voltage));
-            left.set((leftProfiledController.calculate(left.getCurrentPosition(), targetHeight) + classKg) * (13.3 / voltage));
+
+            // y=0.92407(x-952)+873
         }
 
 

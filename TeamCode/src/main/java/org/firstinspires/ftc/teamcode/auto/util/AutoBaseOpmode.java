@@ -113,7 +113,7 @@ public class AutoBaseOpmode extends OpMode {
         boxSys = new BoxSys(innerServo, outerServo);
         driveSys = new DriveSys(leftFront, rightFront, leftRear, rightRear);
         hangSys = new HangSys(hang);
-        intakeSys = new IntakeSys(stack, stack2, intake);
+        intakeSys = new IntakeSys(stack, stack2, intake, hardwareMap.voltageSensor);
         planeSys = new PlaneSys(plane);
     }
     public void setupMisc() {

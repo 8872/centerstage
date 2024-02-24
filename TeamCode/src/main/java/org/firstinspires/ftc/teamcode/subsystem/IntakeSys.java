@@ -7,6 +7,9 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.util.Precision;
 
@@ -22,7 +25,7 @@ public class IntakeSys extends SubsystemBase {
     private SimpleServo stack;
     private SimpleServo stack2;
 
-    public static double intakeInPower = 0.7;
+    public static double intakeInPower = 0.67; // 0.7
 
     public static double intakeOutPower = 0.7;
 
@@ -34,11 +37,23 @@ public class IntakeSys extends SubsystemBase {
     private final double[] coefficients;
 //    private final double[] coefficients2;
 
-    public IntakeSys(SimpleServo stack, SimpleServo stack2, MotorEx intake) {
+    private double highestVoltage = 13.3;
+
+
+    private ElapsedTime voltageTimer;
+    private VoltageSensor voltageSensor;
+    private double voltage;
+
+    public IntakeSys(SimpleServo stack, SimpleServo stack2, MotorEx intake, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor) {
         this.stack = stack;
         this.stack2 = stack2;
         this.intake = intake;
         coefficients = Precision.calculateSlopeAndIntercept(0, intakeServoHighPosition, 1, intakeServoLowPosition);
+
+        this.voltageTimer = new ElapsedTime();
+        this.voltageTimer.reset();
+        this.voltageSensor = voltageSensor.iterator().next();
+        this.voltage = this.voltageSensor.getVoltage();
     }
 
     public double getCurrent() {
@@ -48,7 +63,7 @@ public class IntakeSys extends SubsystemBase {
     public Command intake(DoubleSupplier fpower, DoubleSupplier rpower) {
         return new RunCommand(() -> {
             if (fpower.getAsDouble() != 0) {
-                intake.set(intakeInPower);
+                intake.set((13.3 / voltage) * intakeInPower);
                 stack.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
                 stack2.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
             } else if (rpower.getAsDouble() != 0) {
@@ -62,6 +77,7 @@ public class IntakeSys extends SubsystemBase {
             }
         }, this);
     }
+
 
     public Command runIntake(double power) {
         return new RunCommand(() -> {
@@ -81,37 +97,21 @@ public class IntakeSys extends SubsystemBase {
         }, this);
     }
 
-    public double getIntakePower(){
+    public double getIntakePower() {
         return intake.get();
     }
 
     @Override
     public void periodic() {
+        if (voltageTimer.seconds() > 15) {
+            voltage = highestVoltage;
+            highestVoltage = 13.3;
+            voltageTimer.reset();
+        }
 
-//        if (algorithm) {
-//            double current = getCurrent();
-//            double forwardPower = intake.get();
-//            if (current > 3000 && forwardPower > 0) {
-//                if (!spikeActive) {
-//                    spikeActive = true;
-//                    spikeStartTime = System.currentTimeMillis();
-//                }
-//            } else {
-//                if (spikeActive) {
-//                    long spikeDuration = System.currentTimeMillis() - spikeStartTime;
-//                    if (spikeDuration >= 100) {
-//                        spikeCount++;
-//                    }
-//                    if (spikeDuration >= 700) {
-//                        intake.set(-1);
-//                        long reverseStartTime = System.currentTimeMillis();
-//                        while (System.currentTimeMillis() - reverseStartTime < 2000) {
-//                        }
-//                        intake.set(0);
-//                    }
-//                    spikeActive = false;
-//                }
-//            }
-//        }
+        double voltReading = voltageSensor.getVoltage();
+        if (voltReading > highestVoltage) {
+            highestVoltage = voltReading;
+        }
     }
 }
