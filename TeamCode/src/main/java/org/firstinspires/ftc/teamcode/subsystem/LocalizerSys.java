@@ -17,4 +17,14 @@ public class LocalizerSys extends SubsystemBase {
         return "fl: " + fl.getDistance(DistanceUnit.INCH) + "\nfr: " + fr.getDistance(DistanceUnit.INCH) + "\nbl: " + bl.getDistance(DistanceUnit.INCH);
     }
 
+    public double getFl(){
+        return fl.getDistance(DistanceUnit.INCH);
+    }
+    public double getFr(){
+        return fr.getDistance(DistanceUnit.INCH);
+    }
+    public double getBl(){
+        return bl.getDistance(DistanceUnit.INCH);
+    }
+
 }

@@ -69,10 +69,20 @@ public class IntakeSys extends SubsystemBase {
         }, this);
     }
 
-    public Command setStack(double position) {
+    public Command setStack1(double position) {
         return new InstantCommand(() -> {
             stack.setPosition(position);
         }, this);
+    }
+
+    public Command setStack2(double position) {
+        return new InstantCommand(() -> {
+            stack.setPosition(position);
+        }, this);
+    }
+
+    public double getIntakePower(){
+        return intake.get();
     }
 
     @Override
