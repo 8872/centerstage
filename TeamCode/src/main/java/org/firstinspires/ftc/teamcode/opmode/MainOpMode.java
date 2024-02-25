@@ -47,10 +47,10 @@ public class MainOpMode extends BaseOpMode {
         slideUp(Y, LiftSys.HIGH);
 
 
-//        gb2(DPAD_LEFT).toggleWhenPressed(
-//                new ParallelCommandGroup(armSys.intake(), boxSys.intake()),
-//                new ParallelCommandGroup(armSys.deposit(), boxSys.close())
-//        );
+        gb2(DPAD_LEFT).toggleWhenPressed(
+                new ParallelCommandGroup(armSys.intake(), boxSys.intake()),
+                new ParallelCommandGroup(armSys.deposit(), boxSys.close())
+        );
 
         gb1(LEFT_BUMPER).whileHeld(
                 driveSys.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
