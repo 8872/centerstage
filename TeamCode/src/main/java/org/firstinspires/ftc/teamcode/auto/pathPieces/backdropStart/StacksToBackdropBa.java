@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
 import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 
 @Config
-@Disabled
 @TeleOp(name="To Backdrop Ba", group = "ZZZ")
 public class StacksToBackdropBa extends AutoBaseOpmode {
 
@@ -40,6 +39,7 @@ public class StacksToBackdropBa extends AutoBaseOpmode {
 
     @Override
     public void init(){
+        super.init();
         depositWaitTimer = new ElapsedTime();
         //TODO: remove setPosEstimate
         if(red)
@@ -51,6 +51,7 @@ public class StacksToBackdropBa extends AutoBaseOpmode {
     @Override
     public void loop() {
         super.loop();
+        drive.update();
 
         if(gamepad1.right_bumper && !testing){
             testing = true;

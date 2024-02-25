@@ -80,8 +80,8 @@ public class IntakeSys extends SubsystemBase {
 
 
     public Command runIntake(double power) {
-        return new RunCommand(() -> {
-            intake.set(intakeInPower);
+        return new InstantCommand(() -> {
+            intake.set(power);
         }, this);
     }
 
@@ -93,7 +93,7 @@ public class IntakeSys extends SubsystemBase {
 
     public Command setStack2(double position) {
         return new InstantCommand(() -> {
-            stack.setPosition(position);
+            stack2.setPosition(position);
         }, this);
     }
 

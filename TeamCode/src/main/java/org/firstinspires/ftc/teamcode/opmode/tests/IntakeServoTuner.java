@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.apache.commons.math3.util.Precision;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
 
+@Disabled
 @TeleOp(name="Intake Servo Tuner", group = "Tuner")
 public class IntakeServoTuner extends LinearOpMode {
     @Override

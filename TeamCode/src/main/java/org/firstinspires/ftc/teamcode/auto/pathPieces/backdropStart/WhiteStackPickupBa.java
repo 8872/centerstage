@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
 import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 
 @Config
-@Disabled
 @TeleOp(name="White Stack Ba", group = "ZZZ")
 public class WhiteStackPickupBa extends AutoBaseOpmode {
 
@@ -23,12 +22,12 @@ public class WhiteStackPickupBa extends AutoBaseOpmode {
     }
     public static State currentState = State.WAIT_FOR_START;
 
-    public static boolean red = true;
+    public static boolean red = false;
 
     public static double intakeInitialPower = 0.6;
     public static double intakeFinalPower = 0.8;
     public static double pixelX = -56;
-    public static double pixelY = 36;
+    public static double pixelY = 12;
     public static double moveForwardDistance = 4;
     public static double moveBackDistance = 4;
 
@@ -36,6 +35,7 @@ public class WhiteStackPickupBa extends AutoBaseOpmode {
 
     @Override
     public void init(){
+        super.init();
         if(red)
             drive.setPoseEstimate(new Pose2d(pixelX, -pixelY, Math.toRadians(180)));
         else
@@ -45,6 +45,7 @@ public class WhiteStackPickupBa extends AutoBaseOpmode {
     @Override
     public void loop() {
         super.loop();
+        drive.update();
 
         if (gamepad1.right_bumper && !testing) {
             testing = true;
@@ -52,7 +53,7 @@ public class WhiteStackPickupBa extends AutoBaseOpmode {
         }
         if (currentState == State.TOPPLE_STACK) {
             schedule(intakeSys.setStack1(IntakeSys.intakeServoLowPosition));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServo2LowPosition));
+            schedule(intakeSys.setStack2(IntakeSys.intakeServoLowPosition));
             schedule(intakeSys.runIntake(intakeInitialPower));
             if (red) {
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(pixelX, -pixelY, Math.toRadians(180.00)))
@@ -77,7 +78,7 @@ public class WhiteStackPickupBa extends AutoBaseOpmode {
         }
         if (currentState == State.EJECT && !drive.isBusy()) {
             schedule(intakeSys.setStack1(IntakeSys.intakeServoHighPosition));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServo2HighPosition));
+            schedule(intakeSys.setStack2(IntakeSys.intakeServoHighPosition));
             schedule(intakeSys.runIntake(-IntakeSys.intakeOutPower));
             schedule(new DelayedCommand(intakeSys.runIntake(0), 1000));
             currentState = State.WAIT_FOR_EJECT;

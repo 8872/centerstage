@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
 import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 
 @Config
-@Disabled
 @TeleOp(name="Purple Pixel Ba", group = "ZZZ")
 public class PurplePixelBa extends AutoBaseOpmode {
 
@@ -46,6 +45,7 @@ public class PurplePixelBa extends AutoBaseOpmode {
 
     @Override
     public void init(){
+        super.init();
         depositWaitTimer = new ElapsedTime();
         if(red)
             drive.setPoseEstimate(new Pose2d(17.75, -63.00, Math.toRadians(90.00)));
@@ -56,6 +56,7 @@ public class PurplePixelBa extends AutoBaseOpmode {
     @Override
     public void loop() {
         super.loop();
+        drive.update();
 
         //drive fsm
         if(gamepad1.right_bumper && !testing){

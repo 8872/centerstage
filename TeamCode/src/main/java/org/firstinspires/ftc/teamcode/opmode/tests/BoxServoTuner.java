@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @Config
+@Disabled
 @TeleOp(name="Box Servo Tuner", group = "Tuner")
 public class BoxServoTuner extends LinearOpMode {
     public static double inLock = 0.8;

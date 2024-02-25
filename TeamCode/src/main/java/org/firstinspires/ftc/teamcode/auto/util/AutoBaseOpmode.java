@@ -90,10 +90,10 @@ public class AutoBaseOpmode extends OpMode {
         stack2 = new SimpleServo(hardwareMap, "stack2", 0, 255);
         stack2.setInverted(true);
 
-        leftFront = new MotorEx(hardwareMap, "leftFront", Motor.GoBILDA.RPM_435);
-        leftRear = new MotorEx(hardwareMap, "leftRear", Motor.GoBILDA.RPM_435);
-        rightRear = new MotorEx(hardwareMap, "rightRear", Motor.GoBILDA.RPM_435);
-        rightFront = new MotorEx(hardwareMap, "rightFront", Motor.GoBILDA.RPM_435);
+        leftFront = new MotorEx(hardwareMap, "rightRear", Motor.GoBILDA.RPM_435);
+        leftRear = new MotorEx(hardwareMap, "leftFront", Motor.GoBILDA.RPM_435);
+        rightRear = new MotorEx(hardwareMap, "rightFront", Motor.GoBILDA.RPM_435);
+        rightFront = new MotorEx(hardwareMap, "leftRear", Motor.GoBILDA.RPM_435);
         intake = new MotorEx(hardwareMap, "intake", Motor.GoBILDA.RPM_1150);
         liftLeft = new MotorEx(hardwareMap, "lil", Motor.GoBILDA.RPM_1150);
         liftRight = new MotorEx(hardwareMap, "lir", Motor.GoBILDA.RPM_1150);
@@ -102,7 +102,7 @@ public class AutoBaseOpmode extends OpMode {
     public void setupHardware() {
         liftRight.setInverted(true);
         leftRear.setInverted(true);
-        rightRear.setInverted(true);
+        leftFront.setInverted(true);
     }
     public void initSubystems() {
         liftSys = new LiftSys(liftLeft,liftRight, limitSwitch, hardwareMap.voltageSensor, ()->0);
@@ -115,16 +115,19 @@ public class AutoBaseOpmode extends OpMode {
         hangSys = new HangSys(hang);
         intakeSys = new IntakeSys(stack, stack2, intake, hardwareMap.voltageSensor);
         planeSys = new PlaneSys(plane);
+        intakeSys.setStack1(IntakeSys.intakeServoHighPosition);
+        intakeSys.setStack2(IntakeSys.intakeServoHighPosition);
+        intakeSys.runIntake(0);
     }
     public void setupMisc() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        final CameraStreamProcessor processor = new CameraStreamProcessor();
+//        final CameraStreamProcessor processor = new CameraStreamProcessor();
 //        new VisionPortal.Builder()
 //                .addProcessor(processor)
 //                .setCamera(hardwareMap.get(WebcamName.class, "webcam"))
 //                .build();
 
-        FtcDashboard.getInstance().startCameraStream(processor, 0);
+//        FtcDashboard.getInstance().startCameraStream(processor, 0);
         drive = new SampleMecanumDrive(hardwareMap);
     }
 

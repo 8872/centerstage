@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -14,6 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystem.wpilib.MedianFilter;
 
 @TeleOp
 @Config
+@Disabled
+
 public class BeamBreak extends BaseOpMode {
     public static int sampleSize = 15;
     private final MedianFilter filter = new MedianFilter(sampleSize);

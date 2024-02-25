@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "Motor Position Tuner", group = "Tuner")
+@Disabled
 public class MotorPosTuner extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

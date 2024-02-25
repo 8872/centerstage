@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmode.tests;
 
 import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
+@Disabled
 public class Stack2 extends OpMode {
     SimpleServo stack, stack2;
     @Override
