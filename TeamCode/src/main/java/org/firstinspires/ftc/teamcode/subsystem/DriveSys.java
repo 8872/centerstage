@@ -13,7 +13,7 @@ import java.util.function.DoubleSupplier;
 public class DriveSys extends SubsystemBase {
     private final MecanumDrive drive;
 
-    public static double slowFactor = 0.5;
+    public static double slowFactor = 0.25;
 
     public DriveSys(MotorEx fL, MotorEx fR, MotorEx bL, MotorEx bR) {
         drive = new MecanumDrive(fL, fR, bL, bR);

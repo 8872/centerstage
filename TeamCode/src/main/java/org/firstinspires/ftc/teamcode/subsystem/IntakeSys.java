@@ -37,7 +37,7 @@ public class IntakeSys extends SubsystemBase {
     private final double[] coefficients;
 //    private final double[] coefficients2;
 
-    private double highestVoltage = 13.3;
+    private double highestVoltage = 13;
 
 
     private ElapsedTime voltageTimer;
@@ -63,7 +63,7 @@ public class IntakeSys extends SubsystemBase {
     public Command intake(DoubleSupplier fpower, DoubleSupplier rpower) {
         return new RunCommand(() -> {
             if (fpower.getAsDouble() != 0) {
-                intake.set((13.3 / voltage) * intakeInPower);
+                intake.set((13 / voltage) * intakeInPower);
                 stack.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
                 stack2.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
             } else if (rpower.getAsDouble() != 0) {
@@ -105,7 +105,7 @@ public class IntakeSys extends SubsystemBase {
     public void periodic() {
         if (voltageTimer.seconds() > 15) {
             voltage = highestVoltage;
-            highestVoltage = 13.3;
+            highestVoltage = 13;
             voltageTimer.reset();
         }
 
