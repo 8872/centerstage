@@ -40,23 +40,11 @@ public class BluePurplePixelAu extends AutoBaseOpmode {
 
     public static boolean testing = false;
 
-    public BluePurplePixelAu(){
-        super.init();
-        setUp();
-    }
-
     @Override
     public void init(){
         super.init();
         testing = false;
         currentState = State.WAIT_FOR_START;
-        if(red)
-            drive.setPoseEstimate(new Pose2d(-41.75, -63.00, Math.toRadians(90.00)));
-        else
-            drive.setPoseEstimate(new Pose2d(-41.75, 63.00, Math.toRadians(-90.00)));
-    }
-
-    public void setUp(){
         if(red)
             drive.setPoseEstimate(new Pose2d(-41.75, -63.00, Math.toRadians(90.00)));
         else
@@ -137,7 +125,7 @@ public class BluePurplePixelAu extends AutoBaseOpmode {
         if(currentState == State.EJECT_AND_MOVE_TO_STACK && !drive.isBusy()) {
             //intake fsm
             //signal with a displacement marker that changes an enum
-            schedule(intakeSys.runIntake(-0.4));
+            schedule(intakeSys.runIntake(-0.5));
             schedule(new DelayedCommand(intakeSys.runIntake(0), (long)waitTime*1000));
 
             //drive fsm
@@ -168,12 +156,12 @@ public class BluePurplePixelAu extends AutoBaseOpmode {
         }
     }
 
-    public void run(int detectedZone, boolean redSide){
+    public static void run(int detectedZone, boolean redSide){
         zone = detectedZone;
         red = redSide;
         currentState = State.MOVE_TO_PROP;
     }
-    public boolean isFinished(){
+    public static boolean isFinished(){
         return currentState == State.FINISHED;
     }
 }

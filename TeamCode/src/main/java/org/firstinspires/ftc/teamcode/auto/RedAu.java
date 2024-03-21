@@ -5,12 +5,10 @@ import android.util.Size;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.auto.CV.ZoneDetectionProcessorLeft;
-import org.firstinspires.ftc.teamcode.auto.CV.ZoneDetectionProcessorRight;
 import org.firstinspires.ftc.teamcode.auto.pathPieces.audienceStart.StacksToBackdropAu;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
@@ -22,10 +20,10 @@ import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name="Blue Au", group = "Auto")
-public class BlueAu extends AutoBaseOpmode {
+@Autonomous(name="Red Au", group = "Auto")
+public class RedAu extends AutoBaseOpmode {
 
-    private ZoneDetectionProcessorRight processor;
+    private ZoneDetectionProcessorLeft processor;
     private VisionPortal portal;
 
     public enum PurplePixState {
@@ -37,21 +35,21 @@ public class BlueAu extends AutoBaseOpmode {
     }
     public static PurplePixState currentPurplePixState = PurplePixState.WAIT_FOR_START;
 
-    public static boolean red = false;
+    public static boolean red = true;
     public static int zone = 1;
 
 
     public static double waitTime = 1.5;
-    public static double x1 = -48.5;
-    public static double y1 = 36;
+    public static double x1 = -47;
+    public static double y1 = 35;
     public static double x2 = -35;
     public static double y2 = 36;
     public static double x3 = -29;
-    public static double y3 = 39;
+    public static double y3 = 38;
     public static double angle2 = 80;
     public static double angle3 = 60;
-    public static double pixelX = -59;
-    public static double pixelY = 37;
+    public static double pixelX = -56.5;
+    public static double pixelY = 36.5;
 
     public enum WhiteStackState {
         WAIT_FOR_START,
@@ -95,24 +93,23 @@ public class BlueAu extends AutoBaseOpmode {
         CHECK_FOR_BOT,
         MOVE_TO_BACKDROP,
         DEPOSIT,
-        LOWER_SLIDES,
         WAIT_FOR_FINISH,
         FINISHED
     }
     public static ToBackdropState currentToBackdropState = ToBackdropState.WAIT_FOR_START;
 
     public static double botDetectionThreshold = 65;
-    public static double depositWaitTime = 1250;
+    public static double depositWaitTime = 500;
     public static double trussPixelSideX = -30;
-    public static double bottomPathY = 62;
+    public static double bottomPathY = 56;
     public static double lineToX = 24;
-    public static double lineToY = 61;
+    public static double lineToY = 54;
     public static double waitingX = 38;
-    public static double waitingY = 61;
+    public static double waitingY = 52;
     public static double waitingHeading = 75;
-    public static double backdropX = 49.5;
-    public static double backdropY1 = 32;
-    public static double backdropY2 = 35.5;
+    public static double backdropX = 50;
+    public static double backdropY1 = 25;
+    public static double backdropY2 = 32;
     public static double backdropY3 = 40;
 
     private ElapsedTime depositWaitTimer;
@@ -128,7 +125,7 @@ public class BlueAu extends AutoBaseOpmode {
         else
             drive.setPoseEstimate(new Pose2d(-41.75, 63.00, Math.toRadians(-90.00)));
 
-        processor = new ZoneDetectionProcessorRight(false, false);
+        processor = new ZoneDetectionProcessorLeft(true, false);
         portal = new VisionPortal.Builder()
                 .addProcessor(processor)
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
@@ -160,6 +157,7 @@ public class BlueAu extends AutoBaseOpmode {
         drive.update();
         liftSys.periodic();
 
+        //TODO: delete testing above
         if(currentPurplePixState == PurplePixState.MOVE_TO_PROP){
             schedule(armSys.intake());
             schedule(intakeSys.setStack1(0.4));
@@ -209,7 +207,10 @@ public class BlueAu extends AutoBaseOpmode {
             //intake fsm
             //signal with a displacement marker that changes an enum
             schedule(intakeSys.runIntake(-0.5));
-            intakeWaitTimer.reset();
+            schedule(new DelayedCommand(intakeSys.runIntake(0), (long)waitTime*1000));
+            schedule(new DelayedCommand(armSys.intake(),1000));
+            schedule(new DelayedCommand(intakeSys.setStack1(IntakeSys.intakeServoHighPosition+0.05),1000));
+            schedule(new DelayedCommand(intakeSys.setStack2(IntakeSys.intakeServoHighPosition+0.05),1000));
 
             //drive fsm
             if(red){
@@ -225,43 +226,25 @@ public class BlueAu extends AutoBaseOpmode {
                                 SampleMecanumDrive.getAccelerationConstraint(initialForwardSpeed))
                         .build());
             }else{
-                if(zone == 1){
-                    drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                            .back(15,
-                                    SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                    SampleMecanumDrive.getAccelerationConstraint(40))
-                            .lineToLinearHeading(new Pose2d(pixelX, pixelY-1.5, Math.toRadians(180.00)),
-                                    SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                    SampleMecanumDrive.getAccelerationConstraint(70))
-                            .lineToLinearHeading(new Pose2d(pixelX - moveForwardDistance, pixelY-1.5, Math.toRadians(180.00)),
-                                    SampleMecanumDrive.getVelocityConstraint(initialForwardSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                    SampleMecanumDrive.getAccelerationConstraint(initialForwardSpeed))
-                            .build());
-                }
-                else {
-                    drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                            .back(15,
-                                    SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                    SampleMecanumDrive.getAccelerationConstraint(40))
-                            .lineToLinearHeading(new Pose2d(pixelX, pixelY, Math.toRadians(180.00)),
-                                    SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                    SampleMecanumDrive.getAccelerationConstraint(70))
-                            .lineToLinearHeading(new Pose2d(pixelX - moveForwardDistance, pixelY, Math.toRadians(180.00)),
-                                    SampleMecanumDrive.getVelocityConstraint(initialForwardSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                    SampleMecanumDrive.getAccelerationConstraint(initialForwardSpeed))
-                            .build());
-                }
+                drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                        .back(15,
+                                SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(40))
+                        .lineToLinearHeading(new Pose2d(pixelX, pixelY, Math.toRadians(180.00)),
+                                SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(70))
+                        .lineToLinearHeading(new Pose2d(pixelX - moveForwardDistance, pixelY, Math.toRadians(180.00)),
+                                SampleMecanumDrive.getVelocityConstraint(initialForwardSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(initialForwardSpeed))
+                        .build());
             }
-            currentPurplePixState = PurplePixState.WAIT_FOR_FINISH;
-        }
-
-        if(currentPurplePixState == PurplePixState.WAIT_FOR_FINISH && intakeWaitTimer.milliseconds()>1000){
-            schedule(intakeSys.runIntake(0));
-            schedule((armSys.intake()));
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoHighPosition+0.05));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoHighPosition+0.05));
             currentPurplePixState = PurplePixState.FINISHED;
             currentWhiteStackState = WhiteStackState.TOPPLE_STACK2;
+        }
+
+        if(currentPurplePixState == PurplePixState.WAIT_FOR_FINISH && !drive.isBusy()){
+            currentPurplePixState = PurplePixState.FINISHED;
+            currentWhiteStackState = WhiteStackState.TOPPLE_STACK1;
         }
 
         if (currentWhiteStackState == WhiteStackState.TOPPLE_STACK1) {
@@ -288,14 +271,14 @@ public class BlueAu extends AutoBaseOpmode {
                         .lineToLinearHeading(new Pose2d(pixelX + moveBackDistance, -pixelY, Math.toRadians(180.00)),
                                 SampleMecanumDrive.getVelocityConstraint(moveBackwardsSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                        .forward(3)
+                        .forward(2.5)
                         .build());
             } else {
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(pixelX, pixelY, Math.toRadians(180.00)))
                         .lineToLinearHeading(new Pose2d(pixelX + moveBackDistance, pixelY, Math.toRadians(180.00)),
                                 SampleMecanumDrive.getVelocityConstraint(moveBackwardsSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                        .forward(3)
+                        .forward(2.5)
                         .build());
             }
             currentWhiteStackState = WhiteStackState.PICKUP_PIXELS;
@@ -328,28 +311,20 @@ public class BlueAu extends AutoBaseOpmode {
             if(red){
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                         .back(1)
-                        .splineToConstantHeading(new Vector2d(trussPixelSideX, -bottomPathY), Math.toRadians(0),
-                                SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                        .splineTo(new Vector2d(lineToX, -lineToY), Math.toRadians(0.00),
-                                SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .splineToConstantHeading(new Vector2d(trussPixelSideX, -bottomPathY), Math.toRadians(0))
+                        .splineTo(new Vector2d(lineToX, -lineToY), Math.toRadians(0.00))
                         .lineToSplineHeading(new Pose2d(waitingX, -waitingY, Math.toRadians(180+waitingHeading)),
-                                SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                         .waitSeconds(0.5)
                         .build());
             }else{
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                         .back(1)
-                        .splineToConstantHeading(new Vector2d(trussPixelSideX, bottomPathY), Math.toRadians(0),
-                                SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                        .splineTo(new Vector2d(lineToX, lineToY), Math.toRadians(0.00),
-                                SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .splineToConstantHeading(new Vector2d(trussPixelSideX, bottomPathY), Math.toRadians(0))
+                        .splineTo(new Vector2d(lineToX, lineToY), Math.toRadians(0.00))
                         .lineToSplineHeading(new Pose2d(waitingX, waitingY, Math.toRadians(180-waitingHeading)),
-                                SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                         .waitSeconds(0.5)
                         .build());
@@ -368,23 +343,17 @@ public class BlueAu extends AutoBaseOpmode {
                 switch(zone){
                     case 1:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(waitingX, -bottomPathY, Math.toRadians(180+waitingHeading)))
-                                .lineToLinearHeading(new Pose2d(backdropX, -backdropY1, Math.toRadians(180)),
-                                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                                .lineToLinearHeading(new Pose2d(backdropX, -backdropY1, Math.toRadians(180)))
                                 .build());
                         break;
                     case 2:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(waitingX, -bottomPathY, Math.toRadians(180+waitingHeading)))
-                                .lineToLinearHeading(new Pose2d(backdropX, -backdropY2, Math.toRadians(180)),
-                                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                                .lineToLinearHeading(new Pose2d(backdropX, -backdropY2, Math.toRadians(180)))
                                 .build());
                         break;
                     case 3:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(waitingX, -bottomPathY, Math.toRadians(180+waitingHeading)))
-                                .lineToLinearHeading(new Pose2d(backdropX, -backdropY3, Math.toRadians(180)),
-                                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                                .lineToLinearHeading(new Pose2d(backdropX, -backdropY3, Math.toRadians(180)))
                                 .build());
                         break;
                 }
@@ -392,23 +361,17 @@ public class BlueAu extends AutoBaseOpmode {
                 switch(zone){
                     case 1:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(waitingX, bottomPathY, Math.toRadians(180-waitingHeading)))
-                                .lineToLinearHeading(new Pose2d(backdropX, backdropY3, Math.toRadians(180)),
-                                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                                .lineToLinearHeading(new Pose2d(backdropX, backdropY3, Math.toRadians(180)))
                                 .build());
                         break;
                     case 2:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(waitingX, bottomPathY, Math.toRadians(180-waitingHeading)))
-                                .lineToLinearHeading(new Pose2d(backdropX, backdropY2, Math.toRadians(180)),
-                                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                                .lineToLinearHeading(new Pose2d(backdropX, backdropY2, Math.toRadians(180)))
                                 .build());
                         break;
                     case 3:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(waitingX, bottomPathY, Math.toRadians(180-waitingHeading)))
-                                .lineToLinearHeading(new Pose2d(backdropX, backdropY1, Math.toRadians(180)),
-                                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                                .lineToLinearHeading(new Pose2d(backdropX, backdropY1, Math.toRadians(180)))
                                 .build());
                         break;
                 }
@@ -416,17 +379,14 @@ public class BlueAu extends AutoBaseOpmode {
             currentToBackdropState = ToBackdropState.DEPOSIT;
         }
         if(currentToBackdropState == ToBackdropState.DEPOSIT && !drive.isBusy()){
-            schedule(new InstantCommand(()->boxSys.release()));
-            schedule(new DelayedCommand(new InstantCommand(()->boxSys.release()),750));
+            schedule(boxSys.intake());
             depositWaitTimer.reset();
             //TODO: add apriltag relocalization
             currentToBackdropState = ToBackdropState.WAIT_FOR_FINISH;
         }
         if(currentToBackdropState == ToBackdropState.WAIT_FOR_FINISH && depositWaitTimer.milliseconds() > depositWaitTime){
-            schedule(liftSys.goTo(LiftSys.NONE));
-            schedule(armSys.intake());
             drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(new Pose2d(backdropX, 60, Math.toRadians(180)))
+                    .lineToLinearHeading(new Pose2d(backdropX, -50, Math.toRadians(180)))
                     .build());
             currentToBackdropState = ToBackdropState.FINISHED;
         }

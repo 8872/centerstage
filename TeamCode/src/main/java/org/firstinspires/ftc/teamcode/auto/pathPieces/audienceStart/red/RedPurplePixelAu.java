@@ -124,7 +124,7 @@ public class RedPurplePixelAu extends AutoBaseOpmode {
         if(currentState == State.EJECT_AND_MOVE_TO_STACK && !drive.isBusy()) {
             //intake fsm
             //signal with a displacement marker that changes an enum
-            schedule(intakeSys.runIntake(-0.4));
+            schedule(intakeSys.runIntake(-0.5));
             schedule(new DelayedCommand(intakeSys.runIntake(0), (long)waitTime*1000));
 
             //drive fsm

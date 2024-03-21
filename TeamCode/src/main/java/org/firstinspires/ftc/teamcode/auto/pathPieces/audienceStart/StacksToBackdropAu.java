@@ -7,7 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
+import android.util.Log;
+
 
 @Config
 @TeleOp (name="To Backdrop Au", group = "ZZZ")
@@ -27,15 +31,18 @@ public class StacksToBackdropAu extends AutoBaseOpmode {
     public static boolean red = true;
     public static int zone = 1;
 
-    public static double botDetectionThreshold = 30;
+    public static double botDetectionThreshold = 65;
     public static double depositWaitTime = 500;
     public static double pixelX = -56;
     public static double pixelY = 36;
     public static double trussPixelSideX = -30;
+    public static double trussPixelSideY = 60;
     public static double bottomPathY = 60;
     public static double lineToX = 24;
-    public static double waitingX = 40;
-    public static double waitingHeading = 70;
+    public static double lineToY = 57;
+    public static double waitingX = 34;
+    public static double waitingY = 53;
+    public static double waitingHeading = 75;
     public static double backdropX = 50;
     public static double backdropY1 = 29;
     public static double backdropY2 = 36;
@@ -52,9 +59,9 @@ public class StacksToBackdropAu extends AutoBaseOpmode {
 
         //TODO: remove setPosEstimate
         if(red)
-            drive.setPoseEstimate(new Pose2d(pixelX, -pixelY, Math.toRadians(180)));
+            drive.setPoseEstimate(new Pose2d(pixelX+3.5, -pixelY, Math.toRadians(180)));
         else
-            drive.setPoseEstimate(new Pose2d(pixelX, pixelY, Math.toRadians(180)));
+            drive.setPoseEstimate(new Pose2d(pixelX+3.5, pixelY, Math.toRadians(180)));
     }
 
     @Override
@@ -72,21 +79,30 @@ public class StacksToBackdropAu extends AutoBaseOpmode {
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                         .splineToConstantHeading(new Vector2d(trussPixelSideX, -bottomPathY), Math.toRadians(0))
                         .splineTo(new Vector2d(lineToX, -bottomPathY), Math.toRadians(0.00))
-                        .lineToSplineHeading(new Pose2d(waitingX, -bottomPathY, Math.toRadians(180+waitingHeading)))
+                        .lineToSplineHeading(new Pose2d(waitingX, -bottomPathY, Math.toRadians(180+waitingHeading)),
+                                SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .waitSeconds(0.5)
                         .build());
             }else{
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                         .splineToConstantHeading(new Vector2d(trussPixelSideX, bottomPathY), Math.toRadians(0))
                         .splineTo(new Vector2d(lineToX, bottomPathY), Math.toRadians(0.00))
-                        .lineToSplineHeading(new Pose2d(waitingX, bottomPathY, Math.toRadians(180-waitingHeading)))
+                        .lineToSplineHeading(new Pose2d(waitingX, bottomPathY, Math.toRadians(180-waitingHeading)),
+                                SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .waitSeconds(0.5)
                         .build());
             }
             currentState = State.CHECK_FOR_BOT;
         }
         if(currentState == State.CHECK_FOR_BOT && !drive.isBusy()){
-            if(localizerSys.getBl() > botDetectionThreshold){
-                currentState = State.MOVE_TO_BACKDROP;
+            while(true){
+                Log.d("asd",""+localizerSys.getBl());
             }
+//            if(localizerSys.getBl() > botDetectionThreshold){
+//                currentState = State.MOVE_TO_BACKDROP;
+//            }
         }
         if(currentState == State.MOVE_TO_BACKDROP){
             schedule(liftSys.goTo(LiftSys.LOW));

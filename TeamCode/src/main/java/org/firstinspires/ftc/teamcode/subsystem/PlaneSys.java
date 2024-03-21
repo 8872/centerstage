@@ -9,10 +9,12 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 @Config
 public class PlaneSys extends SubsystemBase {
     private final SimpleServo servo;
-    public static double releasePos = 0.5;
+    public static double staticPos = 0.2;
+    public static double releasePos = 0.7;
 
     public PlaneSys(SimpleServo servo) {
         this.servo = servo;
+        servo.setPosition(staticPos);
     }
 
     public Command launch() {

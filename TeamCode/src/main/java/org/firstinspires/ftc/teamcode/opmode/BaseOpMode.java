@@ -68,14 +68,14 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("box inner pos", boxSys.getInnerServo());
 //        tad("box outter pos", boxSys.getOuterServo());
 //        tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
-        tad("lift right", liftRight.getCurrentPosition());
-        tad("lift left", liftLeft.getCurrentPosition());
-
-        tad("left pos error", liftSys.getPosErrorL());
-        tad("left lift profile power", liftSys.getProfilePowerL());
-        tad("profile location output", liftSys.getSetPointL());
-        tad("normal pid output", liftSys.getNormalPIDOutput());
-        tad("left lift power", liftSys.getPowerL());
+//        tad("lift right", liftRight.getCurrentPosition());
+//        tad("lift left", liftLeft.getCurrentPosition());
+//
+//        tad("left pos error", liftSys.getPosErrorL());
+//        tad("left lift profile power", liftSys.getProfilePowerL());
+//        tad("profile location output", liftSys.getSetPointL());
+//        tad("normal pid output", liftSys.getNormalPIDOutput());
+//        tad("left lift power", liftSys.getPowerL());
 //        tad("armServo", armServo.getPosition());
 //        tad("pitchServo", pitchServo.getPosition());
 //        tad("innerServo", innerServo.getPosition());
@@ -84,12 +84,14 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("leftRear", leftRear.get());
 //        tad("rightRear", rightRear.get());
 //        tad("rightFront", rightFront.get());
-        tad("voltage", liftSys.getVoltage());
+//        tad("voltage", liftSys.getVoltage());
 //        tad("target position", liftSys.gettar());
 
         tad("distance2 mm", beam2.getDistance(DistanceUnit.MM));
+//
+//        tad("mb1242", localizerSys.getPose());
 
-        tad("mb1242", localizerSys.getPose());
+        tad("bl reading:", localizerSys.getBl());
 
         telemetry.update();
     }

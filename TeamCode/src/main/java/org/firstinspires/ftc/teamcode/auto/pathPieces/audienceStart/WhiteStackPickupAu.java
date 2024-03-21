@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 @TeleOp(name="White Stack Au", group = "ZZZ")
 public class WhiteStackPickupAu extends AutoBaseOpmode {
 
-    public enum State{
+    public enum WhiteStackState {
         WAIT_FOR_START,
         TOPPLE_STACK1,
         TOPPLE_STACK2,
@@ -24,7 +24,7 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
         WAIT_FOR_EJECT,
         FINISHED
     }
-    public static State currentState = State.WAIT_FOR_START;
+    public static WhiteStackState currentWhiteStackState = WhiteStackState.WAIT_FOR_START;
 
     public static boolean red = true;
 
@@ -33,8 +33,8 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
     public static double intakeFinalPower = 0.67;
     public static double pixelX = -56;
     public static double pixelY = 36;
-    public static double moveForwardDistance = 6;
-    public static double moveBackDistance = 2;
+    public static double moveForwardDistance = 5;
+    public static double moveBackDistance = 5;
     public static double pickUpPathSpeed = 20;
     public static double moveBackwardsSpeed = 10;
     public static double initialForwardSpeed = 15;
@@ -43,11 +43,6 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
     public static boolean testing = false;
 
     private ElapsedTime intakeWaitTimer;
-
-    public WhiteStackPickupAu(){
-        super.init();
-        setUp();
-    }
 
     @Override
     public void init(){
@@ -60,10 +55,6 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
             drive.setPoseEstimate(new Pose2d(pixelX, pixelY, Math.toRadians(180)));
     }
 
-    public void setUp(){
-        intakeWaitTimer = new ElapsedTime();
-    }
-
     @Override
     public void loop() {
         super.loop();
@@ -71,9 +62,9 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
 
         if (gamepad1.right_bumper && !testing) {
             testing = true;
-            currentState = State.TOPPLE_STACK1;
+            currentWhiteStackState = WhiteStackState.TOPPLE_STACK1;
         }
-        if (currentState == State.TOPPLE_STACK1) {
+        if (currentWhiteStackState == WhiteStackState.TOPPLE_STACK1) {
             schedule(armSys.intake());
             schedule(intakeSys.setStack1(IntakeSys.intakeServoHighPosition));
             schedule(intakeSys.setStack2(IntakeSys.intakeServoHighPosition));
@@ -90,9 +81,9 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
                                 SampleMecanumDrive.getAccelerationConstraint(initialForwardSpeed))
                         .build());
             }
-            currentState = State.TOPPLE_STACK2;
+            currentWhiteStackState = WhiteStackState.TOPPLE_STACK2;
         }
-        if(currentState == State.TOPPLE_STACK2 && !drive.isBusy()){
+        if(currentWhiteStackState == WhiteStackState.TOPPLE_STACK2 && !drive.isBusy()){
             schedule(intakeSys.setStack1(IntakeSys.intakeServoLowPosition));
             schedule(intakeSys.setStack2(IntakeSys.intakeServoLowPosition));
             schedule(intakeSys.runIntake(intakeKnockPower));
@@ -101,7 +92,7 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
                         .lineToLinearHeading(new Pose2d(pixelX + moveBackDistance, -pixelY, Math.toRadians(180.00)),
                                 SampleMecanumDrive.getVelocityConstraint(moveBackwardsSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                        .forward(2)
+                        .forward(5)
                         .waitSeconds(0.5)
                         .build());
             } else {
@@ -109,39 +100,39 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
                         .lineToLinearHeading(new Pose2d(pixelX + moveBackDistance, pixelY, Math.toRadians(180.00)),
                                 SampleMecanumDrive.getVelocityConstraint(moveBackwardsSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                        .forward(2)
+                        .forward(5)
                         .waitSeconds(0.5)
                         .build());
             }
-            currentState = State.PICKUP_PIXELS;
+            currentWhiteStackState = WhiteStackState.PICKUP_PIXELS;
         }
-        if (currentState == State.PICKUP_PIXELS && drive.getPoseEstimate().getX() > pixelX) {
+        if (currentWhiteStackState == WhiteStackState.PICKUP_PIXELS && drive.getPoseEstimate().getX() > pixelX) {
             schedule(intakeSys.runIntake(intakeFinalPower));
-            currentState = State.WAIT_FOR_INTAKE;
+            currentWhiteStackState = WhiteStackState.WAIT_FOR_INTAKE;
         }
-        if (currentState == State.WAIT_FOR_INTAKE && !drive.isBusy()) {
+        if (currentWhiteStackState == WhiteStackState.WAIT_FOR_INTAKE && !drive.isBusy()) {
             intakeWaitTimer.reset();
-            currentState = State.EJECT;
+            currentWhiteStackState = WhiteStackState.EJECT;
         }
-        if (currentState == State.EJECT && intakeWaitTimer.milliseconds()>intakeWaitTime) {
+        if (currentWhiteStackState == WhiteStackState.EJECT && intakeWaitTimer.milliseconds()>intakeWaitTime) {
             schedule(intakeSys.setStack1(IntakeSys.intakeServoHighPosition));
             schedule(intakeSys.setStack2(IntakeSys.intakeServoHighPosition));
             schedule(intakeSys.runIntake(-IntakeSys.intakeOutPower));
             schedule(new DelayedCommand(intakeSys.runIntake(0), 1000));
         }
-        if (currentState == State.WAIT_FOR_EJECT && intakeSys.getIntakePower() == 0) {
-            currentState = State.FINISHED;
+        if (currentWhiteStackState == WhiteStackState.WAIT_FOR_EJECT && intakeSys.getIntakePower() == 0) {
+            currentWhiteStackState = WhiteStackState.FINISHED;
             testing = false;
         }
-        if (currentState != State.FINISHED){ //TODO: add pixel counter condition
+        if (currentWhiteStackState != WhiteStackState.FINISHED){ //TODO: add pixel counter condition
             //set state to finished once pixels == 2
         }
     }
-    public void run(boolean redSide){
+    public static void run(boolean redSide){
         red = redSide;
-        currentState = State.TOPPLE_STACK1;
+        currentWhiteStackState = WhiteStackState.TOPPLE_STACK1;
     }
-    public boolean isFinished(){
-        return currentState == State.FINISHED;
+    public static boolean isFinished(){
+        return currentWhiteStackState == WhiteStackState.FINISHED;
     }
 }
