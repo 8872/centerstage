@@ -9,13 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="new threshold tester: ThresholdTest.java">
+    <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="misc changes to teleop&#10;&#10;DON'T RUN THE SLIDES PID, THE ENCODERS ARE IN OPPOSITE DIRECTIONS">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/BaseOpMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/BaseOpMode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/tests/IntakeServoTuner.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/tests/IntakeServoTuner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/tests/LiftMotorTestOpmode.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/tests/LiftMotorTestOpmode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/IntakeSys.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/IntakeSys.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/LiftSys.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/LiftSys.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -566,7 +562,14 @@
       <option name="project" value="LOCAL" />
       <updated>1711059217817</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="misc changes to teleop&#10;&#10;DON'T RUN THE SLIDES PID, THE ENCODERS ARE IN OPPOSITE DIRECTIONS">
+      <created>1712019508443</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1712019508443</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -599,7 +602,8 @@
     <MESSAGE value="descent purple pixel au and white stack au" />
     <MESSAGE value="regionals comp code (auto broken)" />
     <MESSAGE value="new threshold tester: ThresholdTest.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="new threshold tester: ThresholdTest.java" />
+    <MESSAGE value="misc changes to teleop&#10;&#10;DON'T RUN THE SLIDES PID, THE ENCODERS ARE IN OPPOSITE DIRECTIONS" />
+    <option name="LAST_COMMIT_MESSAGE" value="misc changes to teleop&#10;&#10;DON'T RUN THE SLIDES PID, THE ENCODERS ARE IN OPPOSITE DIRECTIONS" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
