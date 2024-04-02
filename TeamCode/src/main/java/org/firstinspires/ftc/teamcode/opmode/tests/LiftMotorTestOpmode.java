@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
 
 @Config
 @TeleOp
-@Disabled
 public class LiftMotorTestOpmode extends BaseOpMode {
 
     public static double powerRight = -0.1;

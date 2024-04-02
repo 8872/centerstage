@@ -68,10 +68,10 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("box inner pos", boxSys.getInnerServo());
 //        tad("box outter pos", boxSys.getOuterServo());
 //        tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
-//        tad("lift right", liftRight.getCurrentPosition());
-//        tad("lift left", liftLeft.getCurrentPosition());
+        tad("lift right", liftRight.getCurrentPosition());
+        tad("lift left", liftLeft.getCurrentPosition());
 //
-//        tad("left pos error", liftSys.getPosErrorL());
+        tad("left pos error", liftSys.getPosErrorL());
 //        tad("left lift profile power", liftSys.getProfilePowerL());
 //        tad("profile location output", liftSys.getSetPointL());
 //        tad("normal pid output", liftSys.getNormalPIDOutput());
@@ -85,13 +85,12 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("rightRear", rightRear.get());
 //        tad("rightFront", rightFront.get());
 //        tad("voltage", liftSys.getVoltage());
-//        tad("target position", liftSys.gettar());
 
-        tad("distance2 mm", beam2.getDistance(DistanceUnit.MM));
+//        tad("distance2 mm", beam2.getDistance(DistanceUnit.MM));
 //
 //        tad("mb1242", localizerSys.getPose());
 
-        tad("bl reading:", localizerSys.getBl());
+//        tad("bl reading:", localizerSys.getBl());
 
         telemetry.update();
     }
@@ -125,7 +124,6 @@ public class BaseOpMode extends CommandOpMode {
     }
 
     public void setupHardware() {
-        liftLeft.setInverted(true);
         leftRear.setInverted(true);
         rightRear.setInverted(true);
     }

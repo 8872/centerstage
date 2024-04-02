@@ -9,17 +9,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="regionals comp code (auto broken)">
-      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/CV/ThresholdTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/auto/CV/ZoneDetectionThresholder.java" afterDir="false" />
+    <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="new threshold tester: ThresholdTest.java">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/BaseOpMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/BaseOpMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/tests/IntakeServoTuner.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/tests/IntakeServoTuner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/tests/LiftMotorTestOpmode.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/tests/LiftMotorTestOpmode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/IntakeSys.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/IntakeSys.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/LiftSys.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/LiftSys.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[192.168.43.1:5555]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -556,7 +559,14 @@
       <option name="project" value="LOCAL" />
       <updated>1711057534202</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="new threshold tester: ThresholdTest.java">
+      <created>1711059217817</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1711059217817</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -588,7 +598,8 @@
     <MESSAGE value="a bit of auto stuff + lfit stuff" />
     <MESSAGE value="descent purple pixel au and white stack au" />
     <MESSAGE value="regionals comp code (auto broken)" />
-    <option name="LAST_COMMIT_MESSAGE" value="regionals comp code (auto broken)" />
+    <MESSAGE value="new threshold tester: ThresholdTest.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="new threshold tester: ThresholdTest.java" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

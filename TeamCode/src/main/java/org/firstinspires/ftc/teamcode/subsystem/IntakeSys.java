@@ -29,11 +29,11 @@ public class IntakeSys extends SubsystemBase {
 
     public static double intakeOutPower = 0.7;
 
-    public static double intakeServoLowPosition = 0.5;
+    public static double intakeServoLowPosition = 0.57;
     public static double intakeServoHighPosition = 0.2;
 
-    public static double intakeServo2LowPosition = 0.55;
-    public static double intakeServo2HighPosition = 0.31;
+//    public static double intakeServo2LowPosition = 0.55;
+//    public static double intakeServo2HighPosition = 0.31;
     private final double[] coefficients;
 //    private final double[] coefficients2;
 

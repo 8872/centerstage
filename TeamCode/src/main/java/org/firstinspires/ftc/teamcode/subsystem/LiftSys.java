@@ -26,9 +26,9 @@ public class LiftSys extends SubsystemBase {
     public static double MID = 1300;
     public static double HIGH = 1800;
 
-    public static double kp = -0.009;
-    public static double kd = -0.0001;
-    public static double ki = -0.0003;
+    public static double kp = 0.009;
+    public static double kd = 0.0001;
+    public static double ki = 0.0003;
     public static double kg = 0;
 
     public static double voltageProportion = 0;
