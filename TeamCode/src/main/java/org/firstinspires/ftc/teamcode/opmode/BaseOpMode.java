@@ -111,7 +111,7 @@ public class BaseOpMode extends CommandOpMode {
         outerServo = new SimpleServo(hardwareMap, "outerServo", 0, 255);
         stack = new SimpleServo(hardwareMap, "stack", 0, 255);
         stack2 = new SimpleServo(hardwareMap, "stack2", 0, 255);
-        stack2.setInverted(true);
+        stack.setInverted(true);
 
         leftFront = new MotorEx(hardwareMap, "leftFront", Motor.GoBILDA.RPM_435);
         leftRear = new MotorEx(hardwareMap, "leftRear", Motor.GoBILDA.RPM_435);
@@ -126,6 +126,7 @@ public class BaseOpMode extends CommandOpMode {
     public void setupHardware() {
         leftRear.setInverted(true);
         rightRear.setInverted(true);
+        liftRight.encoder.setDirection(Motor.Direction.REVERSE);
     }
 
     public void initSubystems() {

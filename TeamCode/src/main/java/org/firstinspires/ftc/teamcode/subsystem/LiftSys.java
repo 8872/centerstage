@@ -74,7 +74,6 @@ public class LiftSys extends SubsystemBase {
         this.voltageSensor = voltageSensor.iterator().next();
         this.voltage = this.voltageSensor.getVoltage();
         this.manualPower = manualPower;
-
         targetHeight = 0;
     }
 
