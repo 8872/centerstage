@@ -21,10 +21,13 @@ public class LiftSys extends SubsystemBase {
 
     private double highestVoltage = 13.3;
 
-    public static double NONE = -5;
+    public static double NONE = 0;
     public static double LOW = 925;
     public static double MID = 1300;
     public static double HIGH = 1800;
+
+    public static double JAM = 20;
+
 
     public static double kp = 0.009;
     public static double kd = 0.0001;
@@ -144,6 +147,7 @@ public class LiftSys extends SubsystemBase {
 
     @Override
     public void periodic() {
+
         if (limitSwitch.isPressed()) {
             left.resetEncoder();
             right.resetEncoder();
@@ -173,24 +177,24 @@ public class LiftSys extends SubsystemBase {
             right.set(kg);
             left.set(kg);
         } else {
-//            if (profile) {
-//                right.set((rightProfiledController.calculate((right.getCurrentPosition()), targetHeight) + kg) * (13.3 / voltage));
-//                left.set((leftProfiledController.calculate(left.getCurrentPosition(), targetHeight) + kg) * (13.3 / voltage));
-//            } else {
-            // using right.getposition for both fixed the problem
-            right.set((rightController.calculate((right.getCurrentPosition()), targetHeight) + kg) * (13.3 / voltage));
-            left.set((leftController.calculate(right.getCurrentPosition(), targetHeight) + kg) * (13.3 / voltage));
-//            }
-
-
-            // y=0.92407(x-952)+873
+            // scuffed hack, runs full power at the jam height, otherwise just does pid
+            if (right.getCurrentPosition() < JAM && targetHeight == NONE) {
+                if (!limitSwitch.isPressed()) {
+                    left.set(-1);
+                    right.set(-1);
+                } else {
+                    right.set((rightController.calculate((right.getCurrentPosition()), targetHeight) + kg) * (13.3 / voltage));
+                    left.set((leftController.calculate(right.getCurrentPosition(), targetHeight) + kg) * (13.3 / voltage));
+                }
+            } else {
+                right.set((rightController.calculate((right.getCurrentPosition()), targetHeight) + kg) * (13.3 / voltage));
+                left.set((leftController.calculate(right.getCurrentPosition(), targetHeight) + kg) * (13.3 / voltage));
+            }
         }
-
 
         double voltReading = voltageSensor.getVoltage();
         if (voltReading > highestVoltage) {
             highestVoltage = voltReading;
         }
-
     }
 }

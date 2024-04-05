@@ -7,9 +7,9 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 @Config
 public class ArmSys extends SubsystemBase {
-    public static double armIntake = 0.86;
+    public static double armIntake = 0.75;
     public static double armOuttake = 0.23;
-    public static double pitchIntake = 0.27;
+    public static double pitchIntake = 0.3;
     public static double pitchOuttake = 0.75;
     public SimpleServo armServo;
     public SimpleServo pitchServo;
