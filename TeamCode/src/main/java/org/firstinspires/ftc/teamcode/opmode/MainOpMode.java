@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmode;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -45,6 +46,8 @@ public class MainOpMode extends BaseOpMode {
         slideUp(B, LiftSys.LOW);
         slideUp(X, LiftSys.MID);
         slideUp(Y, LiftSys.HIGH);
+
+        schedule(new RunCommand(() -> hang.set(gamepadEx2.getLeftY())));
 
 
         gb2(DPAD_LEFT).toggleWhenPressed(

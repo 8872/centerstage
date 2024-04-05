@@ -132,7 +132,7 @@ public class BaseOpMode extends CommandOpMode {
     }
 
     public void initSubystems() {
-        liftSys = new LiftSys(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, gamepadEx2::getRightY);
+        liftSys = new LiftSys(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, () -> -gamepadEx2.getRightY());
         localizerSys = new LocalizerSys(flSensor, frSensor, blSensor);
         armSys = new ArmSys(armServo, pitchServo);
         armSys.intake();
