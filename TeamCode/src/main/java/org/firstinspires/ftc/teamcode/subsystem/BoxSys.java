@@ -34,6 +34,7 @@ public class BoxSys extends SubsystemBase {
     }
 
     public void release() {
+        // TODO fix this, when release the outer goes first
         if(outerServo.getPosition() == OUTER_SERVO_UNLOCKED) {
             boxState = BoxState.INTAKE;
             innerServo.setPosition(INNER_SERVO_UNLOCKED);
