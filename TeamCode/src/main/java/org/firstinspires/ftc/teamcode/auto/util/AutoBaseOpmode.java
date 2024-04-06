@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -43,6 +44,9 @@ public class AutoBaseOpmode extends OpMode {
     protected boolean red;
     protected boolean right;
 
+    protected RevBlinkinLedDriver blinkin;
+    protected BlinkinSubsystem blinkinSubsystem;
+
 //    protected AutoBaseOpmode(boolean red, boolean right) {
 //        this.red = red;
 //        this.right = right;
@@ -59,6 +63,7 @@ public class AutoBaseOpmode extends OpMode {
     }
 
     public void initHardware() {
+        blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         limitSwitch = hardwareMap.get(TouchSensor.class, "limit");
         flSensor = hardwareMap.get(MB1242.class, "flSensor");
         frSensor = hardwareMap.get(MB1242.class, "frSensor");
@@ -93,14 +98,15 @@ public class AutoBaseOpmode extends OpMode {
     }
 
     public void initSubystems() {
+        blinkinSubsystem = new BlinkinSubsystem(blinkin);
         liftSubsystem = new LiftSubsystem(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, () -> 0);
         localizerSubsystem = new LocalizerSubsystem(flSensor, frSensor, blSensor);
         armSubsystem = new ArmSubsystem(armServo, pitchServo);
         armSubsystem.intake();
 
-        boxSubsystem = new BoxSubsystem(innerServo, outerServo);
+        boxSubsystem = new BoxSubsystem(innerServo, outerServo, blinkinSubsystem);
         driveSubsystem = new DriveSubsystem(leftFront, rightFront, leftRear, rightRear);
-        intakeSubsystem = new IntakeSubsystem(stack, stack2, intake, hardwareMap.voltageSensor);
+        intakeSubsystem = new IntakeSubsystem(stack, stack2, intake, hardwareMap.voltageSensor, blinkinSubsystem);
         planeSubsystem = new PlaneSubsystem(plane);
         intakeSubsystem.setStack1(IntakeSubsystem.servoHighPosition);
         intakeSubsystem.setStack2(IntakeSubsystem.servoHighPosition);
