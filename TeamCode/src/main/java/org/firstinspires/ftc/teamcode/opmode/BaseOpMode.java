@@ -94,7 +94,7 @@ public class BaseOpMode extends CommandOpMode {
     }
 
     public void initHardware() {
-        //blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+        blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         limitSwitch = hardwareMap.get(TouchSensor.class, "limit");
         flSensor = hardwareMap.get(MB1242.class, "flSensor");
         frSensor = hardwareMap.get(MB1242.class, "frSensor");
@@ -117,8 +117,8 @@ public class BaseOpMode extends CommandOpMode {
         rightRear = new MotorEx(hardwareMap, "rightRear", Motor.GoBILDA.RPM_435);
         rightFront = new MotorEx(hardwareMap, "rightFront", Motor.GoBILDA.RPM_435);
         intake = new MotorEx(hardwareMap, "intake", Motor.GoBILDA.RPM_1150);
-        liftLeft = new MotorEx(hardwareMap, "lil", Motor.GoBILDA.RPM_1150);
-        liftRight = new MotorEx(hardwareMap, "lir", Motor.GoBILDA.RPM_1150);
+        liftLeft = new MotorEx(hardwareMap, "lil", Motor.GoBILDA.RPM_435);
+        liftRight = new MotorEx(hardwareMap, "lir", Motor.GoBILDA.RPM_435);
         hang = new MotorEx(hardwareMap, "hang", Motor.GoBILDA.RPM_30);
     }
 
@@ -133,10 +133,10 @@ public class BaseOpMode extends CommandOpMode {
         localizerSubsystem = new LocalizerSubsystem(flSensor, frSensor, blSensor);
         armSubsystem = new ArmSubsystem(armServo, pitchServo);
         armSubsystem.intake();
-        // blinkinSubsystem = new BlinkinSubsystem(blinkin);
-        boxSubsystem = new BoxSubsystem(innerServo, outerServo);
+        blinkinSubsystem = new BlinkinSubsystem(blinkin);
+        boxSubsystem = new BoxSubsystem(innerServo, outerServo, blinkinSubsystem);
         driveSubsystem = new DriveSubsystem(leftFront, rightFront, leftRear, rightRear);
-        intakeSubsystem = new IntakeSubsystem(stack, stack2, intake, hardwareMap.voltageSensor);
+        intakeSubsystem = new IntakeSubsystem(stack, stack2, intake, hardwareMap.voltageSensor, blinkinSubsystem);
         planeSubsystem = new PlaneSubsystem(plane);
     }
 

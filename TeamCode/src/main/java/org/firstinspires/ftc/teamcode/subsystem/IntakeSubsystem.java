@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -44,10 +45,13 @@ public class IntakeSubsystem extends SubsystemBase {
     private VoltageSensor voltageSensor;
     private double voltage;
 
-    public IntakeSubsystem(SimpleServo stack, SimpleServo stack2, MotorEx intake, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor) {
+    private final BlinkinSubsystem blinkinSubsystem;
+
+    public IntakeSubsystem(SimpleServo stack, SimpleServo stack2, MotorEx intake, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor, BlinkinSubsystem blinkinSubsystem) {
         this.stack = stack;
         this.stack2 = stack2;
         this.intake = intake;
+        this.blinkinSubsystem = blinkinSubsystem;
         coefficients = Precision.calculateSlopeAndIntercept(0, servoHighPosition, 1, servoLowPosition);
         coefficients2 = Precision.calculateSlopeAndIntercept(0, servo2HighPosition, 1, servo2LowPosition);
         stack.setPosition(servoHighPosition);
@@ -70,10 +74,12 @@ public class IntakeSubsystem extends SubsystemBase {
                 stack.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
                 stack2.setPosition((fpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else if (rpower.getAsDouble() != 0) {
+                blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                 intake.set(-intakeOutPower);
                 stack.setPosition((rpower.getAsDouble() * coefficients[0]) + coefficients[1]);
                 stack2.setPosition((rpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else {
+                blinkinSubsystem.setCurrentPattern(null);
                 intake.set(0);
                 stack.setPosition(servoHighPosition);
                 stack2.setPosition(servo2HighPosition);
