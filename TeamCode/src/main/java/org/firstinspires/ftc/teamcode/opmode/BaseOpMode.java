@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.subsystem.*;
@@ -37,14 +36,13 @@ public class BaseOpMode extends CommandOpMode {
 
     protected DistanceSensor beam, beam2;
 
-    protected ArmSys armSys;
-    protected BoxSys boxSys;
-    protected DriveSys driveSys;
-    protected HangSys hangSys;
-    protected IntakeSys intakeSys;
-    protected LocalizerSys localizerSys;
-    protected PlaneSys planeSys;
-    protected LiftSys liftSys;
+    protected ArmSubsystem armSubsystem;
+    protected BoxSubsystem boxSubsystem;
+    protected DriveSubsystem driveSubsystem;
+    protected IntakeSubsystem intakeSubsystem;
+    protected LocalizerSubsystem localizerSubsystem;
+    protected PlaneSubsystem planeSubsystem;
+    protected LiftSubsystem liftSubsystem;
     List<LynxModule> hubs;
 
     @Override
@@ -68,10 +66,8 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("box inner pos", boxSys.getInnerServo());
 //        tad("box outter pos", boxSys.getOuterServo());
 //        tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
-        tad("lift right", liftRight.getCurrentPosition());
-        tad("lift left", liftLeft.getCurrentPosition());
-//
-        tad("left pos error", liftSys.getPosErrorL());
+        tad("Lift Right", liftRight.getCurrentPosition());
+        tad("Lift Left", liftLeft.getCurrentPosition());
 //        tad("left lift profile power", liftSys.getProfilePowerL());
 //        tad("profile location output", liftSys.getSetPointL());
 //        tad("normal pid output", liftSys.getNormalPIDOutput());
@@ -127,21 +123,18 @@ public class BaseOpMode extends CommandOpMode {
         leftRear.setInverted(true);
         rightRear.setInverted(true);
         liftRight.encoder.setDirection(Motor.Direction.REVERSE);
-//        innerServo.setInverted(true);
-//        outerServo.setInverted(true);
     }
 
     public void initSubystems() {
-        liftSys = new LiftSys(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, () -> -gamepadEx2.getRightY());
-        localizerSys = new LocalizerSys(flSensor, frSensor, blSensor);
-        armSys = new ArmSys(armServo, pitchServo);
-        armSys.intake();
+        liftSubsystem = new LiftSubsystem(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, () -> -gamepadEx2.getRightY());
+        localizerSubsystem = new LocalizerSubsystem(flSensor, frSensor, blSensor);
+        armSubsystem = new ArmSubsystem(armServo, pitchServo);
+        armSubsystem.intake();
 
-        boxSys = new BoxSys(innerServo, outerServo);
-        driveSys = new DriveSys(leftFront, rightFront, leftRear, rightRear);
-        hangSys = new HangSys(hang);
-        intakeSys = new IntakeSys(stack, stack2, intake, hardwareMap.voltageSensor);
-        planeSys = new PlaneSys(plane);
+        boxSubsystem = new BoxSubsystem(innerServo, outerServo);
+        driveSubsystem = new DriveSubsystem(leftFront, rightFront, leftRear, rightRear);
+        intakeSubsystem = new IntakeSubsystem(stack, stack2, intake, hardwareMap.voltageSensor);
+        planeSubsystem = new PlaneSubsystem(plane);
     }
 
     public void setupMisc() {

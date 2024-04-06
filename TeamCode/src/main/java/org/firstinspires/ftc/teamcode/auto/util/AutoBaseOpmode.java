@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.auto.util;
 
-import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
@@ -12,7 +11,6 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.auto.CV.ZoneDetectionProcessorRight;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystem.*;
@@ -29,14 +27,13 @@ public class AutoBaseOpmode extends OpMode {
 
     protected DistanceSensor beam, beam2;
 
-    protected ArmSys armSys;
-    protected BoxSys boxSys;
-    protected DriveSys driveSys;
-    protected HangSys hangSys;
-    protected IntakeSys intakeSys;
-    protected LocalizerSys localizerSys;
-    protected PlaneSys planeSys;
-    protected LiftSys liftSys;
+    protected ArmSubsystem armSubsystem;
+    protected BoxSubsystem boxSubsystem;
+    protected DriveSubsystem driveSubsystem;
+    protected IntakeSubsystem intakeSubsystem;
+    protected LocalizerSubsystem localizerSubsystem;
+    protected PlaneSubsystem planeSubsystem;
+    protected LiftSubsystem liftSubsystem;
     List<LynxModule> hubs;
 
     protected SampleMecanumDrive drive;
@@ -96,19 +93,18 @@ public class AutoBaseOpmode extends OpMode {
     }
 
     public void initSubystems() {
-        liftSys = new LiftSys(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, () -> 0);
-        localizerSys = new LocalizerSys(flSensor, frSensor, blSensor);
-        armSys = new ArmSys(armServo, pitchServo);
-        armSys.intake();
+        liftSubsystem = new LiftSubsystem(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, () -> 0);
+        localizerSubsystem = new LocalizerSubsystem(flSensor, frSensor, blSensor);
+        armSubsystem = new ArmSubsystem(armServo, pitchServo);
+        armSubsystem.intake();
 
-        boxSys = new BoxSys(innerServo, outerServo);
-        driveSys = new DriveSys(leftFront, rightFront, leftRear, rightRear);
-        hangSys = new HangSys(hang);
-        intakeSys = new IntakeSys(stack, stack2, intake, hardwareMap.voltageSensor);
-        planeSys = new PlaneSys(plane);
-        intakeSys.setStack1(IntakeSys.intakeServoHighPosition);
-        intakeSys.setStack2(IntakeSys.intakeServoHighPosition);
-        intakeSys.runIntake(0);
+        boxSubsystem = new BoxSubsystem(innerServo, outerServo);
+        driveSubsystem = new DriveSubsystem(leftFront, rightFront, leftRear, rightRear);
+        intakeSubsystem = new IntakeSubsystem(stack, stack2, intake, hardwareMap.voltageSensor);
+        planeSubsystem = new PlaneSubsystem(plane);
+        intakeSubsystem.setStack1(IntakeSubsystem.servoHighPosition);
+        intakeSubsystem.setStack2(IntakeSubsystem.servoHighPosition);
+        intakeSubsystem.runIntake(0);
     }
 
     public void setupMisc() {

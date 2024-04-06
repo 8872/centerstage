@@ -1,23 +1,16 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import android.util.Log;
 import android.util.Size;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.auto.CV.ZoneDetectionProcessorLeft;
 import org.firstinspires.ftc.teamcode.auto.CV.ZoneDetectionProcessorRight;
-import org.firstinspires.ftc.teamcode.auto.pathPieces.audienceStart.StacksToBackdropAu;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
-import org.firstinspires.ftc.teamcode.subsystem.wpilib.MedianFilter;
-import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
+import org.firstinspires.ftc.teamcode.util.wpilib.MedianFilter;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
@@ -148,9 +141,9 @@ public class RedAuPurple extends AutoBaseOpmode {
     public void start(){
         zone = processor.getZone();
         depositWaitTimer.reset();
-        schedule(armSys.intake());
-        schedule(intakeSys.setStack1(0.5));
-        schedule(intakeSys.setStack2(0.5));
+        schedule(armSubsystem.intake());
+        schedule(intakeSubsystem.setStack1(0.5));
+        schedule(intakeSubsystem.setStack2(0.5));
         currentPurplePixState = PurplePixState.MOVE_TO_PROP;
     }
 
@@ -158,7 +151,7 @@ public class RedAuPurple extends AutoBaseOpmode {
     public void loop() {
         super.loop();
         drive.update();
-        liftSys.periodic();
+        liftSubsystem.periodic();
 
         if(currentPurplePixState == PurplePixState.MOVE_TO_PROP && depositWaitTimer.milliseconds() > 3000){
             zone = processor.getZone();
@@ -217,8 +210,8 @@ public class RedAuPurple extends AutoBaseOpmode {
 
         //could replace isBusy with a posEstimate check if need efficiency
         if(currentPurplePixState == PurplePixState.EJECT_AND_MOVE_TO_STACK && !drive.isBusy()) {
-            schedule(intakeSys.setStack1(0.25));
-            schedule(intakeSys.setStack2(0.25));
+            schedule(intakeSubsystem.setStack1(0.25));
+            schedule(intakeSubsystem.setStack2(0.25));
             drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .waitSeconds(1)
                     .back(15,

@@ -8,13 +8,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.auto.CV.ZoneDetectionProcessorLeft;
-import org.firstinspires.ftc.teamcode.auto.pathPieces.audienceStart.BackdropToStacksAu;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
-import org.firstinspires.ftc.teamcode.subsystem.wpilib.MedianFilter;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+import org.firstinspires.ftc.teamcode.util.wpilib.MedianFilter;
 import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 import org.firstinspires.ftc.vision.VisionPortal;
 
@@ -175,13 +174,13 @@ public class RedAuCycle extends AutoBaseOpmode {
     public void loop() {
         super.loop();
         drive.update();
-        liftSys.periodic();
+        liftSubsystem.periodic();
 
         //TODO: delete testing above
         if(currentPurplePixState == PurplePixState.MOVE_TO_PROP){
-            schedule(armSys.intake());
-            schedule(intakeSys.setStack1(0.4));
-            schedule(intakeSys.setStack2(0.4));
+            schedule(armSubsystem.intake());
+            schedule(intakeSubsystem.setStack1(0.4));
+            schedule(intakeSubsystem.setStack2(0.4));
             if(red){
                 switch(zone) {
                     case 1:
@@ -226,11 +225,11 @@ public class RedAuCycle extends AutoBaseOpmode {
         if(currentPurplePixState == PurplePixState.EJECT_AND_MOVE_TO_STACK && !drive.isBusy()) {
             //intake fsm
             //signal with a displacement marker that changes an enum
-            schedule(intakeSys.runIntake(-0.5));
-            schedule(new DelayedCommand(intakeSys.runIntake(0), (long)waitTime*1000));
-            schedule(new DelayedCommand(armSys.intake(),1000));
-            schedule(new DelayedCommand(intakeSys.setStack1(IntakeSys.intakeServoHighPosition+0.05),1000));
-            schedule(new DelayedCommand(intakeSys.setStack2(IntakeSys.intakeServoHighPosition+0.05),1000));
+            schedule(intakeSubsystem.runIntake(-0.5));
+            schedule(new DelayedCommand(intakeSubsystem.runIntake(0), (long)waitTime*1000));
+            schedule(new DelayedCommand(armSubsystem.intake(),1000));
+            schedule(new DelayedCommand(intakeSubsystem.setStack1(IntakeSubsystem.servoHighPosition +0.05),1000));
+            schedule(new DelayedCommand(intakeSubsystem.setStack2(IntakeSubsystem.servoHighPosition +0.05),1000));
 
             //drive fsm
             if(red){
@@ -281,7 +280,7 @@ public class RedAuCycle extends AutoBaseOpmode {
         }
         if(currentWhiteStackState == WhiteStackState.TOPPLE_STACK2 && !drive.isBusy()){
             intakeWaitTimer.reset();
-            schedule(intakeSys.runIntake(intakeKnockPower));
+            schedule(intakeSubsystem.runIntake(intakeKnockPower));
             if (red) {
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(pixelX, -pixelY, Math.toRadians(180.00)))
                         .lineToLinearHeading(new Pose2d(pixelX + moveBackDistance, -pixelY, Math.toRadians(180.00)),
@@ -300,9 +299,9 @@ public class RedAuCycle extends AutoBaseOpmode {
             currentWhiteStackState = WhiteStackState.PICKUP_PIXELS;
         }
         if (currentWhiteStackState == WhiteStackState.PICKUP_PIXELS && intakeWaitTimer.milliseconds()>500) {
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoLowPosition));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoLowPosition));
-            schedule(intakeSys.runIntake(intakeFinalPower));
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoLowPosition));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servoLowPosition));
+            schedule(intakeSubsystem.runIntake(intakeFinalPower));
             currentWhiteStackState = WhiteStackState.WAIT_FOR_INTAKE;
         }
         if (currentWhiteStackState == WhiteStackState.WAIT_FOR_INTAKE && !drive.isBusy()) {
@@ -324,11 +323,11 @@ public class RedAuCycle extends AutoBaseOpmode {
 //        }
 
         if(currentToBackdropState == ToBackdropState.MOVE_TO_DETECT_POS){
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoHighPosition+0.05));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoHighPosition+0.05));
-            schedule(intakeSys.runIntake(-IntakeSys.intakeOutPower));
-            schedule(new DelayedCommand(intakeSys.runIntake(0),500));
-            schedule(boxSys.close());
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoHighPosition +0.05));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servoHighPosition +0.05));
+            schedule(intakeSubsystem.runIntake(-IntakeSubsystem.intakeOutPower));
+            schedule(new DelayedCommand(intakeSubsystem.runIntake(0),500));
+            schedule(boxSubsystem.close());
             if(red){
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                         .back(1)
@@ -353,13 +352,13 @@ public class RedAuCycle extends AutoBaseOpmode {
             currentToBackdropState = ToBackdropState.CHECK_FOR_BOT;
         }
         if(currentToBackdropState == ToBackdropState.CHECK_FOR_BOT && !drive.isBusy()){
-            if(localizerSys.getBl() > botDetectionThreshold){
+            if(localizerSubsystem.getBl() > botDetectionThreshold){
                 currentToBackdropState = ToBackdropState.MOVE_TO_BACKDROP;
             }
         }
         if(currentToBackdropState == ToBackdropState.MOVE_TO_BACKDROP){
-            schedule(liftSys.goTo(LiftSys.LOW));
-            schedule(new DelayedCommand(armSys.deposit(),500));
+            schedule(liftSubsystem.goTo(LiftSubsystem.LOW));
+            schedule(new DelayedCommand(armSubsystem.deposit(),500));
             if(red){
                 switch(zone){
                     case 1:
@@ -400,7 +399,7 @@ public class RedAuCycle extends AutoBaseOpmode {
             currentToBackdropState = ToBackdropState.DEPOSIT;
         }
         if(currentToBackdropState == ToBackdropState.DEPOSIT && !drive.isBusy()){
-            schedule(boxSys.intake());
+            schedule(boxSubsystem.intake());
             depositWaitTimer.reset();
             //TODO: add apriltag relocalization
             currentToBackdropState = ToBackdropState.WAIT_FOR_FINISH;
@@ -410,8 +409,8 @@ public class RedAuCycle extends AutoBaseOpmode {
             currentToStackState = ToStackState.MOVE_TO_STACKS;
         }
         if(currentToStackState == ToStackState.MOVE_TO_STACKS){
-            schedule(liftSys.goTo(LiftSys.NONE));
-            schedule(armSys.intake());
+            schedule(liftSubsystem.goTo(LiftSubsystem.NONE));
+            schedule(armSubsystem.intake());
             if(red){
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(50, -46, Math.toRadians(180)))
                         .splineToConstantHeading(new Vector2d(toBottomRowX, -toBottomPathY), Math.toRadians(180))
@@ -434,9 +433,9 @@ public class RedAuCycle extends AutoBaseOpmode {
             currentToStackState = ToStackState.RUN_INTAKE;
         }
         if(currentToStackState == ToStackState.RUN_INTAKE && drive.getPoseEstimate().getX() < pixelPathStartX+4){
-            schedule(intakeSys.runIntake(IntakeSys.intakeInPower));
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoLowPosition));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoLowPosition));
+            schedule(intakeSubsystem.runIntake(IntakeSubsystem.intakeInPower));
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoLowPosition));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servoLowPosition));
             currentToStackState = ToStackState.PICKUP;
         }
         if(currentToStackState == ToStackState.PICKUP && !drive.isBusy()){
@@ -447,11 +446,11 @@ public class RedAuCycle extends AutoBaseOpmode {
             currentToStackState = ToStackState.EJECT_AND_DETECT_POS;
         }
         if(currentToStackState == ToStackState.EJECT_AND_DETECT_POS && !drive.isBusy()){
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoHighPosition+0.05));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoHighPosition+0.05));
-            schedule(intakeSys.runIntake(-IntakeSys.intakeOutPower));
-            schedule(new DelayedCommand(intakeSys.runIntake(0),500));
-            schedule(boxSys.close());
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoHighPosition +0.05));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servoHighPosition +0.05));
+            schedule(intakeSubsystem.runIntake(-IntakeSubsystem.intakeOutPower));
+            schedule(new DelayedCommand(intakeSubsystem.runIntake(0),500));
+            schedule(boxSubsystem.close());
             if(red){
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                         .back(1)

@@ -3,15 +3,9 @@ package org.firstinspires.ftc.teamcode.auto.pathPieces.backdropStart;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
-import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 
 @Config
 @TeleOp(name="To Stacks Ba", group = "ZZZ")
@@ -52,8 +46,8 @@ public class BackdropToStacksBa extends AutoBaseOpmode {
             currentState = State.MOVE_TO_STACKS;
         }
         if(currentState == State.MOVE_TO_STACKS){
-            schedule(liftSys.goTo(LiftSys.NONE));
-            schedule(armSys.intake());
+            schedule(liftSubsystem.goTo(LiftSubsystem.NONE));
+            schedule(armSubsystem.intake());
             if(red){
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                         .splineToConstantHeading(new Vector2d(middlePathX, -middlePathY), Math.toRadians(180.00))

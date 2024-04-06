@@ -2,10 +2,9 @@ package org.firstinspires.ftc.teamcode.auto.pathPieces.backdropStart;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 
 @Config
@@ -52,9 +51,9 @@ public class WhiteStackPickupBa extends AutoBaseOpmode {
             currentState = State.TOPPLE_STACK;
         }
         if (currentState == State.TOPPLE_STACK) {
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoLowPosition));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoLowPosition));
-            schedule(intakeSys.runIntake(intakeInitialPower));
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoLowPosition));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servoLowPosition));
+            schedule(intakeSubsystem.runIntake(intakeInitialPower));
             if (red) {
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(pixelX, -pixelY, Math.toRadians(180.00)))
                         .lineToLinearHeading(new Pose2d(pixelX - moveForwardDistance, -pixelY, Math.toRadians(180.00)))
@@ -73,18 +72,18 @@ public class WhiteStackPickupBa extends AutoBaseOpmode {
             currentState = State.PICKUP_PIXELS;
         }
         if (currentState == State.PICKUP_PIXELS && drive.getPoseEstimate().getX() > pixelX + 3.5) {
-            schedule(intakeSys.runIntake(intakeFinalPower));
+            schedule(intakeSubsystem.runIntake(intakeFinalPower));
             currentState = State.EJECT;
         }
         if (currentState == State.EJECT && !drive.isBusy()) {
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoHighPosition));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoHighPosition));
-            schedule(intakeSys.runIntake(-IntakeSys.intakeOutPower));
-            schedule(new DelayedCommand(intakeSys.runIntake(0), 1000));
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoHighPosition));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servoHighPosition));
+            schedule(intakeSubsystem.runIntake(-IntakeSubsystem.intakeOutPower));
+            schedule(new DelayedCommand(intakeSubsystem.runIntake(0), 1000));
             currentState = State.WAIT_FOR_EJECT;
         }
         if (currentState == State.WAIT_FOR_EJECT) {
-            if (intakeSys.getIntakePower() == 0) {
+            if (intakeSubsystem.getIntakePower() == 0) {
                 //TODO: Change it so it loops until 2 pixels are detected
                 //currentState = State.TOPPLE_STACK;
                 currentState = State.FINISHED;

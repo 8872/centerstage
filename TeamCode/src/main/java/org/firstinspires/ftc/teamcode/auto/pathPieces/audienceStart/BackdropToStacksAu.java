@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 
 @Config
@@ -57,8 +57,8 @@ public class BackdropToStacksAu extends AutoBaseOpmode {
             currentToStackState = ToStackState.MOVE_TO_STACKS;
         }
         if(currentToStackState == ToStackState.MOVE_TO_STACKS){
-            schedule(liftSys.goTo(LiftSys.NONE));
-            schedule(armSys.intake());
+            schedule(liftSubsystem.goTo(LiftSubsystem.NONE));
+            schedule(armSubsystem.intake());
             if(red){
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(50, -46, Math.toRadians(180)))
                         .splineToConstantHeading(new Vector2d(toBottomRowX, -toBottomPathY), Math.toRadians(180))
@@ -81,15 +81,15 @@ public class BackdropToStacksAu extends AutoBaseOpmode {
             currentToStackState = ToStackState.RUN_INTAKE;
         }
         if(currentToStackState == ToStackState.RUN_INTAKE && drive.getPoseEstimate().getX() < pixelPathStartX+4){
-            schedule(intakeSys.runIntake(IntakeSys.intakeInPower));
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoLowPosition));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoLowPosition));
+            schedule(intakeSubsystem.runIntake(IntakeSubsystem.intakeInPower));
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoLowPosition));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servoLowPosition));
             currentToStackState = ToStackState.WAIT_FOR_FINISH;
         }
         if(currentToStackState == ToStackState.WAIT_FOR_FINISH && !drive.isBusy()){
             //TODO: should it eject here?
-            schedule(intakeSys.runIntake(-IntakeSys.intakeOutPower));
-            schedule(new DelayedCommand(intakeSys.runIntake(0), 1000));
+            schedule(intakeSubsystem.runIntake(-IntakeSubsystem.intakeOutPower));
+            schedule(new DelayedCommand(intakeSubsystem.runIntake(0), 1000));
             currentToStackState = ToStackState.FINISHED;
         }
     }

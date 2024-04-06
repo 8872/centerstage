@@ -4,7 +4,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 
 import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Button.*;
 import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Button.LEFT_BUMPER;
@@ -15,7 +15,7 @@ public class SoloMainOpMode extends BaseOpMode {
     public void initialize() {
         super.initialize();
 
-        register(boxSys, armSys, driveSys, intakeSys, localizerSys, liftSys);
+        register(boxSubsystem, armSubsystem, driveSubsystem, intakeSubsystem, localizerSubsystem, liftSubsystem);
 
         // plane
 //        new GamepadButton(gamepadEx2, LEFT_STICK_BUTTON)
@@ -24,7 +24,7 @@ public class SoloMainOpMode extends BaseOpMode {
 //        gb1(DPAD_RIGHT).whenPressed(planeSys.launch());
 
         // arm + box
-        gb1(RIGHT_BUMPER).whenPressed(new InstantCommand(() -> boxSys.release()));
+        gb1(RIGHT_BUMPER).whenPressed(new InstantCommand(() -> boxSubsystem.release()));
 //        gb1(LEFT_BUMPER).toggleWhenPressed(
 //                new ParallelCommandGroup(armSys.intake(), boxSys.intake()),
 //                new ParallelCommandGroup(armSys.deposit(), boxSys.close())
@@ -32,11 +32,11 @@ public class SoloMainOpMode extends BaseOpMode {
 
         // slide + box
         gb1(A).whenPressed(new ParallelCommandGroup(
-                liftSys.goTo(LiftSys.NONE), new ParallelCommandGroup(armSys.intake(), boxSys.intake())
+                liftSubsystem.goTo(LiftSubsystem.NONE), new ParallelCommandGroup(armSubsystem.intake(), boxSubsystem.intake())
         ));
-        slideUp(B, LiftSys.LOW);
-        slideUp(X, LiftSys.MID);
-        slideUp(Y, LiftSys.HIGH);
+        slideUp(B, LiftSubsystem.LOW);
+        slideUp(X, LiftSubsystem.MID);
+        slideUp(Y, LiftSubsystem.HIGH);
 
 
 //        gb2(DPAD_LEFT).toggleWhenPressed(
@@ -45,19 +45,19 @@ public class SoloMainOpMode extends BaseOpMode {
 //        );
 
         gb1(LEFT_BUMPER).whileHeld(
-                driveSys.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
+                driveSubsystem.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
 
 
 
 //        liftSys.setDefaultCommand(liftSys.manualSetHeight(gamepadEx2::getRightY));
-        intakeSys.setDefaultCommand(intakeSys.intake(() -> gamepadEx1.gamepad.right_trigger, () -> gamepadEx1.gamepad.left_trigger));
-        driveSys.setDefaultCommand(driveSys.drive(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
+        intakeSubsystem.setDefaultCommand(intakeSubsystem.intake(() -> gamepadEx1.gamepad.right_trigger, () -> gamepadEx1.gamepad.left_trigger));
+        driveSubsystem.setDefaultCommand(driveSubsystem.drive(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
 
     }
 
     private void slideUp(GamepadKeys.Button button, double height) {
         gb1(button).whenPressed(new ParallelCommandGroup(
-                liftSys.goTo(height), new ParallelCommandGroup(armSys.deposit(), boxSys.close())
+                liftSubsystem.goTo(height), new ParallelCommandGroup(armSubsystem.deposit(), boxSubsystem.close())
         ));
     }
 }

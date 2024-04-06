@@ -6,7 +6,7 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 @Config
-public class BoxSys extends SubsystemBase {
+public class BoxSubsystem extends SubsystemBase {
     public static boolean nah = false;
     public static final double INNER_SERVO_LOCKED = 0.8;
     public static final double INNER_SERVO_UNLOCKED = 0.5;
@@ -20,7 +20,7 @@ public class BoxSys extends SubsystemBase {
         INTAKE /* both servos are unlocked */
     }
     public static BoxState boxState = BoxState.INTAKE;
-    public BoxSys(SimpleServo innerServo, SimpleServo outerServo) {
+    public BoxSubsystem(SimpleServo innerServo, SimpleServo outerServo) {
         this.innerServo = innerServo;
         this.outerServo = outerServo;
     }

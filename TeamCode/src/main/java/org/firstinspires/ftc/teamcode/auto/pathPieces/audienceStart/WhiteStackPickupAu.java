@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 
 @Config
@@ -65,9 +65,9 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
             currentWhiteStackState = WhiteStackState.TOPPLE_STACK1;
         }
         if (currentWhiteStackState == WhiteStackState.TOPPLE_STACK1) {
-            schedule(armSys.intake());
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoHighPosition));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoHighPosition));
+            schedule(armSubsystem.intake());
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoHighPosition));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servoHighPosition));
             if (red) {
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(pixelX, -pixelY, Math.toRadians(180.00)))
                         .lineToLinearHeading(new Pose2d(pixelX - moveForwardDistance, -pixelY, Math.toRadians(180.00)),
@@ -84,9 +84,9 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
             currentWhiteStackState = WhiteStackState.TOPPLE_STACK2;
         }
         if(currentWhiteStackState == WhiteStackState.TOPPLE_STACK2 && !drive.isBusy()){
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoLowPosition));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoLowPosition));
-            schedule(intakeSys.runIntake(intakeKnockPower));
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoLowPosition));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servoLowPosition));
+            schedule(intakeSubsystem.runIntake(intakeKnockPower));
             if (red) {
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(pixelX, -pixelY, Math.toRadians(180.00)))
                         .lineToLinearHeading(new Pose2d(pixelX + moveBackDistance, -pixelY, Math.toRadians(180.00)),
@@ -107,7 +107,7 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
             currentWhiteStackState = WhiteStackState.PICKUP_PIXELS;
         }
         if (currentWhiteStackState == WhiteStackState.PICKUP_PIXELS && drive.getPoseEstimate().getX() > pixelX) {
-            schedule(intakeSys.runIntake(intakeFinalPower));
+            schedule(intakeSubsystem.runIntake(intakeFinalPower));
             currentWhiteStackState = WhiteStackState.WAIT_FOR_INTAKE;
         }
         if (currentWhiteStackState == WhiteStackState.WAIT_FOR_INTAKE && !drive.isBusy()) {
@@ -115,12 +115,12 @@ public class WhiteStackPickupAu extends AutoBaseOpmode {
             currentWhiteStackState = WhiteStackState.EJECT;
         }
         if (currentWhiteStackState == WhiteStackState.EJECT && intakeWaitTimer.milliseconds()>intakeWaitTime) {
-            schedule(intakeSys.setStack1(IntakeSys.intakeServoHighPosition));
-            schedule(intakeSys.setStack2(IntakeSys.intakeServoHighPosition));
-            schedule(intakeSys.runIntake(-IntakeSys.intakeOutPower));
-            schedule(new DelayedCommand(intakeSys.runIntake(0), 1000));
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoHighPosition));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servoHighPosition));
+            schedule(intakeSubsystem.runIntake(-IntakeSubsystem.intakeOutPower));
+            schedule(new DelayedCommand(intakeSubsystem.runIntake(0), 1000));
         }
-        if (currentWhiteStackState == WhiteStackState.WAIT_FOR_EJECT && intakeSys.getIntakePower() == 0) {
+        if (currentWhiteStackState == WhiteStackState.WAIT_FOR_EJECT && intakeSubsystem.getIntakePower() == 0) {
             currentWhiteStackState = WhiteStackState.FINISHED;
             testing = false;
         }

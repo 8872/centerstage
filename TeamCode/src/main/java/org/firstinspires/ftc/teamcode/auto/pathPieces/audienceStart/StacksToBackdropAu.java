@@ -3,13 +3,12 @@ package org.firstinspires.ftc.teamcode.auto.pathPieces.audienceStart;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 import android.util.Log;
 
 
@@ -74,7 +73,7 @@ public class StacksToBackdropAu extends AutoBaseOpmode {
             currentState = State.MOVE_TO_DETECT_POS;
         }
         if(currentState == State.MOVE_TO_DETECT_POS){
-            schedule(boxSys.close());
+            schedule(boxSubsystem.close());
             if(red){
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                         .splineToConstantHeading(new Vector2d(trussPixelSideX, -bottomPathY), Math.toRadians(0))
@@ -98,15 +97,15 @@ public class StacksToBackdropAu extends AutoBaseOpmode {
         }
         if(currentState == State.CHECK_FOR_BOT && !drive.isBusy()){
             while(true){
-                Log.d("asd",""+localizerSys.getBl());
+                Log.d("asd",""+ localizerSubsystem.getBl());
             }
 //            if(localizerSys.getBl() > botDetectionThreshold){
 //                currentState = State.MOVE_TO_BACKDROP;
 //            }
         }
         if(currentState == State.MOVE_TO_BACKDROP){
-            schedule(liftSys.goTo(LiftSys.LOW));
-            schedule(armSys.deposit());
+            schedule(liftSubsystem.goTo(LiftSubsystem.LOW));
+            schedule(armSubsystem.deposit());
             if(red){
                 switch(zone){
                     case 1:
@@ -147,7 +146,7 @@ public class StacksToBackdropAu extends AutoBaseOpmode {
             currentState = State.DEPOSIT;
         }
         if(currentState == State.DEPOSIT && !drive.isBusy()){
-            schedule(boxSys.intake());
+            schedule(boxSubsystem.intake());
             depositWaitTimer.reset();
             //TODO: add apriltag relocalization
             currentState = State.WAIT_FOR_FINISH;

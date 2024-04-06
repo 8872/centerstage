@@ -7,7 +7,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 @Config
 @TeleOp(name="Intake Servo Tuner", group = "Tuner")
 public class IntakeServoTuner extends LinearOpMode {
@@ -23,19 +23,19 @@ public class IntakeServoTuner extends LinearOpMode {
 
         MotorEx intake = new MotorEx(hardwareMap, "intake", Motor.GoBILDA.RPM_1150);
 
-        stackRight.setPosition(IntakeSys.intakeServoHighPosition);
-        stackLeft.setPosition(IntakeSys.intakeServoHighPosition);
+        stackRight.setPosition(IntakeSubsystem.servoHighPosition);
+        stackLeft.setPosition(IntakeSubsystem.servoHighPosition);
 
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
             if(gamepad1.x){
-                stackRight.setPosition(IntakeSys.intakeServoLowPosition);
+                stackRight.setPosition(IntakeSubsystem.servoLowPosition);
             }if(gamepad1.y){
-                stackRight.setPosition(IntakeSys.intakeServoHighPosition);
+                stackRight.setPosition(IntakeSubsystem.servoHighPosition);
             }if(gamepad1.dpad_left){
-                stackLeft.setPosition(IntakeSys.intakeServo2LowPosition);
+                stackLeft.setPosition(IntakeSubsystem.servo2LowPosition);
             }if (gamepad1.dpad_up) {
-                stackLeft.setPosition(IntakeSys.intakeServo2HighPosition);
+                stackLeft.setPosition(IntakeSubsystem.servo2HighPosition);
             }
 
             if(gamepad1.right_trigger>0.1){

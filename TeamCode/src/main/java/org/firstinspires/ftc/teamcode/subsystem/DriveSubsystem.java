@@ -10,12 +10,12 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import java.util.function.DoubleSupplier;
 
 @Config
-public class DriveSys extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase {
     private final MecanumDrive drive;
 
     public static double slowFactor = 0.25;
 
-    public DriveSys(MotorEx fL, MotorEx fR, MotorEx bL, MotorEx bR) {
+    public DriveSubsystem(MotorEx fL, MotorEx fR, MotorEx bL, MotorEx bR) {
         drive = new MecanumDrive(fL, fR, bL, bR);
     }
 

@@ -2,11 +2,10 @@ package org.firstinspires.ftc.teamcode.auto.pathPieces.backdropStart;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 
 @Config
@@ -82,7 +81,7 @@ public class PurplePixelBa extends AutoBaseOpmode {
 
         //TODO: delete testing above
         if(currentState == State.MOVE_TO_PROP){
-            schedule(boxSys.close());
+            schedule(boxSubsystem.close());
             if(red){
                 switch(zone) {
                     case 1:
@@ -125,10 +124,10 @@ public class PurplePixelBa extends AutoBaseOpmode {
 
         //could replace isBusy with a posEstimate check if need efficiency
         if(currentState == State.EJECT_AND_MOVE_TO_BACKDROP && !drive.isBusy()) {
-            schedule(intakeSys.runIntake(-0.5));
-            schedule(new DelayedCommand(intakeSys.runIntake(-0.5), 500));
-            schedule(new DelayedCommand(liftSys.goTo(LiftSys.LOW),500));
-            schedule(new DelayedCommand(armSys.deposit(),500));
+            schedule(intakeSubsystem.runIntake(-0.5));
+            schedule(new DelayedCommand(intakeSubsystem.runIntake(-0.5), 500));
+            schedule(new DelayedCommand(liftSubsystem.goTo(LiftSubsystem.LOW),500));
+            schedule(new DelayedCommand(armSubsystem.deposit(),500));
             //drive fsm
             if(red){
                 switch(zone) {
@@ -176,7 +175,7 @@ public class PurplePixelBa extends AutoBaseOpmode {
             currentState = State.DEPOSIT;
         }
         if(currentState == State.DEPOSIT && !drive.isBusy()){
-            schedule(boxSys.intake());
+            schedule(boxSubsystem.intake());
             depositWaitTimer.reset();
             currentState = State.WAIT_FOR_FINISH;
         }

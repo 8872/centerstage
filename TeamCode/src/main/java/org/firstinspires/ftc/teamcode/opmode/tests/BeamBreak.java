@@ -1,22 +1,17 @@
 package org.firstinspires.ftc.teamcode.opmode.tests;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.opmode.BaseOpMode;
-import org.firstinspires.ftc.teamcode.subsystem.wpilib.LinearFilter;
-import org.firstinspires.ftc.teamcode.subsystem.wpilib.MedianFilter;
+import org.firstinspires.ftc.teamcode.util.wpilib.MedianFilter;
 
 @TeleOp
 @Config
 @Disabled
-
 public class BeamBreak extends BaseOpMode {
     public static int sampleSize = 15;
     private final MedianFilter filter = new MedianFilter(sampleSize);
@@ -33,7 +28,7 @@ public class BeamBreak extends BaseOpMode {
 
         gb1(GamepadKeys.Button.A).whenPressed(new InstantCommand(filter::reset));
 
-        intakeSys.setDefaultCommand(intakeSys.intake(
+        intakeSubsystem.setDefaultCommand(intakeSubsystem.intake(
                 () -> gamepadEx1.gamepad.right_trigger,
                 () -> gamepadEx1.gamepad.left_trigger)
         );

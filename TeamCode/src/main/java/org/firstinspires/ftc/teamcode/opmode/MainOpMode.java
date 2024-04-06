@@ -4,13 +4,9 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.RunCommand;
-import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
-import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
-
-import java.util.concurrent.Delayed;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 
 import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Button.*;
 
@@ -24,45 +20,45 @@ public class MainOpMode extends BaseOpMode {
     public void initialize() {
         super.initialize();
 
-        register(boxSys, armSys, driveSys, intakeSys, localizerSys, liftSys);
+        register(boxSubsystem, armSubsystem, driveSubsystem, intakeSubsystem, localizerSubsystem, liftSubsystem);
 
         // plane
 //        new GamepadButton(gamepadEx2, LEFT_STICK_BUTTON)
 //                .and(new GamepadButton(gamepadEx2, RIGHT_STICK_BUTTON))
 //                .and(new GamepadButton(gamepadEx2, A)).whenActive(planeSys.launch());
-        gb2(DPAD_RIGHT).whenPressed(planeSys.launch());
+        gb2(DPAD_RIGHT).whenPressed(planeSubsystem.launch());
 
         // arm + box
-        gb2(RIGHT_BUMPER).whenPressed(new InstantCommand(() -> boxSys.release()));
+        gb2(RIGHT_BUMPER).whenPressed(new InstantCommand(() -> boxSubsystem.release()));
         gb2(LEFT_BUMPER).toggleWhenPressed(
-                new ParallelCommandGroup(armSys.intake(), boxSys.intake()),
-                new ParallelCommandGroup(armSys.deposit(), boxSys.close())
+                new ParallelCommandGroup(armSubsystem.intake(), boxSubsystem.intake()),
+                new ParallelCommandGroup(armSubsystem.deposit(), boxSubsystem.close())
         );
 
         // slide + box
         gb2(A).whenPressed(new ParallelCommandGroup(
-                liftSys.goTo(LiftSys.NONE), new ParallelCommandGroup(armSys.intake(), boxSys.intake())
+                liftSubsystem.goTo(LiftSubsystem.NONE), new ParallelCommandGroup(armSubsystem.intake(), boxSubsystem.intake())
         ));
-        slideUp(B, LiftSys.LOW);
-        slideUp(X, LiftSys.MID);
-        slideUp(Y, LiftSys.HIGH);
+        slideUp(B, LiftSubsystem.LOW);
+        slideUp(X, LiftSubsystem.MID);
+        slideUp(Y, LiftSubsystem.HIGH);
 
         schedule(new RunCommand(() -> hang.set(gamepadEx2.getLeftY())));
 
 
         gb2(DPAD_LEFT).toggleWhenPressed(
-                new ParallelCommandGroup(armSys.intake(), boxSys.intake()),
-                new ParallelCommandGroup(armSys.deposit(), boxSys.close())
+                new ParallelCommandGroup(armSubsystem.intake(), boxSubsystem.intake()),
+                new ParallelCommandGroup(armSubsystem.deposit(), boxSubsystem.close())
         );
 
         gb1(LEFT_BUMPER).whileHeld(
-                driveSys.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
+                driveSubsystem.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
 
 
 
 //        liftSys.setDefaultCommand(liftSys.manualSetHeight(gamepadEx2::getRightY));
-        intakeSys.setDefaultCommand(intakeSys.intake(() -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger));
-        driveSys.setDefaultCommand(driveSys.drive(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
+        intakeSubsystem.setDefaultCommand(intakeSubsystem.intake(() -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger));
+        driveSubsystem.setDefaultCommand(driveSubsystem.drive(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
 
 
 
@@ -70,7 +66,7 @@ public class MainOpMode extends BaseOpMode {
 
     private void slideUp(GamepadKeys.Button button, double height) {
         gb2(button).whenPressed(new ParallelCommandGroup(
-                liftSys.goTo(height), new ParallelCommandGroup(armSys.deposit(), boxSys.close())
+                liftSubsystem.goTo(height), new ParallelCommandGroup(armSubsystem.deposit(), boxSubsystem.close())
         ));
     }
 

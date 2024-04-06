@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
-import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.*;
+import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -16,56 +15,37 @@ import java.util.function.DoubleSupplier;
 
 
 @Config
-public class LiftSys extends SubsystemBase {
+public class LiftSubsystem extends SubsystemBase {
     private final MotorEx left, right;
-
-    private double highestVoltage = 13.3;
+    private final TouchSensor limitSwitch;
 
     public static double NONE = 0;
     public static double LOW = 925;
     public static double MID = 1300;
     public static double HIGH = 1800;
-
     public static double JAM = 20;
-
 
     public static double kp = 0.009;
     public static double kd = 0.0001;
     public static double ki = 0.0003;
     public static double kg = 0;
 
-    public static double voltageProportion = 0;
-
-    public static double maxVel = 1000;
-    public static double maxAccel = 2000;
-
     public static double targetHeight = 0;
 
     public static int threshold = 5;
 
-    public static double manualUpPower = 20;
-    public static double manualDownPower = 20;
-
-    private TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(maxVel, maxAccel);
-
-    private final ProfiledPIDController rightProfiledController = new ProfiledPIDController(kp, ki, kd, constraints);
-    private final ProfiledPIDController leftProfiledController = new ProfiledPIDController(kp, ki, kd, constraints);
-
-
     private final PIDController leftController = new PIDController(kp, ki, kd);
     private final PIDController rightController = new PIDController(kp, ki, kd);
 
-    private final TouchSensor limitSwitch;
-
-    private ElapsedTime voltageTimer;
-    private VoltageSensor voltageSensor;
+    private final ElapsedTime voltageTimer;
+    private final VoltageSensor voltageSensor;
     private double voltage;
+    private double highestVoltage = 13.3;
 
     private final DoubleSupplier manualPower;
     private boolean manual = false;
-    public static boolean profile = false;
 
-    public LiftSys(MotorEx left, MotorEx right, TouchSensor sensor, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor
+    public LiftSubsystem(MotorEx left, MotorEx right, TouchSensor sensor, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor
             , DoubleSupplier manualPower) {
         this.left = left;
         this.right = right;
@@ -80,14 +60,9 @@ public class LiftSys extends SubsystemBase {
         targetHeight = 0;
     }
 
-    public void setHeight(double height) {
-        targetHeight = height;
-    }
-
-
     public Command goTo(double height) {
         return new InstantCommand(() -> {
-            setHeight(height);
+            targetHeight = height;
             manual = false;
         });
     }
@@ -101,79 +76,34 @@ public class LiftSys extends SubsystemBase {
         return voltage;
     }
 
-    public double getPosErrorL() {
-        return leftProfiledController.getPositionError();
-    }
-
-    public double getSetPointL() {
-        return leftProfiledController.getSetpoint().position;
-    }
-
-    public double getVelocityL() {
-        return leftProfiledController.getSetpoint().velocity;
-    }
-
-    public double getProfilePowerL() {
-        return (leftProfiledController.calculate(right.getCurrentPosition(), targetHeight)) + kg;
-    }
-
-    public double getNormalPIDOutput() {
-        return leftProfiledController.calculate(right.getCurrentPosition(), targetHeight) + kg;
-    }
-
 
     public double getPowerL() {
         return left.get();
     }
 
-    public Command manualSetHeight(DoubleSupplier power) {
-        return new RunCommand(() -> {
-            if (Math.abs(power.getAsDouble()) > 0.01) {
-                Log.d("asd", "getting power");
-                if (power.getAsDouble() < 0) {
-//                    targetHeight -= power.getAsDouble() * manualDownPower;
-                    right.set(power.getAsDouble() * manualDownPower);
-                    left.set(power.getAsDouble() * manualDownPower);
-                } else {
-//                    targetHeight -= power.getAsDouble() * manualUpPower;
-                    right.set(power.getAsDouble() * manualUpPower);
-                    left.set(power.getAsDouble() * manualUpPower);
-                }
-                targetHeight = left.getCurrentPosition();
-            }
-        }, this);
-    }
-
-
     @Override
     public void periodic() {
-
         if (limitSwitch.isPressed()) {
             left.resetEncoder();
             right.resetEncoder();
         }
+
         if (voltageTimer.seconds() > 15) {
             voltage = highestVoltage;
             highestVoltage = 13.3;
             voltageTimer.reset();
         }
 
-
         if (Math.abs(manualPower.getAsDouble()) > 0.01) {
             if (manualPower.getAsDouble() > 0) {
-//                targetHeight -= manualPower.getAsDouble() * manualDownPower;
                 right.set(manualPower.getAsDouble());
                 left.set(manualPower.getAsDouble());
-                Log.d("asd", "" + manualPower.getAsDouble() * manualDownPower);
             } else {
-//                targetHeight -= manualPower.getAsDouble() * manualUpPower;
                 right.set(manualPower.getAsDouble());
                 left.set(manualPower.getAsDouble());
             }
-//            targetHeight = (left.getCurrentPosition() + right.getCurrentPosition()) / 2.0;
             manual = true;
         } else if (manual) {
-            Log.d("asd", "doing kg");
             right.set(kg);
             left.set(kg);
         } else {

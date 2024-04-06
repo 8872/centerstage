@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.Precision;
 import java.util.function.DoubleSupplier;
 
 @Config
-public class IntakeSys extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
     public static boolean algorithm = true;
     public static int spikeCount = 0;
     private boolean lastActive = false;
@@ -29,11 +29,11 @@ public class IntakeSys extends SubsystemBase {
 
     public static double intakeOutPower = 0.7;
 
-    public static double intakeServoLowPosition = 0.7; // 0.7
-    public static double intakeServoHighPosition = 0.9; // 0.9
+    public static double servoLowPosition = 0.7; // 0.7
+    public static double servoHighPosition = 0.9; // 0.9
 
-    public static double intakeServo2HighPosition = 0.6; // 0.6
-    public static double intakeServo2LowPosition = 0.4; // 0.4
+    public static double servo2HighPosition = 0.6; // 0.6
+    public static double servo2LowPosition = 0.4; // 0.4
     private final double[] coefficients;
     private final double[] coefficients2;
 
@@ -44,14 +44,14 @@ public class IntakeSys extends SubsystemBase {
     private VoltageSensor voltageSensor;
     private double voltage;
 
-    public IntakeSys(SimpleServo stack, SimpleServo stack2, MotorEx intake, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor) {
+    public IntakeSubsystem(SimpleServo stack, SimpleServo stack2, MotorEx intake, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor) {
         this.stack = stack;
         this.stack2 = stack2;
         this.intake = intake;
-        coefficients = Precision.calculateSlopeAndIntercept(0, intakeServoHighPosition, 1, intakeServoLowPosition);
-        coefficients2 = Precision.calculateSlopeAndIntercept(0, intakeServo2HighPosition, 1, intakeServo2LowPosition);
-        stack.setPosition(intakeServoHighPosition);
-        stack2.setPosition(intakeServo2HighPosition);
+        coefficients = Precision.calculateSlopeAndIntercept(0, servoHighPosition, 1, servoLowPosition);
+        coefficients2 = Precision.calculateSlopeAndIntercept(0, servo2HighPosition, 1, servo2LowPosition);
+        stack.setPosition(servoHighPosition);
+        stack2.setPosition(servo2HighPosition);
 
         this.voltageTimer = new ElapsedTime();
         this.voltageTimer.reset();
@@ -68,7 +68,6 @@ public class IntakeSys extends SubsystemBase {
             if (fpower.getAsDouble() != 0) {
                 intake.set((13 / voltage) * intakeInPower);
                 stack.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
-//                stack2.setPosition((fpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
                 stack2.setPosition((fpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else if (rpower.getAsDouble() != 0) {
                 intake.set(-intakeOutPower);
@@ -76,8 +75,8 @@ public class IntakeSys extends SubsystemBase {
                 stack2.setPosition((rpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else {
                 intake.set(0);
-                stack.setPosition(intakeServoHighPosition);
-                stack2.setPosition(intakeServo2HighPosition);
+                stack.setPosition(servoHighPosition);
+                stack2.setPosition(servo2HighPosition);
             }
         }, this);
     }

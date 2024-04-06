@@ -4,7 +4,7 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 
 @TeleOp
 @Disabled
@@ -17,9 +17,9 @@ public class LiftTestOpmode extends AutoBaseOpmode {
     @Override
     public void loop() {
         super.loop();
-        liftSys.periodic();
+        liftSubsystem.periodic();
         if(gamepad1.a){
-            schedule(liftSys.goTo(LiftSys.LOW));
+            schedule(liftSubsystem.goTo(LiftSubsystem.LOW));
             Log.d("asd", "i ran");
         }
     }

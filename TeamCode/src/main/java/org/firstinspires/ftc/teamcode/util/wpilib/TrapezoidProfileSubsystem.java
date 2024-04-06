@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystem.wpilib;
+package org.firstinspires.ftc.teamcode.util.wpilib;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;

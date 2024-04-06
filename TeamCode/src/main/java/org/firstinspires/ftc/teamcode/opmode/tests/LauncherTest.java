@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @Config
 @TeleOp
+@Disabled
 public class LauncherTest extends OpMode {
 
     public static double staticPos = 0.2;

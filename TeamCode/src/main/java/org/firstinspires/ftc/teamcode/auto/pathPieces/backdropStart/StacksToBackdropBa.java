@@ -3,15 +3,10 @@ package org.firstinspires.ftc.teamcode.auto.pathPieces.backdropStart;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSys;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSys;
-import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 
 @Config
 @TeleOp(name="To Backdrop Ba", group = "ZZZ")
@@ -58,7 +53,7 @@ public class StacksToBackdropBa extends AutoBaseOpmode {
             currentState = State.MOVE_TO_BACKDROP;
         }
         if(currentState == State.MOVE_TO_BACKDROP){
-            schedule(boxSys.close());
+            schedule(boxSubsystem.close());
             if(red){
                 drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                         .back(1)
@@ -74,12 +69,12 @@ public class StacksToBackdropBa extends AutoBaseOpmode {
             currentState = State.DEPOSIT;
         }
         if(drive.getPoseEstimate().getX() > 24 && currentState == State.DEPOSIT){
-            schedule(liftSys.goTo(LiftSys.LOW));
-            schedule(armSys.deposit());
+            schedule(liftSubsystem.goTo(LiftSubsystem.LOW));
+            schedule(armSubsystem.deposit());
             currentState = State.DEPOSIT;
         }
         if(currentState == State.DEPOSIT && !drive.isBusy()){
-            schedule(boxSys.intake());
+            schedule(boxSubsystem.intake());
             depositWaitTimer.reset();
             currentState = State.WAIT_FOR_FINISH;
         }
