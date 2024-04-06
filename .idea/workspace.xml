@@ -13,8 +13,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="28919c35-dd60-4d20-b838-274ad1d1d10e" name="Changes" comment="renamed variables, deleted unnecessary classes, did some cleaning">
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/MainOpMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/opmode/MainOpMode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/PlaneSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/subsystem/PlaneSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +79,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
   </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="true" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -103,8 +106,11 @@
     "ResourceManagerPrefKey.ModuleName": "centerstage8872.TeamCode.main",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "master",
+    "go.import.settings.migrated": "true",
     "jdk.selected.JAVA_MODULE": "azul-11",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/py969/IdeaProjects/centerstage/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/roadrunner",
@@ -143,9 +149,9 @@
       <recent name="org.firstinspires.ftc.teamcode.util" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.centerstage [build]">
+  <component name="RunManager" selected="Android App.TeamCode">
     <configuration name="TeamCode" type="AndroidRunConfigurationType" factoryName="Android App">
-      <module name="centerstage.TeamCode.main" />
+      <module name="centerstageBlinkin.TeamCode.main" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
       <option name="DEPLOY_AS_INSTANT" value="false" />
@@ -154,7 +160,6 @@
       <option name="ALL_USERS" value="false" />
       <option name="ALWAYS_INSTALL_WITH_PM" value="false" />
       <option name="CLEAR_APP_STORAGE" value="false" />
-      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
       <option name="ACTIVITY_EXTRA_FLAGS" value="" />
       <option name="MODE" value="default_activity" />
       <option name="CLEAR_LOGCAT" value="false" />
@@ -398,6 +403,7 @@
     <list>
       <item itemvalue="Android App.TeamCode" />
       <item itemvalue="Application.meepmeep" />
+      <item itemvalue="Application.Main" />
       <item itemvalue="Application.Math" />
       <item itemvalue="Gradle.centerstage [build]" />
       <item itemvalue="Gradle.centerstage [dependencies]" />
@@ -459,6 +465,7 @@
       <workItem from="1706506613948" duration="343000" />
       <workItem from="1707604595435" duration="12122000" />
       <workItem from="1707692231221" duration="2829000" />
+      <workItem from="1712423087822" duration="45000" />
     </task>
     <task id="LOCAL-00001" summary="Changed Button class to include a Debouncer.java. Moved some classes to packages that makes sense. Added a Debouncer and LowPassFilter to the filters package. IMPL folder is just some testing... they are in progress and will be edited and deleted as such.">
       <option name="closed" value="true" />
@@ -653,6 +660,10 @@
     <MESSAGE value="fixed box" />
     <MESSAGE value="renamed variables, deleted unnecessary classes, did some cleaning" />
     <option name="LAST_COMMIT_MESSAGE" value="renamed variables, deleted unnecessary classes, did some cleaning" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>false</integration-enabled>
+    <settings-migrated>true</settings-migrated>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

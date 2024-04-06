@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
@@ -33,7 +34,7 @@ public class BaseOpMode extends CommandOpMode {
     protected GamepadEx gamepadEx1, gamepadEx2;
     protected SimpleServo armServo, pitchServo, innerServo, outerServo, stack, stack2, plane;
     protected MotorEx leftFront, leftRear, rightRear, rightFront, liftLeft, liftRight, hang, intake;
-
+    protected RevBlinkinLedDriver blinkin;
     protected DistanceSensor beam, beam2;
 
     protected ArmSubsystem armSubsystem;
@@ -43,6 +44,7 @@ public class BaseOpMode extends CommandOpMode {
     protected LocalizerSubsystem localizerSubsystem;
     protected PlaneSubsystem planeSubsystem;
     protected LiftSubsystem liftSubsystem;
+    protected BlinkinSubsystem blinkinSubsystem;
     List<LynxModule> hubs;
 
     @Override
@@ -92,6 +94,7 @@ public class BaseOpMode extends CommandOpMode {
     }
 
     public void initHardware() {
+        //blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         limitSwitch = hardwareMap.get(TouchSensor.class, "limit");
         flSensor = hardwareMap.get(MB1242.class, "flSensor");
         frSensor = hardwareMap.get(MB1242.class, "frSensor");
@@ -130,7 +133,7 @@ public class BaseOpMode extends CommandOpMode {
         localizerSubsystem = new LocalizerSubsystem(flSensor, frSensor, blSensor);
         armSubsystem = new ArmSubsystem(armServo, pitchServo);
         armSubsystem.intake();
-
+        // blinkinSubsystem = new BlinkinSubsystem(blinkin);
         boxSubsystem = new BoxSubsystem(innerServo, outerServo);
         driveSubsystem = new DriveSubsystem(leftFront, rightFront, leftRear, rightRear);
         intakeSubsystem = new IntakeSubsystem(stack, stack2, intake, hardwareMap.voltageSensor);
