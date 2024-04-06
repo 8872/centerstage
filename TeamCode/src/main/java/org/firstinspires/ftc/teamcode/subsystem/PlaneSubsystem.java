@@ -20,5 +20,4 @@ public class PlaneSubsystem extends SubsystemBase {
     public Command launch() {
         return new InstantCommand(() -> servo.setPosition(releasePos));
     }
- //
 }
