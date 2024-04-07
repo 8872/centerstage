@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -15,16 +16,20 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.subsystem.*;
+import org.firstinspires.ftc.teamcode.util.Datalogger;
 import org.firstinspires.ftc.teamcode.util.MB1242;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -45,6 +50,8 @@ public class BaseOpMode extends CommandOpMode {
     protected PlaneSubsystem planeSubsystem;
     protected LiftSubsystem liftSubsystem;
     protected BlinkinSubsystem blinkinSubsystem;
+    Datalog datalog;
+    VoltageSensor battery;
     List<LynxModule> hubs;
 
     @Override
@@ -55,6 +62,11 @@ public class BaseOpMode extends CommandOpMode {
         setupHardware();
         initSubystems();
         setupMisc();
+        battery = hardwareMap.voltageSensor.get("Control Hub");
+        datalog = new Datalog();
+        datalog.opModeStatus.set("INIT");
+        datalog.battery.set(battery.getVoltage());
+        datalog.writeLine();
         telemetry.addData("Mode", "Done initializing");
         telemetry.update();
     }
@@ -89,6 +101,17 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("mb1242", localizerSys.getPose());
 
 //        tad("bl reading:", localizerSys.getBl());
+
+        datalog.opModeStatus.set("RUNNING");
+        datalog.arm.set(armSubsystem.armServo.getPosition());
+        datalog.lilPos.set(liftLeft.getCurrentPosition());
+        datalog.lirPos.set(liftRight.getCurrentPosition());
+        datalog.hangPos.set(hang.get());
+        datalog.intakePower.set(intake.get());
+        datalog.intakeVelocity.set(intake.getVelocity());
+        datalog.plane.set(plane.getPosition());
+        datalog.battery.set(battery.getVoltage());
+        datalog.writeLine();
 
         telemetry.update();
     }
@@ -190,6 +213,66 @@ public class BaseOpMode extends CommandOpMode {
         @Override
         public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
             continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(lastFrame.get()));
+        }
+    }
+
+    public static class Datalog
+    {
+        // The underlying datalogger object - it cares only about an array of loggable fields
+        private final Datalogger datalogger;
+
+        // These are all of the fields that we want in the datalog.
+        // Note that order here is NOT important. The order is important in the setFields() call below
+        public Datalogger.GenericField opModeStatus = new Datalogger.GenericField("OpModeStatus");
+        public Datalogger.GenericField arm          = new Datalogger.GenericField("Arm");
+        public Datalogger.GenericField lilPos        = new Datalogger.GenericField("Lift Left Position");
+        public Datalogger.GenericField lirPos         = new Datalogger.GenericField("lift Right Position");
+        public Datalogger.GenericField hangPos       = new Datalogger.GenericField("Hang Position");
+        public Datalogger.GenericField intakePower   = new Datalogger.GenericField("Intake Power");
+        public Datalogger.GenericField intakeVelocity     = new Datalogger.GenericField("Intake Velocity");
+        public Datalogger.GenericField plane         = new Datalogger.GenericField("Plane System");
+        public Datalogger.GenericField battery      = new Datalogger.GenericField("Battery");
+
+        public Datalog()
+        {
+
+            @SuppressLint({"NewApi", "LocalSuppress"}) LocalDateTime now = LocalDateTime.now();
+
+
+            @SuppressLint({"NewApi", "LocalSuppress"}) DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+
+            @SuppressLint({"NewApi", "LocalSuppress"}) String formatDateTime = now.format(formatter);
+            // Build the underlying datalog object
+            datalogger = new Datalogger.Builder()
+
+                    // Pass through the filename
+                    .setFilename(formatDateTime)
+
+                    // Request an automatic timestamp field
+                    .setAutoTimestamp(Datalogger.AutoTimestamp.DECIMAL_SECONDS)
+
+                    // Tell it about the fields we care to log.
+                    // Note that order *IS* important here! The order in which we list
+                    // the fields is the order in which they will appear in the log.
+                    .setFields(
+                            opModeStatus,
+                            arm,
+                            lilPos,
+                            lirPos,
+                            hangPos,
+                            intakePower,
+                            plane,
+                            battery
+                    )
+                    .build();
+        }
+
+        // Tell the datalogger to gather the values of the fields
+        // and write a new line in the log.
+        public void writeLine()
+        {
+            datalogger.writeLine();
         }
     }
 }
