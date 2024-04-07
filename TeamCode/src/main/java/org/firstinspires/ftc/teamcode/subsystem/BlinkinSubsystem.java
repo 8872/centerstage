@@ -37,13 +37,12 @@ public class BlinkinSubsystem extends SubsystemBase {
     // last 30 seconds is end game
     @Override
     public void periodic() {
-        if (currentPattern == null) {
-            if (!isStarted) {
+        if (!isStarted) {
                 // we can start the timer here because the periodic function only runs after the start button is pressed. It's the same thing as referencing the state in the LinearOpMode
                 timer = new ElapsedTime();
                 isStarted = true;
-                blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE);
-            }
+        }
+        if (currentPattern == null) {
             if (timer.seconds() > 110) {
                 // set fast blinking for last 10 seconds
                 blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_HEARTBEAT_FAST);
