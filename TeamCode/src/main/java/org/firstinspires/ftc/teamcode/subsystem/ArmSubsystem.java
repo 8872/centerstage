@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
+
 @Config
 public class ArmSubsystem extends SubsystemBase {
     public static double armIntake = 0.75;
@@ -13,15 +14,19 @@ public class ArmSubsystem extends SubsystemBase {
     public static double pitchOuttake = 0.75;
     public SimpleServo armServo;
     public SimpleServo pitchServo;
+
     public enum ArmState {
         INTAKE,
         DEPOSIT
     }
+
     public static ArmState armState = ArmState.INTAKE;
+
     public ArmSubsystem(SimpleServo armServo, SimpleServo pitchServo) {
         this.armServo = armServo;
         this.pitchServo = pitchServo;
     }
+
     public Command intake() {
         return new InstantCommand(() -> {
             armState = ArmState.INTAKE;

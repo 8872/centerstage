@@ -27,11 +27,10 @@ public class IntakeSubsystem extends SubsystemBase {
     private SimpleServo stack2;
 
     public static double intakeInPower = 0.67; // 0.7
-
     public static double intakeOutPower = 0.7;
 
-    public static double servoLowPosition = 0.7; // 0.7
     public static double servoHighPosition = 0.9; // 0.9
+    public static double servoLowPosition = 0.7; // 0.7
 
     public static double servo2HighPosition = 0.6; // 0.6
     public static double servo2LowPosition = 0.4; // 0.4
@@ -77,7 +76,6 @@ public class IntakeSubsystem extends SubsystemBase {
         this.voltageSensor = voltageSensor.iterator().next();
         this.voltage = this.voltageSensor.getVoltage();
     }
-
 
 
     public double getCurrent() {

@@ -31,6 +31,7 @@ public class BoxSubsystem extends SubsystemBase {
         this.outerServo = outerServo;
         this.blinkinSubsystem = blinkinSubsystem;
     }
+
     public BoxSubsystem(SimpleServo innerServo, SimpleServo outerServo) {
         this.innerServo = innerServo;
         this.outerServo = outerServo;
