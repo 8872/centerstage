@@ -1,19 +1,18 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
+import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.*;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 
 import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Button.*;
 
 @Config
 @TeleOp
 public class MainOpMode extends BaseOpMode {
-
-    public static int delay = 250;
 
     @Override
     public void initialize() {
@@ -42,29 +41,21 @@ public class MainOpMode extends BaseOpMode {
         slideUp(X, LiftSubsystem.MID);
         slideUp(Y, LiftSubsystem.HIGH);
 
-        schedule(new RunCommand(() -> hang.set(gamepadEx2.getLeftY())));
-
-        gb2(DPAD_DOWN).whenPressed(new SequentialCommandGroup(
-                new InstantCommand(() -> hang.set(1)),
-                new WaitCommand(5000),
-                new InstantCommand(() -> hang.set(0))
-        ));
-
+        gb2(DPAD_UP).whenPressed(hangSubsystem.delayed(1, 3000));
+        gb2(DPAD_DOWN).whenPressed(hangSubsystem.delayed(-1, 3000));
 
         gb2(DPAD_LEFT).toggleWhenPressed(
                 new ParallelCommandGroup(armSubsystem.intake(), boxSubsystem.intake()),
                 new ParallelCommandGroup(armSubsystem.deposit(), boxSubsystem.close())
         );
 
-        gb1(LEFT_BUMPER).whileHeld(driveSubsystem.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX)
-                .alongWith(blinkinSubsystem.setPatternUntil(RevBlinkinLedDriver.BlinkinPattern.YELLOW, () -> !gb1(LEFT_BUMPER).get())));
-
+        gb1(LEFT_BUMPER).whileHeld(driveSubsystem.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
+//                .alongWith(blinkinSubsystem.setPatternUntil(RevBlinkinLedDriver.BlinkinPattern.YELLOW, () -> !gb1(LEFT_BUMPER).get())));
 
 
 //        liftSys.setDefaultCommand(liftSys.manualSetHeight(gamepadEx2::getRightY));
         intakeSubsystem.setDefaultCommand(intakeSubsystem.intake(() -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger));
         driveSubsystem.setDefaultCommand(driveSubsystem.drive(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
-
 
 
     }

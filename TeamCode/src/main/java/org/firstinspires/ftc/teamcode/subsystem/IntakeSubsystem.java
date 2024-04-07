@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private VoltageSensor voltageSensor;
     private double voltage;
 
-    private final BlinkinSubsystem blinkinSubsystem;
+    private BlinkinSubsystem blinkinSubsystem;
 
     public IntakeSubsystem(SimpleServo stack, SimpleServo stack2, MotorEx intake, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor, BlinkinSubsystem blinkinSubsystem) {
         this.stack = stack;
@@ -63,6 +63,23 @@ public class IntakeSubsystem extends SubsystemBase {
         this.voltage = this.voltageSensor.getVoltage();
     }
 
+    public IntakeSubsystem(SimpleServo stack, SimpleServo stack2, MotorEx intake, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor) {
+        this.stack = stack;
+        this.stack2 = stack2;
+        this.intake = intake;
+        coefficients = Precision.calculateSlopeAndIntercept(0, servoHighPosition, 1, servoLowPosition);
+        coefficients2 = Precision.calculateSlopeAndIntercept(0, servo2HighPosition, 1, servo2LowPosition);
+        stack.setPosition(servoHighPosition);
+        stack2.setPosition(servo2HighPosition);
+
+        this.voltageTimer = new ElapsedTime();
+        this.voltageTimer.reset();
+        this.voltageSensor = voltageSensor.iterator().next();
+        this.voltage = this.voltageSensor.getVoltage();
+    }
+
+
+
     public double getCurrent() {
         return intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS);
     }
@@ -74,12 +91,12 @@ public class IntakeSubsystem extends SubsystemBase {
                 stack.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
                 stack2.setPosition((fpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else if (rpower.getAsDouble() != 0) {
-                blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+//                blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                 intake.set(-intakeOutPower);
                 stack.setPosition((rpower.getAsDouble() * coefficients[0]) + coefficients[1]);
                 stack2.setPosition((rpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else {
-                blinkinSubsystem.setCurrentPattern(null);
+//                blinkinSubsystem.setCurrentPattern(null);
                 intake.set(0);
                 stack.setPosition(servoHighPosition);
                 stack2.setPosition(servo2HighPosition);

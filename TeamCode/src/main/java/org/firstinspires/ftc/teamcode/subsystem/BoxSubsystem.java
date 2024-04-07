@@ -16,7 +16,7 @@ public class BoxSubsystem extends SubsystemBase {
     public static final double OUTER_SERVO_UNLOCKED = 0.8;
     private final SimpleServo innerServo;
     private final SimpleServo outerServo;
-    private final BlinkinSubsystem blinkinSubsystem;
+    private BlinkinSubsystem blinkinSubsystem;
 
     public enum BoxState {
         CLOSED, /* both servos are locked */
@@ -31,10 +31,15 @@ public class BoxSubsystem extends SubsystemBase {
         this.outerServo = outerServo;
         this.blinkinSubsystem = blinkinSubsystem;
     }
+    public BoxSubsystem(SimpleServo innerServo, SimpleServo outerServo) {
+        this.innerServo = innerServo;
+        this.outerServo = outerServo;
+//        this.blinkinSubsystem = blinkinSubsystem;
+    }
 
     public Command intake() {
         return new InstantCommand(() -> {
-            blinkinSubsystem.setCurrentPattern(null);
+//            blinkinSubsystem.setCurrentPattern(null);
             boxState = BoxState.INTAKE;
             innerServo.setPosition(INNER_SERVO_UNLOCKED);
             outerServo.setPosition(OUTER_SERVO_UNLOCKED);
@@ -46,7 +51,7 @@ public class BoxSubsystem extends SubsystemBase {
             boxState = BoxState.INTAKE;
             innerServo.setPosition(INNER_SERVO_UNLOCKED);
         } else {
-            blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+//            blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
             boxState = BoxState.INNER;
             outerServo.setPosition(OUTER_SERVO_UNLOCKED);
             innerServo.setPosition(INNER_SERVO_LOCKED);
@@ -56,7 +61,7 @@ public class BoxSubsystem extends SubsystemBase {
 
     public Command close() {
         return new InstantCommand(() -> {
-            blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
+//            blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.VIOLET);
             boxState = BoxState.CLOSED;
             innerServo.setPosition(INNER_SERVO_LOCKED);
             outerServo.setPosition(OUTER_SERVO_LOCKED);

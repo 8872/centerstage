@@ -37,6 +37,7 @@ public class BaseOpMode extends CommandOpMode {
     protected RevBlinkinLedDriver blinkin;
     protected DistanceSensor beam, beam2;
 
+    protected HangSubsystem hangSubsystem;
     protected ArmSubsystem armSubsystem;
     protected BoxSubsystem boxSubsystem;
     protected DriveSubsystem driveSubsystem;
@@ -70,6 +71,7 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
         tad("Lift Right", liftRight.getCurrentPosition());
         tad("Lift Left", liftLeft.getCurrentPosition());
+        tad("hang power", hang.get());
 //        tad("left lift profile power", liftSys.getProfilePowerL());
 //        tad("profile location output", liftSys.getSetPointL());
 //        tad("normal pid output", liftSys.getNormalPIDOutput());
@@ -94,7 +96,7 @@ public class BaseOpMode extends CommandOpMode {
     }
 
     public void initHardware() {
-        blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+//        blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         limitSwitch = hardwareMap.get(TouchSensor.class, "limit");
         flSensor = hardwareMap.get(MB1242.class, "flSensor");
         frSensor = hardwareMap.get(MB1242.class, "frSensor");
@@ -129,14 +131,15 @@ public class BaseOpMode extends CommandOpMode {
     }
 
     public void initSubystems() {
+        hangSubsystem = new HangSubsystem(hang, gamepadEx2::getLeftY);
         liftSubsystem = new LiftSubsystem(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, () -> -gamepadEx2.getRightY());
         localizerSubsystem = new LocalizerSubsystem(flSensor, frSensor, blSensor);
         armSubsystem = new ArmSubsystem(armServo, pitchServo);
         armSubsystem.intake();
-        blinkinSubsystem = new BlinkinSubsystem(blinkin);
-        boxSubsystem = new BoxSubsystem(innerServo, outerServo, blinkinSubsystem);
+//        blinkinSubsystem = new BlinkinSubsystem(blinkin);
+        boxSubsystem = new BoxSubsystem(innerServo, outerServo);
         driveSubsystem = new DriveSubsystem(leftFront, rightFront, leftRear, rightRear);
-        intakeSubsystem = new IntakeSubsystem(stack, stack2, intake, hardwareMap.voltageSensor, blinkinSubsystem);
+        intakeSubsystem = new IntakeSubsystem(stack, stack2, intake, hardwareMap.voltageSensor);
         planeSubsystem = new PlaneSubsystem(plane);
     }
 
