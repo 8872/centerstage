@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 
@@ -51,8 +52,8 @@ public class MainOpMode extends BaseOpMode {
                 new ParallelCommandGroup(armSubsystem.deposit(), boxSubsystem.close())
         );
 
-        gb1(LEFT_BUMPER).whileHeld(driveSubsystem.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX));
-//                .alongWith(blinkinSubsystem.setPatternUntil(RevBlinkinLedDriver.BlinkinPattern.YELLOW, () -> !gb1(LEFT_BUMPER).get())));
+        gb1(LEFT_BUMPER).whileHeld(driveSubsystem.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX)
+                .alongWith(blinkinSubsystem.setPatternUntil(RevBlinkinLedDriver.BlinkinPattern.YELLOW, () -> !gb1(LEFT_BUMPER).get())));
 
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.intake(() -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger));

@@ -89,12 +89,12 @@ public class IntakeSubsystem extends SubsystemBase {
                 stack.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
                 stack2.setPosition((fpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else if (rpower.getAsDouble() != 0) {
-//                blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
                 intake.set(-intakeOutPower);
                 stack.setPosition((rpower.getAsDouble() * coefficients[0]) + coefficients[1]);
                 stack2.setPosition((rpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else {
-//                blinkinSubsystem.setCurrentPattern(null);
+                blinkinSubsystem.setCurrentPattern(null);
                 intake.set(0);
                 stack.setPosition(servoHighPosition);
                 stack2.setPosition(servo2HighPosition);

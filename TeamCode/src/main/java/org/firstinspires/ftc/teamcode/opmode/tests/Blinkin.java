@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmode.tests;
 
+import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
