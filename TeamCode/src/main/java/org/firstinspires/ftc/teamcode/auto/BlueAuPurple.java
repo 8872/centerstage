@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import android.util.Log;
 import android.util.Size;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -10,6 +12,11 @@ import org.firstinspires.ftc.teamcode.auto.CV.ZoneDetectionProcessorRight;
 import org.firstinspires.ftc.teamcode.auto.util.AutoBaseOpmode;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+import org.firstinspires.ftc.teamcode.util.HighestSampleFilter;
+import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
+import org.firstinspires.ftc.teamcode.util.wpilib.LinearFilter;
 import org.firstinspires.ftc.teamcode.util.wpilib.MedianFilter;
 import org.firstinspires.ftc.vision.VisionPortal;
 
@@ -20,59 +27,42 @@ public class BlueAuPurple extends AutoBaseOpmode {
     private ZoneDetectionProcessorRight processor;
     private VisionPortal portal;
 
+    public static int sampleSize = 5;
+    private final HighestSampleFilter filter = new HighestSampleFilter(sampleSize);
+
     public enum PurplePixState {
         WAIT_FOR_START,
         MOVE_TO_PROP,
-        EJECT_AND_MOVE_TO_STACK,
+        PLACE_AND_RETURN_TO_START,
         WAIT_FOR_FINISH,
-        FINISHED
+        CHECK_FOR_ALLIANCE_BOT,
+        WAIT_FOR_MOVE,
+        CHECK_AGAIN_FOR_ALLIANCE_BOT,
+        DEPOSIT,
+        DROP,
+        PARK,
+        FINISH
+
     }
     public static PurplePixState currentPurplePixState = PurplePixState.WAIT_FOR_START;
 
     public static boolean red = false;
-    public static int zone = 1;
+    public static int zone = 2;
 
 
-    public static double waitTime = 1.5;
-    public static double x1 = -48.5;
-    public static double y1 = 36;
+    public static double x1 = -47.5;
+    public static double y1 = 37;
     public static double x2 = -35;
-    public static double y2 = 36;
-    public static double x3 = -29;
-    public static double y3 = 39;
+    public static double y2 = 35.5;
+    public static double x3 = -31;
+    public static double y3 = 38;
     public static double angle2 = 80;
     public static double angle3 = 60;
     public static double pixelX = -56.5;
     public static double pixelY = 36;
 
-    public enum WhiteStackState {
-        WAIT_FOR_START,
-        TOPPLE_STACK1,
-        TOPPLE_STACK2,
-        PICKUP_PIXELS,
-        WAIT_FOR_INTAKE,
-        EJECT,
-        WAIT_FOR_EJECT,
-        FINISHED
-    }
-    public static WhiteStackState currentWhiteStackState = WhiteStackState.WAIT_FOR_START;
-
-    public static double intakeInitialPower = 0;
-    public static double intakeKnockPower = 0.7;
-    public static double intakeFinalPower = 0.6;
-    public static double moveForwardDistance = 3.5;
-    public static double moveBackDistance = 6;
-    public static double pickUpPathSpeed = 20;
-    public static double moveBackwardsSpeed = 10;
-    public static double initialForwardSpeed = 15;
-    public static double intakeWaitTime = 1000;
-
-
-    private ElapsedTime intakeWaitTimer;
-
-
-    public static int sampleSize = 15;
-    private final MedianFilter filter = new MedianFilter(sampleSize);
+    public static int taps = 10;
+    private final LinearFilter lowPass = LinearFilter.movingAverage(taps);
 
     private int pixelCount = 0;
 
@@ -80,33 +70,14 @@ public class BlueAuPurple extends AutoBaseOpmode {
     public static double SECOND = 105;
     public static double tolerance = 4;
 
-
-    public enum ToBackdropState {
-        WAIT_FOR_START,
-        MOVE_TO_DETECT_POS,
-        CHECK_FOR_BOT,
-        MOVE_TO_BACKDROP,
-        DEPOSIT,
-        WAIT_FOR_FINISH,
-        FINISHED
-    }
-    public static ToBackdropState currentToBackdropState = ToBackdropState.WAIT_FOR_START;
-
-    public static double botDetectionThreshold = 65;
-    public static double depositWaitTime = 500;
-    public static double trussPixelSideX = -30;
-    public static double bottomPathY = 66;
-    public static double lineToX = 24;
-    public static double lineToY = 64;
-    public static double waitingX = 38;
-    public static double waitingY = 64;
-    public static double waitingHeading = 75;
-    public static double backdropX = 48.5;
-    public static double backdropY1 = 31;
-    public static double backdropY2 = 37;
-    public static double backdropY3 = 44;
-
     private ElapsedTime depositWaitTimer;
+
+    public static double backdropX = 50;
+    public static double backdropY1 = 22;
+    public static double backdropY2 = 28;
+    public static double backdropY3 = 34.5;
+
+    private double BLDistance;
 
     @Override
     public void init(){
@@ -139,11 +110,11 @@ public class BlueAuPurple extends AutoBaseOpmode {
 
     @Override
     public void start(){
-        zone = processor.getZone();
-        schedule(armSubsystem.intake());
-        schedule(intakeSubsystem.setStack1(0.5));
-        schedule(intakeSubsystem.setStack2(0.5));
+//        zone = processor.getZone();
         depositWaitTimer.reset();
+        schedule(armSubsystem.intake());
+        schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoLowPosition-0.05));
+        schedule(intakeSubsystem.setStack2(IntakeSubsystem.servo2LowPosition-0.05));
         currentPurplePixState = PurplePixState.MOVE_TO_PROP;
     }
 
@@ -152,15 +123,17 @@ public class BlueAuPurple extends AutoBaseOpmode {
         super.loop();
         drive.update();
         liftSubsystem.periodic();
-
-        if(currentPurplePixState == PurplePixState.MOVE_TO_PROP && depositWaitTimer.milliseconds() > 3000){
-            zone = processor.getZone();
+        BLDistance = filter.calculate(lowPass.calculate(localizerSubsystem.getBl()));
+        if(currentPurplePixState == PurplePixState.MOVE_TO_PROP && depositWaitTimer.milliseconds() > 2500){
+//            zone = processor.getZone();
             portal.close();
+            schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoHighPosition));
+            schedule(intakeSubsystem.setStack2(IntakeSubsystem.servo2HighPosition));
             if(red){
                 switch(zone) {
                     case 1:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(new Pose2d(-41.75, -63.00, Math.toRadians(90.00)))
-                                .lineToSplineHeading(new Pose2d(x1, -y1, Math.toRadians(90.00)),
+                                .lineToSplineHeading(new Pose2d(x1, -y1, Math.toRadians(100)),
                                         SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                                 .build());
@@ -205,21 +178,78 @@ public class BlueAuPurple extends AutoBaseOpmode {
                         break;
                 }
             }
-            currentPurplePixState = PurplePixState.EJECT_AND_MOVE_TO_STACK;
+            currentPurplePixState = PurplePixState.PLACE_AND_RETURN_TO_START;
         }
 
         //could replace isBusy with a posEstimate check if need efficiency
-        if(currentPurplePixState == PurplePixState.EJECT_AND_MOVE_TO_STACK && !drive.isBusy()) {
-            schedule(intakeSubsystem.setStack1(0.25));
-            schedule(intakeSubsystem.setStack2(0.25));
+        if(currentPurplePixState == PurplePixState.PLACE_AND_RETURN_TO_START && !drive.isBusy()) {
             drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .waitSeconds(1)
-                    .back(15,
-                            SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                    .lineToSplineHeading(new Pose2d(-45,60,Math.toRadians(180-5)),
+                            SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                    .lineToLinearHeading(new Pose2d(-7,59,Math.toRadians(180-5)))
                     .build());
 
-            currentPurplePixState = PurplePixState.FINISHED;
+            schedule(boxSubsystem.close());
+            currentPurplePixState = PurplePixState.WAIT_FOR_MOVE;
         }
+
+        if(currentPurplePixState == PurplePixState.WAIT_FOR_MOVE && !drive.isBusy()){
+            if(BLDistance>70){
+                drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                        .lineToSplineHeading(new Pose2d(38, 56, Math.toRadians(180-75)),
+                                SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .build());
+                currentPurplePixState = PurplePixState.CHECK_AGAIN_FOR_ALLIANCE_BOT;
+            }
+        }
+
+
+        if(currentPurplePixState == PurplePixState.CHECK_AGAIN_FOR_ALLIANCE_BOT && !drive.isBusy()){
+            if(localizerSubsystem.getBl() > 65){
+                currentPurplePixState = PurplePixState.DEPOSIT;
+            }
+        }
+
+        if(currentPurplePixState == PurplePixState.DEPOSIT){
+            schedule(liftSubsystem.goTo(LiftSubsystem.LOW-300));
+            schedule(new DelayedCommand(armSubsystem.deposit(),500));
+            switch(zone){
+                case 3:
+                    drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                            .lineToLinearHeading(new Pose2d(backdropX, backdropY1, Math.toRadians(180)))
+                            .build());
+                    break;
+                case 2:
+                    drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                            .lineToLinearHeading(new Pose2d(backdropX, backdropY2, Math.toRadians(180)))
+                            .build());
+                    break;
+                case 1:
+                    drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                            .lineToLinearHeading(new Pose2d(backdropX, backdropY3, Math.toRadians(180)))
+                            .build());
+                    break;
+            }
+            currentPurplePixState = PurplePixState.DROP;
+        }
+        if(currentPurplePixState == PurplePixState.DROP && !drive.isBusy()){
+            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),1000));
+            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),1000));
+            depositWaitTimer.reset();
+            currentPurplePixState = PurplePixState.PARK;
+        }
+        if(currentPurplePixState == PurplePixState.PARK && depositWaitTimer.milliseconds()>2000){
+            schedule(liftSubsystem.goTo(LiftSubsystem.NONE));
+            schedule(armSubsystem.intake());
+            drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(50, 56, Math.toRadians(180)))
+                    .build());
+            currentPurplePixState = PurplePixState.FINISH;
+        }
+
+
+
     }
 }

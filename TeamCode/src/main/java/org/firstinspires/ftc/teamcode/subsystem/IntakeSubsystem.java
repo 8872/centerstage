@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -53,6 +54,7 @@ public class IntakeSubsystem extends SubsystemBase {
         this.blinkinSubsystem = blinkinSubsystem;
         coefficients = Precision.calculateSlopeAndIntercept(0, servoHighPosition, 1, servoLowPosition);
         coefficients2 = Precision.calculateSlopeAndIntercept(0, servo2HighPosition, 1, servo2LowPosition);
+        Log.d("asd", "set stack");
         stack.setPosition(servoHighPosition);
         stack2.setPosition(servo2HighPosition);
 
