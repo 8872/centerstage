@@ -28,11 +28,11 @@ public class HSVDetectionPipeline implements VisionProcessor {
     public static int redCenterY = 500;
     public static int redRightX = 1650;
     public static int redRightY = 500;
-    public static int blueLeftX = 0; // TODO blue top left
-    public static int blueLeftY = 0;
-    public static int blueCenterX = 0;
-    public static int blueCenterY = 0;
-    public static int blueRightX = 950;
+    public static int blueLeftX = 150; // TODO blue top left
+    public static int blueLeftY = 500;
+    public static int blueCenterX = 600;
+    public static int blueCenterY = 500;
+    public static int blueRightX = 1150;
     public static int blueRightY = 500;
     public static int rightWidth = 200;
     public static int rightHeight = 200;
@@ -55,13 +55,13 @@ public class HSVDetectionPipeline implements VisionProcessor {
         Mat thresh = new Mat();
         Imgproc.cvtColor(input, thresh, Imgproc.COLOR_RGB2HSV);
 
-        Scalar blueLowThresh = new Scalar(0, 0, 0);
+        Scalar blueLowThresh = new Scalar(0, 43.9, 62.3);
         Scalar blueHighThresh = new Scalar(255, 255, 255); // TODO thresh
         Scalar redLowThresh = new Scalar(0, 140, 0);
         Scalar redHighThresh = new Scalar(255, 255, 255);
 
         Rect leftZoneArea, centerZoneArea, rightZoneArea;
-        if (side == Side.RED_CLOSE || side == Side.BLUE_FAR) {
+        if (side == Side.RED_FAR || side == Side.BLUE_CLOSE) {
             leftZoneArea = new Rect(redLeftX, redLeftY, leftWidth, leftHeight);
             centerZoneArea = new Rect(redCenterX, redCenterY, centerWidth, centerHeight);
             rightZoneArea = new Rect(redRightX, redRightY, rightWidth, rightHeight);

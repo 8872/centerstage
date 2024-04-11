@@ -14,7 +14,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 public class HSVDetectionOpMode extends OpMode {
     private HSVDetectionPipeline processor;
     private VisionPortal portal;
-    public static Side SIDE = Side.RED_CLOSE;
+    public static Side SIDE = Side.RED_FAR;
 
     @Override
     public void init() {

@@ -11,7 +11,7 @@ public class ArmSubsystem extends SubsystemBase {
     public static double armIntake = 0.75;
     public static double armOuttake = 0.23;
     public static double pitchIntake = 0.3;
-    public static double pitchOuttake = 0.75;
+    public static double pitchOuttake = 0.77;
     public SimpleServo armServo;
     public SimpleServo pitchServo;
 

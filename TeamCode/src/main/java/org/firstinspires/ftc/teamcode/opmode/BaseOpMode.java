@@ -128,6 +128,7 @@ public class BaseOpMode extends CommandOpMode {
         leftRear.setInverted(true);
         rightRear.setInverted(true);
         liftRight.encoder.setDirection(Motor.Direction.REVERSE);
+        hang.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
     public void initSubystems() {
