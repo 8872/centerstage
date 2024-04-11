@@ -123,7 +123,7 @@ public class RedAu extends AutoBaseOpmode {
         else
             drive.setPoseEstimate(new Pose2d(-41.75, 63.00, Math.toRadians(-90.00)));
 
-        processor = new ZoneDetectionProcessorLeft(true, false);
+        processor = new ZoneDetectionProcessorLeft(true);
         portal = new VisionPortal.Builder()
                 .addProcessor(processor)
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))

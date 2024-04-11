@@ -20,7 +20,7 @@ public class ZoneDetectionProcessorLeft implements VisionProcessor {
     public static int x3 = 1500;
     public static boolean threshhold = true;
 
-    public ZoneDetectionProcessorLeft(boolean red, boolean c) {
+    public ZoneDetectionProcessorLeft(boolean red) {
         this.red = red;
     }
 
@@ -65,10 +65,10 @@ public class ZoneDetectionProcessorLeft implements VisionProcessor {
         } else {
 
         }
-        Rect left = new Rect(x1, 1080-height, x2-x1, height);
+        Rect left = new Rect(x1, 1080 - height, x2 - x1, height);
 
-        Rect center = new Rect(x2, 1080-height, x3-x2, height);
-        Rect right = new Rect(x3, 1080-height, 1920-x3, height);
+        Rect center = new Rect(x2, 1080 - height, x3 - x2, height);
+        Rect right = new Rect(x3, 1080 - height, 1920 - x3, height);
 
         // Extract the quadrants
         Mat quadrant1 = new Mat(ycrcb, left);
