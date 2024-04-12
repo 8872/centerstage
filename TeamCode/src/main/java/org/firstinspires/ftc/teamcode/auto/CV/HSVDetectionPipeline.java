@@ -24,22 +24,22 @@ public class HSVDetectionPipeline implements VisionProcessor {
 
     public static int redLeftX = 645;
     public static int redLeftY = 515;
-    public static int redCenterX = 950;
-    public static int redCenterY = 500;
+    public static int redCenterX = 1090; // 950
+    public static int redCenterY = 410; // 500
     public static int redRightX = 1650;
     public static int redRightY = 500;
     public static int blueLeftX = 150; // TODO blue top left
     public static int blueLeftY = 500;
-    public static int blueCenterX = 600;
-    public static int blueCenterY = 500;
+    public static int blueCenterX = 700;
+    public static int blueCenterY = 470;
     public static int blueRightX = 1150;
     public static int blueRightY = 500;
     public static int rightWidth = 200;
     public static int rightHeight = 200;
     public static int leftWidth = 200;
     public static int leftHeight = 200;
-    public static int centerWidth = 450;
-    public static int centerHeight = 150;
+    public static int centerWidth = 200;
+    public static int centerHeight = 180;
 
     public HSVDetectionPipeline(Side side) {
         this.side = side;

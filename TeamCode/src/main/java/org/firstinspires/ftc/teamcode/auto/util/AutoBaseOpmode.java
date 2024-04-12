@@ -24,13 +24,11 @@ import java.util.List;
 public class AutoBaseOpmode extends OpMode {
     protected TouchSensor limitSwitch;
     protected MB1242 flSensor, frSensor, blSensor;
-    protected GamepadEx gamepadEx1, gamepadEx2;
     protected SimpleServo armServo, pitchServo, innerServo, outerServo, stack, stack2, plane;
     protected MotorEx leftFront, leftRear, rightRear, rightFront, liftLeft, liftRight, hang, intake;
     protected RevBlinkinLedDriver blinkin;
     protected DistanceSensor beam, beam2;
 
-    protected HangSubsystem hangSubsystem;
     protected ArmSubsystem armSubsystem;
     protected BoxSubsystem boxSubsystem;
     protected DriveSubsystem driveSubsystem;
@@ -44,8 +42,6 @@ public class AutoBaseOpmode extends OpMode {
 
     @Override
     public void init() {
-        gamepadEx1 = new GamepadEx(gamepad1);
-        gamepadEx2 = new GamepadEx(gamepad2);
         initHardware();
         setupHardware();
         initSubystems();
@@ -88,8 +84,7 @@ public class AutoBaseOpmode extends OpMode {
     }
 
     public void initSubystems() {
-        hangSubsystem = new HangSubsystem(hang, gamepadEx2::getLeftY);
-        liftSubsystem = new LiftSubsystem(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, () -> -gamepadEx2.getRightY());
+        liftSubsystem = new LiftSubsystem(liftLeft, liftRight, limitSwitch, hardwareMap.voltageSensor, ()->0);
         localizerSubsystem = new LocalizerSubsystem(flSensor, frSensor, blSensor);
         armSubsystem = new ArmSubsystem(armServo, pitchServo);
         armSubsystem.intake();

@@ -49,7 +49,7 @@ public class NewRedAu extends AutoBaseOpmode {
     public static int zone = 1;
 
 
-    public static double x1 = -46;
+    public static double x1 = -45;
     public static double y1 = 37;
     public static double x2 = -35;
     public static double y2 = 35.5;
@@ -71,10 +71,10 @@ public class NewRedAu extends AutoBaseOpmode {
 
     private ElapsedTime depositWaitTimer;
 
-    public static double backdropX = 50;
+    public static double backdropX = 50.5;
     public static double backdropY1 = 20.5;
     public static double backdropY2 = 27;
-    public static double backdropY3 = 33;
+    public static double backdropY3 = 36;
 
     private double BLDistance;
 
@@ -247,8 +247,11 @@ public class NewRedAu extends AutoBaseOpmode {
            currentPurplePixState = PurplePixState.DROP;
         }
         if(currentPurplePixState == PurplePixState.DROP && !drive.isBusy()){
-            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),1000));
-            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),1000));
+            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),250));
+            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),250));
+            schedule(new DelayedCommand(liftSubsystem.goTo(LiftSubsystem.LOW-200), 500));
+            schedule(new DelayedCommand(liftSubsystem.goTo(LiftSubsystem.LOW-300), 750));
+            schedule(new DelayedCommand(liftSubsystem.goTo(LiftSubsystem.LOW-200), 1000));
             depositWaitTimer.reset();
             currentPurplePixState = PurplePixState.PARK;
         }

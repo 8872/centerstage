@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 
 import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Button.*;
@@ -54,6 +55,8 @@ public class MainOpMode extends BaseOpMode {
 
         gb1(LEFT_BUMPER).whileHeld(driveSubsystem.slow(gamepadEx1::getRightX, gamepadEx1::getLeftY, gamepadEx1::getLeftX)
                 .alongWith(blinkinSubsystem.setPatternUntil(RevBlinkinLedDriver.BlinkinPattern.YELLOW, () -> !gb1(LEFT_BUMPER).get())));
+
+        gb2(RIGHT_STICK_BUTTON).whileHeld(() -> IntakeSubsystem.intakeInPower = 0.4).whenReleased(() -> IntakeSubsystem.intakeInPower = 0.67);
 
 
         intakeSubsystem.setDefaultCommand(intakeSubsystem.intake(() -> gamepadEx2.gamepad.right_trigger, () -> gamepadEx2.gamepad.left_trigger));

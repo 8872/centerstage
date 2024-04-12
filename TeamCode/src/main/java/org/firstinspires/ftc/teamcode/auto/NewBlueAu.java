@@ -54,8 +54,8 @@ public class NewBlueAu extends AutoBaseOpmode {
     public static double y1 = 37;
     public static double x2 = -35;
     public static double y2 = 35.5;
-    public static double x3 = -31;
-    public static double y3 = 38;
+    public static double x3 = -29.5;
+    public static double y3 = 39;
     public static double angle2 = 80;
     public static double angle3 = 60;
     public static double pixelX = -56.5;
@@ -74,8 +74,8 @@ public class NewBlueAu extends AutoBaseOpmode {
 
     public static double backdropX = 50;
     public static double backdropY1 = 22;
-    public static double backdropY2 = 28;
-    public static double backdropY3 = 34.5;
+    public static double backdropY2 = 28.75;
+    public static double backdropY3 = 35.5;
 
     private double BLDistance;
 
