@@ -33,11 +33,11 @@ public class ZoneDetectionThresholder implements VisionProcessor {
         Log.d("asd", "entered");
 
         Mat ycrcb = new Mat();
-        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YCrCb);
+        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2HSV);
 
-        Scalar blueLowThresh = new Scalar(0, 0, 132);
-        Scalar blueHighThresh = new Scalar(255, 129, 255);
-        Scalar redLowThresh = new Scalar(0, 151.6, 75);
+        Scalar blueLowThresh = new Scalar(0, 43.9, 62.3);
+        Scalar blueHighThresh = new Scalar(255, 255, 255); // TODO thresh
+        Scalar redLowThresh = new Scalar(0, 140, 0);
         Scalar redHighThresh = new Scalar(255, 255, 255);
 
         if (red) {

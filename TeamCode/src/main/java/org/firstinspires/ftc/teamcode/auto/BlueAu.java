@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.auto.CV.ZoneDetectionProcessorRight;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.util.commands.DelayedCommand;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
+@Disabled
 @Autonomous(name="Blue Au", group = "Auto")
 public class BlueAu extends AutoBaseOpmode {
 

@@ -73,9 +73,9 @@ public class NewBlueAu extends AutoBaseOpmode {
     private ElapsedTime depositWaitTimer;
 
     public static double backdropX = 50;
-    public static double backdropY1 = 22;
-    public static double backdropY2 = 28.75;
-    public static double backdropY3 = 35.5;
+    public static double backdropY1 = 24;
+    public static double backdropY2 = 30.75;
+    public static double backdropY3 = 37.5;
 
     private double BLDistance;
 
@@ -124,7 +124,7 @@ public class NewBlueAu extends AutoBaseOpmode {
         telemetry.addData("raw bl data", localizerSubsystem.getBl());
         drive.update();
         liftSubsystem.periodic();
-        BLDistance = filter.calculate(lowPass.calculate(localizerSubsystem.getBl()));
+//        BLDistance = filter.calculate(lowPass.calculate(localizerSubsystem.getBl()));
         if(currentPurplePixState == PurplePixState.MOVE_TO_PROP && depositWaitTimer.milliseconds() > 2500){
             zone = processor.getZone();
             portal.close();
