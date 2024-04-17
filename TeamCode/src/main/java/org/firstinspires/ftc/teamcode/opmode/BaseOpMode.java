@@ -71,6 +71,8 @@ public class BaseOpMode extends CommandOpMode {
 //        tad("intake", intake.motorEx.getCurrent(CurrentUnit.MILLIAMPS));
         tad("Lift Right", liftRight.getCurrentPosition());
         tad("Lift Left", liftLeft.getCurrentPosition());
+        tad("Lil power", liftLeft.get());
+        tad("lir power", liftRight.get());
         tad("hang power", hang.get());
 //        tad("left lift profile power", liftSys.getProfilePowerL());
 //        tad("profile location output", liftSys.getSetPointL());
@@ -127,6 +129,8 @@ public class BaseOpMode extends CommandOpMode {
     public void setupHardware() {
         leftRear.setInverted(true);
         rightRear.setInverted(true);
+        liftLeft.setInverted(true);
+        liftRight.setInverted(true);
         liftRight.encoder.setDirection(Motor.Direction.REVERSE);
         hang.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }

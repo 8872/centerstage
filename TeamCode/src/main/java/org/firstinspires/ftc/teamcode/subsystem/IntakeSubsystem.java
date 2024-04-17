@@ -44,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private ElapsedTime voltageTimer;
     private VoltageSensor voltageSensor;
     private double voltage;
-
+    private boolean hasSet = false;
     private BlinkinSubsystem blinkinSubsystem;
 
     public IntakeSubsystem(SimpleServo stack, SimpleServo stack2, MotorEx intake, HardwareMap.DeviceMapping<VoltageSensor> voltageSensor, BlinkinSubsystem blinkinSubsystem) {
@@ -87,16 +87,22 @@ public class IntakeSubsystem extends SubsystemBase {
     public Command intake(DoubleSupplier fpower, DoubleSupplier rpower) {
         return new RunCommand(() -> {
             if (fpower.getAsDouble() != 0) {
+                blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+                hasSet = false;
                 intake.set((13 / voltage) * intakeInPower);
                 stack.setPosition((fpower.getAsDouble() * coefficients[0]) + coefficients[1]);
                 stack2.setPosition((fpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else if (rpower.getAsDouble() != 0) {
                 blinkinSubsystem.setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                hasSet = false;
                 intake.set(-intakeOutPower);
                 stack.setPosition((rpower.getAsDouble() * coefficients[0]) + coefficients[1]);
                 stack2.setPosition((rpower.getAsDouble() * coefficients2[0]) + coefficients2[1]);
             } else {
-                blinkinSubsystem.setCurrentPattern(null);
+                if(!hasSet) {
+                    blinkinSubsystem.setCurrentPattern(null);
+                    hasSet = true;
+                }
                 intake.set(0);
                 stack.setPosition(servoHighPosition);
                 stack2.setPosition(servo2HighPosition);

@@ -8,18 +8,17 @@ import java.util.function.BooleanSupplier;
 
 public class BlinkinSubsystem extends SubsystemBase {
     private static boolean isStarted = false;
-    static ElapsedTime timer;
-    static RevBlinkinLedDriver blinkin;
+    private final ElapsedTime timer;
+    private final RevBlinkinLedDriver blinkin;
 
     private RevBlinkinLedDriver.BlinkinPattern currentPattern;
 
     public BlinkinSubsystem(RevBlinkinLedDriver blinkin) {
-        BlinkinSubsystem.blinkin = blinkin;
+        this.blinkin = blinkin;
+        timer= new ElapsedTime();
     }
 
-    public static double getElapsedTime() {
-        return timer.seconds();
-    }
+
 
     public void setCurrentPattern(RevBlinkinLedDriver.BlinkinPattern currentPattern) {
         this.currentPattern = currentPattern;
@@ -39,7 +38,7 @@ public class BlinkinSubsystem extends SubsystemBase {
     public void periodic() {
         if (!isStarted) {
                 // we can start the timer here because the periodic function only runs after the start button is pressed. It's the same thing as referencing the state in the LinearOpMode
-                timer = new ElapsedTime();
+                timer.reset();
                 isStarted = true;
         }
         if (currentPattern == null) {

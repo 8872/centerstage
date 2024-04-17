@@ -80,6 +80,8 @@ public class AutoBaseOpmode extends OpMode {
     }
 
     public void setupHardware() {
+        liftLeft.setInverted(true);
+        liftRight.setInverted(true);
         liftRight.encoder.setDirection(Motor.Direction.REVERSE);
     }
 
