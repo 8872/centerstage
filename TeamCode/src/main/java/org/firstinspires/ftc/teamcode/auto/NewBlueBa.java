@@ -229,6 +229,7 @@ public class NewBlueBa extends AutoBaseOpmode {
             schedule(armSubsystem.intake());
             drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(new Pose2d(-73, -12, Math.toRadians(0)))
+                    .lineToLinearHeading(new Pose2d(-77, -10, Math.toRadians(0)))
                     .build());
             currentState = State.FINISHED;
         }

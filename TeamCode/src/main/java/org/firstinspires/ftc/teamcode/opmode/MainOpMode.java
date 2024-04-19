@@ -46,7 +46,6 @@ public class MainOpMode extends BaseOpMode {
         slideUp(Y, LiftSubsystem.HIGH);
 
         gb2(DPAD_UP).whenPressed(hangSubsystem.delayed(1, 7750));
-        gb2(DPAD_DOWN).whenPressed(hangSubsystem.delayed(-1, 4000));
 
         gb2(DPAD_LEFT).toggleWhenPressed(
                 new ParallelCommandGroup(armSubsystem.intake(), boxSubsystem.intake()),
