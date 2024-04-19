@@ -120,6 +120,10 @@ public class NewRedAu extends AutoBaseOpmode {
     public void loop() {
         super.loop();
         telemetry.addData("zone", processor.getZone());
+        Pose2d poseEstimate = drive.getPoseEstimate();
+        telemetry.addData("x", poseEstimate.getX());
+        telemetry.addData("y", poseEstimate.getY());
+        telemetry.addData("heading", poseEstimate.getHeading());
         drive.update();
         liftSubsystem.periodic();
 //        BLDistance = filter.calculate(lowPass.calculate(localizerSubsystem.getBl()));
@@ -225,37 +229,39 @@ public class NewRedAu extends AutoBaseOpmode {
         }
 
         if(currentPurplePixState == PurplePixState.DEPOSIT && depositWaitTimer.milliseconds()>1500){
-            schedule(liftSubsystem.goTo(LiftSubsystem.LOW-300));
+            schedule(liftSubsystem.goTo(LiftSubsystem.LOW-400));
             schedule(new DelayedCommand(armSubsystem.deposit(),500));
             switch(zone){
                 case 1:
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                            .lineToLinearHeading(new Pose2d(backdropX, -backdropY1, Math.toRadians(180+2)))
+                            .lineToLinearHeading(new Pose2d(backdropX, -backdropY1, Math.toRadians(180)))
                             .build());
                     break;
                 case 2:
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                            .lineToLinearHeading(new Pose2d(backdropX, -backdropY2, Math.toRadians(180+2)))
+                            .lineToLinearHeading(new Pose2d(backdropX, -backdropY2, Math.toRadians(180)))
                             .build());
                     break;
                 case 3:
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                            .lineToLinearHeading(new Pose2d(backdropX, -backdropY3, Math.toRadians(180+2)))
+                            .lineToLinearHeading(new Pose2d(backdropX, -backdropY3+3, Math.toRadians(180)))
+                                    .strafeLeft(5)
                             .build());
                     break;
             }
            currentPurplePixState = PurplePixState.DROP;
         }
         if(currentPurplePixState == PurplePixState.DROP && !drive.isBusy()){
-            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),250));
-            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),250));
-            schedule(new DelayedCommand(liftSubsystem.goTo(LiftSubsystem.LOW-200), 500));
-            schedule(new DelayedCommand(liftSubsystem.goTo(LiftSubsystem.LOW-300), 750));
+            setConstantForwardPower();
+            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),750));
+            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),750));
             schedule(new DelayedCommand(liftSubsystem.goTo(LiftSubsystem.LOW-200), 1000));
+            schedule(new DelayedCommand(liftSubsystem.goTo(LiftSubsystem.LOW-300), 1250));
+            schedule(new DelayedCommand(liftSubsystem.goTo(LiftSubsystem.LOW-200), 1500));
             depositWaitTimer.reset();
             currentPurplePixState = PurplePixState.PARK;
         }
-        if(currentPurplePixState == PurplePixState.PARK && depositWaitTimer.milliseconds()>2000){
+        if(currentPurplePixState == PurplePixState.PARK && depositWaitTimer.milliseconds()>2500){
             schedule(liftSubsystem.goTo(LiftSubsystem.NONE));
             schedule(armSubsystem.intake());
             drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
@@ -266,5 +272,11 @@ public class NewRedAu extends AutoBaseOpmode {
 
 
 
+    }
+    private void setConstantForwardPower(){
+        leftFront.set(-0.4);
+        leftRear.set(-0.4);
+        rightRear.set(-0.4);
+        rightFront.set(-0.4);
     }
 }

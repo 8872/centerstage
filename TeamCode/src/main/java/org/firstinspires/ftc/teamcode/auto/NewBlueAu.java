@@ -73,9 +73,9 @@ public class NewBlueAu extends AutoBaseOpmode {
     private ElapsedTime depositWaitTimer;
 
     public static double backdropX = 50;
-    public static double backdropY1 = 24;
-    public static double backdropY2 = 30.75;
-    public static double backdropY3 = 37.5;
+    public static double backdropY1 = 27;
+    public static double backdropY2 = 33.75;
+    public static double backdropY3 = 40.5;
 
     private double BLDistance;
 
@@ -120,6 +120,10 @@ public class NewBlueAu extends AutoBaseOpmode {
     @Override
     public void loop() {
         telemetry.addData("zone", processor.getZone());
+        Pose2d poseEstimate = drive.getPoseEstimate();
+        telemetry.addData("x", poseEstimate.getX());
+        telemetry.addData("y", poseEstimate.getY());
+        telemetry.addData("heading", poseEstimate.getHeading());
         super.loop();
         telemetry.addData("raw bl data", localizerSubsystem.getBl());
         drive.update();
@@ -200,13 +204,13 @@ public class NewBlueAu extends AutoBaseOpmode {
                 if(depositWaitTimer.seconds()<2) {
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                             .waitSeconds(1.5)
-                            .lineToSplineHeading(new Pose2d(38, 56, Math.toRadians(180-75)),
+                            .lineToSplineHeading(new Pose2d(38, 58, Math.toRadians(180-75)),
                                     SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                     SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                             .build());
                 }else{
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                            .lineToSplineHeading(new Pose2d(38, 56, Math.toRadians(180-75)),
+                            .lineToSplineHeading(new Pose2d(38, 58, Math.toRadians(180-75)),
                                     SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                     SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                             .build());
@@ -227,7 +231,7 @@ public class NewBlueAu extends AutoBaseOpmode {
         }
 
         if(currentPurplePixState == PurplePixState.DEPOSIT && depositWaitTimer.milliseconds()>1500){
-            schedule(liftSubsystem.goTo(LiftSubsystem.LOW-300));
+            schedule(liftSubsystem.goTo(LiftSubsystem.LOW-400));
             schedule(new DelayedCommand(armSubsystem.deposit(),500));
             switch(zone){
                 case 3:
@@ -249,6 +253,7 @@ public class NewBlueAu extends AutoBaseOpmode {
             currentPurplePixState = PurplePixState.DROP;
         }
         if(currentPurplePixState == PurplePixState.DROP && !drive.isBusy()){
+            setConstantForwardPower();
             schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),1000));
             schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),1000));
             depositWaitTimer.reset();
@@ -262,8 +267,11 @@ public class NewBlueAu extends AutoBaseOpmode {
                     .build());
             currentPurplePixState = PurplePixState.FINISH;
         }
-
-
-
+    }
+    private void setConstantForwardPower(){
+        leftFront.set(-0.4);
+        leftRear.set(-0.4);
+        rightRear.set(-0.4);
+        rightFront.set(-0.4);
     }
 }

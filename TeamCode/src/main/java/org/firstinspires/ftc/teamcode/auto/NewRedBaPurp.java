@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.util.wpilib.LinearFilter;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name="New Red Ba", group = "Auto")
+@Autonomous(name="New Red Ba Purp", group = "Auto")
 public class NewRedBaPurp extends AutoBaseOpmode {
 
     private HSVDetectionPipeline processor;
@@ -85,7 +85,7 @@ public class NewRedBaPurp extends AutoBaseOpmode {
         else
             drive.setPoseEstimate(new Pose2d(-41.75, 63.00, Math.toRadians(-90.00)));
 
-        processor = new HSVDetectionPipeline(Side.BLUE_FAR);
+        processor = new HSVDetectionPipeline(Side.RED_CLOSE);
         portal = new VisionPortal.Builder()
                 .addProcessor(processor)
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 2"))
@@ -118,6 +118,10 @@ public class NewRedBaPurp extends AutoBaseOpmode {
         telemetry.addData("zone", processor.getZone());
         super.loop();
         telemetry.addData("raw bl data", localizerSubsystem.getBl());
+        Pose2d poseEstimate = drive.getPoseEstimate();
+        telemetry.addData("x", poseEstimate.getX());
+        telemetry.addData("y", poseEstimate.getY());
+        telemetry.addData("heading", poseEstimate.getHeading());
         drive.update();
         liftSubsystem.periodic();
         BLDistance = filter.calculate(lowPass.calculate(localizerSubsystem.getBl()));
@@ -181,7 +185,7 @@ public class NewRedBaPurp extends AutoBaseOpmode {
         if(currentPurplePixState == PurplePixState.PLACE_AND_RETURN_TO_START && !drive.isBusy()) {
             drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                     .back(15)
-                    .lineToLinearHeading(new Pose2d(-73, 60, Math.toRadians(0)))
+                    .lineToLinearHeading(new Pose2d(-76, 60, Math.toRadians(0)))
                     .build());
             currentPurplePixState = PurplePixState.FINISH;
         }
@@ -189,4 +193,5 @@ public class NewRedBaPurp extends AutoBaseOpmode {
 
 
     }
+
 }

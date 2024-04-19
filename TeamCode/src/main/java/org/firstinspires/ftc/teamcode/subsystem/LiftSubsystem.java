@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -83,7 +84,9 @@ public class LiftSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        Log.d("asd", ""+right.getCurrentPosition());
         if (limitSwitch.isPressed()) {
+            Log.d("asd", "was pressed");
             left.resetEncoder();
             right.resetEncoder();
         }

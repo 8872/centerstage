@@ -66,9 +66,12 @@ public class NewBlueBa extends AutoBaseOpmode {
     private ElapsedTime depositWaitTimer;
 
     public static double backdropX = -78;
-    public static double backdropY1 = -50;
-    public static double backdropY2 = -44;
-    public static double backdropY3 = -38;
+    public static double backdropY1 = -44;//-48;
+    public static double backdropY2 = -39;//-42;
+    public static double backdropY3 = -32.5;//-35.5;
+
+    public static double toBackdropSpeed = 40;
+            ;
 
     private double BLDistance;
 
@@ -110,12 +113,16 @@ public class NewBlueBa extends AutoBaseOpmode {
     @Override
     public void loop() {
         telemetry.addData("zone", processor.getZone());
+        Pose2d poseEstimate = drive.getPoseEstimate();
+        telemetry.addData("x", poseEstimate.getX());
+        telemetry.addData("y", poseEstimate.getY());
+        telemetry.addData("heading", poseEstimate.getHeading());
         super.loop();
         telemetry.addData("raw bl data", localizerSubsystem.getBl());
         drive.update();
         liftSubsystem.periodic();
         BLDistance = filter.calculate(lowPass.calculate(localizerSubsystem.getBl()));
-        if(currentState == State.MOVE_TO_PROP && depositWaitTimer.milliseconds() > 2500){
+        if(currentState == State.MOVE_TO_PROP && depositWaitTimer.milliseconds() > 0){
             zone = processor.getZone();
             portal.close();
             schedule(intakeSubsystem.setStack1(IntakeSubsystem.servoHighPosition));
@@ -150,27 +157,33 @@ public class NewBlueBa extends AutoBaseOpmode {
 //could replace isBusy with a posEstimate check if need efficiency
         if(currentState == State.EJECT_AND_MOVE_TO_BACKDROP && !drive.isBusy()) {
             schedule(boxSubsystem.close());
-            schedule(liftSubsystem.goTo(LiftSubsystem.LOW-300));
+            schedule(liftSubsystem.goTo(LiftSubsystem.LOW-400));
             schedule(new DelayedCommand(armSubsystem.deposit(),500));
             //drive fsm
             if(red){
                 switch(zone) {
                     case 1:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                                        .back(15)
-                                .lineToSplineHeading(new Pose2d(backdropX, -backdropY1, Math.toRadians(180)))
+                                .back(5)
+                                .splineToSplineHeading(new Pose2d(backdropX, -backdropY1), Math.toRadians(180),
+                                        SampleMecanumDrive.getVelocityConstraint(toBackdropSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                                 .build());
                         break;
                     case 2:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                                 .back(10)
-                                .lineToSplineHeading(new Pose2d(backdropX, -backdropY2, Math.toRadians(180)))
+                                .lineToSplineHeading(new Pose2d(backdropX, -backdropY2, Math.toRadians(180)),
+                                        SampleMecanumDrive.getVelocityConstraint(toBackdropSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                                 .build());
                         break;
                     case 3:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                                 .back(10)
-                                .lineToSplineHeading(new Pose2d(backdropX, -backdropY3, Math.toRadians(180)))
+                                .lineToSplineHeading(new Pose2d(backdropX, -backdropY3, Math.toRadians(180)),
+                                        SampleMecanumDrive.getVelocityConstraint(toBackdropSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                                 .build());
                         break;
                 }
@@ -178,20 +191,26 @@ public class NewBlueBa extends AutoBaseOpmode {
                 switch(zone) {
                     case 1:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                                .back(15)
-                                .lineToSplineHeading(new Pose2d(backdropX, backdropY1, Math.toRadians(-2.5)))
+                                .back(8)
+                                .splineToLinearHeading(new Pose2d(backdropX, backdropY1), Math.toRadians(-1),
+                                        SampleMecanumDrive.getVelocityConstraint(toBackdropSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                                 .build());
                         break;
                     case 2:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                                .back(10)
-                                .lineToSplineHeading(new Pose2d(backdropX, backdropY2, Math.toRadians(-2.5)))
+                                .back(8)
+                                .splineToLinearHeading(new Pose2d(backdropX, backdropY2), Math.toRadians(-1),
+                                        SampleMecanumDrive.getVelocityConstraint(toBackdropSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                                 .build());
                         break;
                     case 3:
                         drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                                .back(10)
-                                .lineToSplineHeading(new Pose2d(backdropX, backdropY3, Math.toRadians(-2.5)))
+                                .back(8)
+                                .splineToLinearHeading(new Pose2d(backdropX, backdropY3), Math.toRadians(-1),
+                                        SampleMecanumDrive.getVelocityConstraint(toBackdropSpeed, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                                 .build());
                         break;
                 }
@@ -199,18 +218,25 @@ public class NewBlueBa extends AutoBaseOpmode {
             currentState = State.DROP;
         }
         if(currentState == State.DROP && !drive.isBusy()){
-            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),1000));
-            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),1000));
+            setConstantForwardPower();
+            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),150));
+            schedule(new DelayedCommand(new InstantCommand(()-> boxSubsystem.release()),150));
             depositWaitTimer.reset();
             currentState = State.WAIT_FOR_FINISH;
         }
-        if(currentState == State.WAIT_FOR_FINISH && depositWaitTimer.milliseconds()>2000){
-            schedule(liftSubsystem.goTo(LiftSubsystem.NONE));
+        if(currentState == State.WAIT_FOR_FINISH && depositWaitTimer.milliseconds()>500){
+            schedule(new DelayedCommand(liftSubsystem.goTo(LiftSubsystem.NONE),250));
             schedule(armSubsystem.intake());
             drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(new Pose2d(-73, -60, Math.toRadians(0)))
+                    .lineToLinearHeading(new Pose2d(-73, -12, Math.toRadians(0)))
                     .build());
             currentState = State.FINISHED;
         }
+    }
+    private void setConstantForwardPower(){
+        leftFront.set(-0.5);
+        leftRear.set(-0.5);
+        rightRear.set(-0.5);
+        rightFront.set(-0.5);
     }
 }
